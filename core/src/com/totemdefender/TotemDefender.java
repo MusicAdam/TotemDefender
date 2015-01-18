@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.totemdefender.entities.Entity;
 import com.totemdefender.states.StateManager;
+import com.totemdefender.states.TestState;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -44,86 +45,109 @@ public class TotemDefender extends ApplicationAdapter {
 	
 	@Override
 	public void create () {
+		//Initialize
 		batch  = new SpriteBatch();
 		camera = new OrthographicCamera(V_WIDTH, V_HEIGHT);
 		camera.update();
 		world  = new World(GRAVITY, true);	
-		stateManager= new StateManager(); 
+		stateManager= new StateManager(this); 
 		entities 	= new ArrayList<Entity>(); 	
 		b2dRenderer = new Box2DDebugRenderer();
 		
-		//Lets create a test physics body
-		BodyDef testDef = new BodyDef();
-		testDef.type = BodyType.DynamicBody;
 		
-		for(int i = 0; i < 50; i++){
-			testDef.position.set(i * WORLD_TO_BOX, i * WORLD_TO_BOX);
-			Body body = world.createBody(testDef);
-			
-			CircleShape shape = new CircleShape();
-			shape.setRadius(5f * WORLD_TO_BOX);
-			
-			FixtureDef fixtureDef = new FixtureDef();
-			fixtureDef.shape = shape;
-			fixtureDef.density = 0.5f; 
-			fixtureDef.friction = 0.4f;
-			fixtureDef.restitution = 0.4f;
-	
-			// Create our fixture and attach it to the body
-			body.createFixture(fixtureDef);
-			shape.dispose();
-		}
-		
-		
-		//Make the ground
-		float hw = V_WIDTH / 2;
-		float hh = 10;
-		BodyDef groundDef = new BodyDef();
-		groundDef.type = BodyType.StaticBody;
-		groundDef.position.set(0, -V_HEIGHT/2 * WORLD_TO_BOX);
-		
-		Body groundBody = world.createBody(groundDef);
-		
-		PolygonShape groundShape = new PolygonShape();
-		groundShape.setAsBox(hw * WORLD_TO_BOX, hh * WORLD_TO_BOX);
-		
-		groundBody.createFixture(groundShape, 0.0f);
-		
-		groundShape.dispose();
-		
+		////		DEBUG STUFF	 /////	
+		stateManager.attachState(new TestState());			
 	}
 
 	@Override
 	public void render () {		
-		accum += Gdx.graphics.getDeltaTime();
+		accum += Gdx.graphics.getDeltaTime(); //Add previous frame time to accumulator
 		
+		//Maintain updates at the STEP rate
 		while(accum >= STEP){
 			accum -= STEP;
 			
-			//Update
+			//Update physics world & state manager
 			world.step(STEP, 8, 6);
 			stateManager.update();
 			
+			//Update entities
 			for(Entity ent : entities){
 				ent.update();
 			}
 		}
 		
+		//GL Housekeeping
 		Gdx.gl.glClearColor(0.1f, 0.1f, 0.18f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
+		//Update batch projection incase it has changed
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 		
-		//Render
+		//Render entities
 		for(Entity ent : entities){
 			ent.render();
 		}
 		
 		batch.end();
 		
+		//Debug b2d rendering
 		if(DEBUG){
 			b2dRenderer.render(world, camera.combined.cpy().scl(BOX_TO_WORLD));
 		}
+	}
+	
+	/** addEntity registers a spawned entity with the game so it will be rendered and updated.
+	 * @return true if the entity is spawned and was added, false otherwise	 */
+	public boolean addEntity(Entity ent){
+		if(!ent.isSpawned()) return false;
+		
+		return entities.add(ent);
+	}
+	
+	/** destroyEntity removes a spawned entity from the entities list and also removes it from the box2d world if it has a body 
+	 * @return true on success, false on failure*/
+	public boolean destroyEntity(Entity ent){
+		if(ent.getBody() != null)
+			world.destroyBody(ent.getBody());
+		
+		return entities.remove(ent);
+	}
+	
+	/** 
+	 * @param name to search for
+	 * @return list of entities by given name, or empty list	 */
+	public ArrayList<Entity> findEntitiesByName(String name){
+		ArrayList<Entity> found = new ArrayList<Entity>();
+		
+		for(Entity ent : entities){
+			if(ent.getName().equals(name))
+				found.add(ent);
+		}
+		
+		return found;
+	}
+	
+	/**
+	 * @return all spawned entities in the world
+	 */
+	public ArrayList<Entity> getAllEntities(){
+		return entities;
+	}
+	
+	/**
+	 * @return stateManager instance
+	 */
+	public StateManager getStateManager(){
+		return stateManager;
+	}
+	
+	/**
+	 * 
+	 * @return box2d world instance
+	 */
+	public World getWorld(){
+		return world;
 	}
 }
