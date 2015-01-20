@@ -43,7 +43,7 @@ public class TestState implements State {
 
 	@Override
 	public void onExit(TotemDefender game) {
-		System.out.println("TestState:onExit");		
+		System.out.println("TestState:onExit");	
 	}
 
 	@Override
