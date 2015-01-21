@@ -7,6 +7,7 @@ import com.totemdefender.states.StateManager;
 import com.totemdefender.states.TestState;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -39,6 +40,7 @@ public class TotemDefender extends ApplicationAdapter {
 	private World				world; //Box2d physics world.
 	private OrthographicCamera  camera; //Games camera
 	private float 				accum = 0;	//Time accumulator to ensure updates are performed at the same rate as step.
+	private AssetManager 		assetManager; //Libgdx utility to asynchronusly load assets.
 	
 	/** Debug */
 	private Box2DDebugRenderer b2dRenderer; //Create a renderer for box2d
@@ -53,6 +55,7 @@ public class TotemDefender extends ApplicationAdapter {
 		stateManager= new StateManager(this); 
 		entities 	= new ArrayList<Entity>(); 	
 		b2dRenderer = new Box2DDebugRenderer();
+		assetManager = new AssetManager();
 		
 		
 		////		DEBUG STUFF	 /////	
@@ -149,5 +152,13 @@ public class TotemDefender extends ApplicationAdapter {
 	 */
 	public World getWorld(){
 		return world;
+	}
+	
+	/**
+	 * 
+	 * @return assetManager instance
+	 */
+	public AssetManager getAssetManager(){
+		return assetManager;
 	}
 }
