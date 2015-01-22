@@ -57,6 +57,8 @@ public class TotemDefender extends ApplicationAdapter {
 		b2dRenderer = new Box2DDebugRenderer();
 		assetManager = new AssetManager();
 		
+		world.setContactListener(new ContactHandler());
+		
 		
 		////		DEBUG STUFF	 /////	
 		stateManager.attachState(new TestState());			
