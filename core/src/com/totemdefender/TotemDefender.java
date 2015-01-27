@@ -3,6 +3,7 @@ package com.totemdefender;
 import java.util.ArrayList;
 
 import com.totemdefender.entities.Entity;
+import com.totemdefender.entities.TestEntity;
 import com.totemdefender.states.StateManager;
 import com.totemdefender.states.TestState;
 import com.badlogic.gdx.ApplicationAdapter;
@@ -56,7 +57,25 @@ public class TotemDefender extends ApplicationAdapter {
 		
 		
 		////		DEBUG STUFF	 /////	
-		stateManager.attachState(new TestState());			
+		stateManager.attachState(new TestState());	
+		TestEntity entity=new TestEntity();
+		entity.spawn(this);
+		this.addEntity(entity);
+		System.out.println(entity.getName());
+		System.out.println(entity.getPosition());
+		System.out.println(entity.getSprite());
+		System.out.println(entity.getRotation());
+		entity.setName("circle");
+		entity.setPosition(new Vector2(5,5));
+		entity.setRotation(30);
+		
+		
+		System.out.println(entity.getName());
+		System.out.println(entity.getPosition());
+		System.out.println(entity.getSprite());
+		System.out.println(entity.getRotation());
+		
+		
 	}
 
 	@Override
