@@ -3,13 +3,17 @@ package com.totemdefender.states;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.totemdefender.CollisionListener;
 import com.totemdefender.TotemDefender;
 
 public class TestState implements State {
 	int count = 0;
+	int touchCount = 0;
 	long spawnDelay = 100;
 	long lastTime = 0;
 	
@@ -34,7 +38,20 @@ public class TestState implements State {
 		PolygonShape groundShape = new PolygonShape();
 		groundShape.setAsBox(hw * TotemDefender.WORLD_TO_BOX, hh * TotemDefender.WORLD_TO_BOX);
 		
-		groundBody.createFixture(groundShape, 0.0f);
+		Fixture fix = groundBody.createFixture(groundShape, 0.0f);
+		fix.setUserData(new CollisionListener(){
+
+			@Override
+			public void beginContact(Fixture other, Contact contact) {
+				touchCount++;
+			}
+
+			@Override
+			public void endContact(Fixture other, Contact contact) {
+				//System.out.println("Something has stopped touching the ground!");
+			}
+			
+		});
 		
 		groundShape.dispose();
 		
@@ -43,7 +60,8 @@ public class TestState implements State {
 
 	@Override
 	public void onExit(TotemDefender game) {
-		System.out.println("TestState:onExit");		
+		System.out.println("Balls have touched the ground " + touchCount + " times");
+		System.out.println("TestState:onExit");
 	}
 
 	@Override
@@ -60,7 +78,6 @@ public class TestState implements State {
 			lastTime = now;
 			count++;
 		}
-		System.out.println("TestState:update");
 	}
 	
 	private void spawnBall(TotemDefender game){
@@ -82,7 +99,8 @@ public class TestState implements State {
 		fixtureDef.restitution = 0.4f;
 
 		// Create our fixture and attach it to the body
-		body.createFixture(fixtureDef);
+		Fixture fix = body.createFixture(fixtureDef);
+
 		shape.dispose();
 	}
 
