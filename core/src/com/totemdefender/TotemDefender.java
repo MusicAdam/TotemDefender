@@ -62,25 +62,7 @@ public class TotemDefender extends ApplicationAdapter {
 		
 		
 		////		DEBUG STUFF	 /////	
-		stateManager.attachState(new TestState());	
-		TestEntity entity=new TestEntity();
-		entity.spawn(this);
-		this.addEntity(entity);
-		System.out.println(entity.getName());
-		System.out.println(entity.getPosition());
-		System.out.println(entity.getSprite());
-		System.out.println(entity.getRotation());
-		entity.setName("circle");
-		entity.setPosition(new Vector2(5,5));
-		entity.setRotation(30);
-		
-		
-		System.out.println(entity.getName());
-		System.out.println(entity.getPosition());
-		System.out.println(entity.getSprite());
-		System.out.println(entity.getRotation());
-		
-		
+		stateManager.attachState(new TestState());			
 	}
 
 	@Override
