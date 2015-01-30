@@ -1,5 +1,6 @@
 package com.totemdefender.states;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
@@ -11,13 +12,14 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.totemdefender.CollisionListener;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.entities.TestEntity;
+import com.totemdefender.input.KeyboardEvent;
 
 public class TestState implements State {
 	int count = 0;
 	int touchCount = 0;
 	long spawnDelay = 100;
 	long lastTime = 0;
-	
+	KeyboardEvent spaceListener;
 	@Override
 	public boolean canEnter(TotemDefender game) {
 		return true;
@@ -56,22 +58,36 @@ public class TestState implements State {
 		
 		groundShape.dispose();
 		
+		//Setup test keys
+		final TestState thisRef = this;
+		final TotemDefender gameRef = game;
+		spaceListener = game.getInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, Input.Keys.SPACE){
+			@Override
+			public boolean callback(){
+				thisRef.spawnBall(gameRef);
+				return true;
+			}
+		});
+		
 		lastTime = System.currentTimeMillis();
 	}
 
 	@Override
 	public void onExit(TotemDefender game) {
+		game.getInputHandler().removeListener(spaceListener);
+		
 		System.out.println("Balls have touched the ground " + touchCount + " times");
 		System.out.println("TestState:onExit");
 	}
 
 	@Override
 	public boolean canExit(TotemDefender game) {
-		return count == 50;
+		return count == 10;
 	}
 
 	@Override
 	public void update(TotemDefender game) {
+		/* This is in the keyboard event now
 		long now = System.currentTimeMillis(); //The long now
 		
 		if((now - lastTime) >= spawnDelay){
@@ -79,12 +95,14 @@ public class TestState implements State {
 			lastTime = now;
 			count++;
 		}
+		*/
 	}
 	
 	private void spawnBall(TotemDefender game){
 		TestEntity ball = new TestEntity();
 		ball.spawn(game);
 		game.addEntity(ball);
+		count++;
 	}
 
 }

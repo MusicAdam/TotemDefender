@@ -4,10 +4,12 @@ import java.util.ArrayList;
 
 import com.totemdefender.entities.Entity;
 import com.totemdefender.entities.TestEntity;
+import com.totemdefender.input.InputHandler;
 import com.totemdefender.states.StateManager;
 import com.totemdefender.states.TestState;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -42,6 +44,9 @@ public class TotemDefender extends ApplicationAdapter {
 	private OrthographicCamera  camera; //Games camera
 	private float 				accum = 0;	//Time accumulator to ensure updates are performed at the same rate as step.
 	private AssetManager 		assetManager; //Libgdx utility to asynchronusly load assets.
+	private InputMultiplexer	inputMultiplexer; //Multiplexer for input handling
+	private InputMultiplexer	menuMultiplexer; //Menus will attach to this
+	private InputHandler		inputHandler; //Game controls will add listeners to this
 	
 	/** Debug */
 	private Box2DDebugRenderer b2dRenderer; //Create a renderer for box2d
@@ -57,6 +62,13 @@ public class TotemDefender extends ApplicationAdapter {
 		entities 	= new ArrayList<Entity>(); 	
 		b2dRenderer = new Box2DDebugRenderer();
 		assetManager = new AssetManager();
+		inputMultiplexer = new InputMultiplexer();
+		menuMultiplexer = new InputMultiplexer();
+		inputHandler = new InputHandler(this);
+		
+		inputMultiplexer.addProcessor(menuMultiplexer);
+		inputMultiplexer.addProcessor(inputHandler);
+		Gdx.input.setInputProcessor(inputMultiplexer);
 		
 		world.setContactListener(new ContactHandler());
 		
@@ -163,5 +175,21 @@ public class TotemDefender extends ApplicationAdapter {
 	 */
 	public AssetManager getAssetManager(){
 		return assetManager;
+	}
+	
+	/**
+	 * 
+	 * @return camera instance
+	 */
+	public OrthographicCamera getCamera(){
+		return camera;
+	}
+	
+	/**
+	 * 
+	 * @return inputHandler instance
+	 */
+	public InputHandler getInputHandler(){
+		return inputHandler;
 	}
 }
