@@ -1,19 +1,31 @@
 package com.totemdefender.states;
 
+import com.totemdefender.TotemDefender;
+
 public class BuildState implements State {
-	public boolean canEnter(TotemDefender game){
+	@Override
+	public boolean canEnter(TotemDefender game) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	@Override
+	public void onEnter(TotemDefender game) {
+		// TODO Auto-generated method stub
 		
 	}
-	public void onEnter(TotemDefender game){
+	@Override
+	public void onExit(TotemDefender game) {
+		// TODO Auto-generated method stub
 		
 	}
-	public void onExit(TotemDefender game){
-		
+	@Override
+	public boolean canExit(TotemDefender game) {
+		// TODO Auto-generated method stub
+		return false;
 	}
-	public boolean canExit(TotemDefender game){
-		
-	}
-	public void update(TotemDefender game){
+	@Override
+	public void update(TotemDefender game) {
+		// TODO Auto-generated method stub
 		
 	}
 }
