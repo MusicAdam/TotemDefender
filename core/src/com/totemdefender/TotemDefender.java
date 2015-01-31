@@ -5,15 +5,20 @@ import java.util.ArrayList;
 import com.totemdefender.entities.Entity;
 import com.totemdefender.entities.TestEntity;
 import com.totemdefender.input.InputHandler;
+import com.totemdefender.input.KeyboardEvent;
+import com.totemdefender.states.ResolutionTestState;
 import com.totemdefender.states.StateManager;
 import com.totemdefender.states.TestState;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -23,6 +28,9 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class TotemDefender extends ApplicationAdapter {
 	/** Static configuration variables */
@@ -32,11 +40,11 @@ public class TotemDefender extends ApplicationAdapter {
 	public static final Vector2 GRAVITY				= new Vector2(0, -9.8f); //Gravity for physics simulation
 	public static final int 	POSITION_ITERATIONS = 6; 		//Position iterations for box2d
 	public static final int 	VELOCITY_ITERATIONS = 8; 		//Velocity iterations for box2d
-	public static final int 	V_WIDTH				= 400;		//Virtual width of the game
-	public static final int		V_HEIGHT			= 400; 		//    "   height    " 	
 	public static final boolean DEBUG				= true;		//Debug rendering and output when true 
 
 	/** Instance variables */
+	private int					screenWidth;
+	private int					screenHeight;	
 	private SpriteBatch 		batch;	//Sprite batch for rendering
 	private ArrayList<Entity> 	entities; //List of spawned entities
 	private StateManager		stateManager; //Controls game's states.
@@ -47,6 +55,7 @@ public class TotemDefender extends ApplicationAdapter {
 	private InputMultiplexer	inputMultiplexer; //Multiplexer for input handling
 	private InputMultiplexer	menuMultiplexer; //Menus will attach to this
 	private InputHandler		inputHandler; //Game controls will add listeners to this
+	private Viewport			viewport;	//Keep the game looking good at any aspect ratio
 	
 	/** Debug */
 	private Box2DDebugRenderer b2dRenderer; //Create a renderer for box2d
@@ -54,8 +63,15 @@ public class TotemDefender extends ApplicationAdapter {
 	@Override
 	public void create () {
 		//Initialize
+
+		//Set virtual size aspect ratio to the desktop's aspect ratio.
+		Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode());
+		screenWidth = Gdx.graphics.getWidth();
+		screenHeight = Gdx.graphics.getHeight();
+		
+		
 		batch  = new SpriteBatch();
-		camera = new OrthographicCamera(V_WIDTH, V_HEIGHT);
+		camera = new OrthographicCamera(screenWidth, screenHeight);
 		camera.update();
 		world  = new World(GRAVITY, true);	
 		stateManager= new StateManager(this); 
@@ -65,6 +81,7 @@ public class TotemDefender extends ApplicationAdapter {
 		inputMultiplexer = new InputMultiplexer();
 		menuMultiplexer = new InputMultiplexer();
 		inputHandler = new InputHandler(this);
+		viewport = new ExtendViewport(screenWidth, screenHeight, camera);
 		
 		inputMultiplexer.addProcessor(menuMultiplexer);
 		inputMultiplexer.addProcessor(inputHandler);
@@ -74,13 +91,27 @@ public class TotemDefender extends ApplicationAdapter {
 		
 		
 		////		DEBUG STUFF	 /////	
-		stateManager.attachState(new TestState());			
+		stateManager.attachState(new ResolutionTestState());	
+		stateManager.attachState(new TestState());		
+		
+		//Add an exit function
+		inputHandler.addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, Input.Keys.ESCAPE){
+			@Override
+			public boolean callback(){
+				Gdx.app.exit();
+				return true;
+			}
+		});
 	}
 
 	@Override
 	public void render () {		
-		accum += Gdx.graphics.getDeltaTime(); //Add previous frame time to accumulator
+		//GL Housekeeping
+		Gdx.gl.glClearColor(0.1f, 0.1f, 0.18f, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
+		accum += Gdx.graphics.getDeltaTime(); //Add previous frame time to accumulator
+				
 		//Maintain updates at the STEP rate
 		while(accum >= STEP){
 			accum -= STEP;
@@ -95,9 +126,7 @@ public class TotemDefender extends ApplicationAdapter {
 			}
 		}
 		
-		//GL Housekeeping
-		Gdx.gl.glClearColor(0.1f, 0.1f, 0.18f, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		
 		
 		//Update batch projection incase it has changed
 		batch.setProjectionMatrix(camera.combined);
@@ -114,6 +143,13 @@ public class TotemDefender extends ApplicationAdapter {
 		if(DEBUG){
 			b2dRenderer.render(world, camera.combined.cpy().scl(BOX_TO_WORLD));
 		}
+	}
+	
+	@Override
+	public void resize(int w, int h){
+		viewport.update(w, h);
+		screenWidth = w;
+		screenHeight = h;
 	}
 	
 	/** addEntity registers a spawned entity with the game so it will be rendered and updated.
@@ -191,5 +227,13 @@ public class TotemDefender extends ApplicationAdapter {
 	 */
 	public InputHandler getInputHandler(){
 		return inputHandler;
+	}
+
+	public int getScreenWidth() {
+		return screenWidth;
+	}
+
+	public int getScreenHeight() {
+		return screenHeight;
 	}
 }

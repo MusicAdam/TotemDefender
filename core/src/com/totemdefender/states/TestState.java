@@ -1,5 +1,6 @@
 package com.totemdefender.states;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -30,16 +31,16 @@ public class TestState implements State {
 		System.out.println("TestState:onEnter");	
 		
 		//Make the ground
-		float hw = TotemDefender.V_WIDTH / 2;
+		float hw = Gdx.graphics.getWidth() / 2;
 		float hh = 10;
 		BodyDef groundDef = new BodyDef();
 		groundDef.type = BodyType.StaticBody;
-		groundDef.position.set(0, -TotemDefender.V_HEIGHT/2 * TotemDefender.WORLD_TO_BOX);
+		groundDef.position.set(0, -Gdx.graphics.getHeight()/2 * TotemDefender.WORLD_TO_BOX + ((hh + 1) * TotemDefender.WORLD_TO_BOX));
 		
 		Body groundBody = game.getWorld().createBody(groundDef);
 		
 		PolygonShape groundShape = new PolygonShape();
-		groundShape.setAsBox(hw * TotemDefender.WORLD_TO_BOX, hh * TotemDefender.WORLD_TO_BOX);
+		groundShape.setAsBox((hw - 1) * TotemDefender.WORLD_TO_BOX, hh * TotemDefender.WORLD_TO_BOX);
 		
 		Fixture fix = groundBody.createFixture(groundShape, 0.0f);
 		fix.setUserData(new CollisionListener(){

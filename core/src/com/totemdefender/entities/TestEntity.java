@@ -1,5 +1,6 @@
 package com.totemdefender.entities;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -27,7 +28,7 @@ public class TestEntity extends Entity {
 		BodyDef testDef = new BodyDef();
 		testDef.type = BodyType.DynamicBody;
 		
-		float rnd = (float)Math.random() * (TotemDefender.V_WIDTH/10) - ((float)Math.random() * (TotemDefender.V_WIDTH/10)); //-width + 10 <= rnd <= width
+		float rnd = (float)Math.random() * (Gdx.graphics.getWidth()/10) - ((float)Math.random() * (Gdx.graphics.getWidth()/10)); //-width + 10 <= rnd <= width
 		
 		testDef.position.set(rnd * TotemDefender.WORLD_TO_BOX, 0);
 		setBody(game.getWorld().createBody(testDef));
