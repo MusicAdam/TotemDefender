@@ -1,8 +1,11 @@
 package com.totemdefender.menu;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 
 public class Button extends Component {
+	ShapeRenderer shapeMaker;
 	private String label;
 	private Color color;
 	
@@ -13,17 +16,26 @@ public class Button extends Component {
 		setColor(newColor);
 	}
 
-	@Override
-	public void render() {
-		// TODO Auto-generated method stub
+	public void create()
+	{ shapeMaker = new ShapeRenderer(); }
 	
+	public void render() {
+		shapeMaker.begin(ShapeType.Filled);
+		shapeMaker.setColor(this.getColor());
+		shapeMaker.rect(this.getPosition().x, this.getPosition().y, this.getSize().x, this.getSize().y);
+		shapeMaker.end();
 	}
 	
 	public boolean onButtonArea(int x, int y) {
-		float minX = getPosition().x - (getSize().x/2);
-		float minY = getPosition().y - (getSize().y/2);
-		float maxX = getPosition().x + (getSize().x/2);
-		float maxY = getPosition().y + (getSize().y/2);
+		float positionX = getPosition().x;
+		float positionY = getPosition().y;
+		float halfSizeX = (getSize().x / 2);
+		float halfSizeY = (getSize().y / 2);
+		
+		float minX = positionX - halfSizeX;
+		float minY = positionY - halfSizeY;
+		float maxX = positionX + halfSizeX;
+		float maxY = positionY + halfSizeY;
 		
 		if((x >= minX && x <= maxX) && (y >= minY && y <= maxY)) 
 		{ return true; }
@@ -42,4 +54,5 @@ public class Button extends Component {
 
 	public void setColor(Color color)
 	{ this.color = color; }
+
 }
