@@ -134,7 +134,7 @@ public class TotemDefender extends ApplicationAdapter {
 		
 		//Render entities
 		for(Entity ent : entities){
-			ent.render();
+			ent.render(batch);
 		}
 		
 		batch.end();

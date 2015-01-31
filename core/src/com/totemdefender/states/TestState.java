@@ -11,8 +11,10 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.totemdefender.CollisionListener;
+import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.entities.TestEntity;
+import com.totemdefender.entities.WeaponEntity;
 import com.totemdefender.input.KeyboardEvent;
 
 public class TestState implements State {
@@ -71,6 +73,10 @@ public class TestState implements State {
 		});
 		
 		lastTime = System.currentTimeMillis();
+		
+		WeaponEntity weaponEnt = new WeaponEntity(new Player(1));
+		weaponEnt.spawn(game);
+		game.addEntity(weaponEnt);
 	}
 
 	@Override

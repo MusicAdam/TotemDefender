@@ -15,7 +15,6 @@ public class BuildState implements State {
 	
 	@Override
 	public boolean canEnter(TotemDefender game) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 	@Override

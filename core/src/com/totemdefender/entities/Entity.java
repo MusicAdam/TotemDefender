@@ -1,9 +1,11 @@
 package com.totemdefender.entities;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
+import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
 
 
@@ -13,8 +15,9 @@ public abstract class Entity {
 	public String name="Entity";
 	private Body body;
 	private Sprite sprite;
-	public boolean spawned=false;
-	
+	protected boolean isSpawned=false;
+	protected Player owner;
+
 	public Entity(){
 		
 	}
@@ -23,20 +26,37 @@ public abstract class Entity {
 		this.name=name;
 	}
 	
+	public Entity(Player owner, String name){
+		this.name=name;
+		this.owner= owner;
+	}
+	
+	public Entity(Player owner){
+		this.owner=owner;
+	}
+	
 	public void update(){
 		//Sprite follows b2dBody if it exists
-		if(this.getBody()!=null){
-		sprite.setPosition(body.getPosition().x, body.getPosition().y);
-		sprite.setRotation(body.getAngle());
+		if(this.getBody()!=null && sprite != null){
+			float bodyX = body.getPosition().x * TotemDefender.BOX_TO_WORLD;
+			float bodyY = body.getPosition().y * TotemDefender.BOX_TO_WORLD;
+			float spriteHW = (sprite.getWidth() * sprite.getScaleX()) /2;
+			float spriteHH = (sprite.getHeight() * sprite.getScaleY()) /2;
+			sprite.setPosition(bodyX - spriteHW, bodyY - spriteHH);
+			sprite.setRotation(body.getAngle());
 		}
 		
 	}
-	public abstract void render();
+	public void render(SpriteBatch batch){
+		if(sprite != null){
+			sprite.draw(batch);
+		}
+	}
 	
 	public abstract void spawn(TotemDefender game);
 	
 	public boolean isSpawned(){
-		return spawned;
+		return isSpawned;
 	}
 	
 	public Vector2 getPosition(){
@@ -83,6 +103,15 @@ public abstract class Entity {
 	
 	public Sprite getSprite(){
 	return sprite;	
+	}
+	
+
+	public Player getOwner() {
+		return owner;
+	}
+
+	public void setOwner(Player owner) {
+		this.owner = owner;
 	}
 
 	

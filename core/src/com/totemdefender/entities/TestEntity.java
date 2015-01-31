@@ -16,12 +16,6 @@ public class TestEntity extends Entity {
 	public TestEntity(){
 		super("Circle Test");
 	}
-	
-	@Override
-	public void render() {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public void spawn(TotemDefender game) {
