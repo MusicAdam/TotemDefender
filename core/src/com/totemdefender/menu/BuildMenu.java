@@ -9,13 +9,13 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 
-public class BuildPhase extends Menu {
+public class BuildMenu extends Menu {
 	private Button triangle;
 	private Button square;
 	private Button rect;
 	private Button ready;
 	
-	public BuildPhase(TotemDefender game) {
+	public BuildMenu(TotemDefender game) {
 		Vector2 buttonSize = new Vector2(new Vector2((game.getScreenWidth()/4), 50));
 		float topArea = (game.getScreenHeight() - buttonSize.y);
 		
