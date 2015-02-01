@@ -10,12 +10,15 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 
 public class Button extends Component {
+<<<<<<< HEAD
 	private FreeTypeFontGenerator generator;
 	private FreeTypeFontParameter parameter;
 	private BitmapFont bitMapFont = generator.generateFont(parameter); // font size 12 pixels
 	private Vector2 textPosition;
 	
 	ShapeRenderer shapeMaker;
+=======
+>>>>>>> 655f50c78fd46ed875747aa7b422115755907437
 	private String label;
 	private Color color;
 	
@@ -30,6 +33,7 @@ public class Button extends Component {
 		setSize(newSize); 
 		setPosition(newPosition);
 		setColor(newColor);
+<<<<<<< HEAD
 		
 		textPosition = new Vector2(this.getPosition().x + (this.getSize().x/2), this.getPosition().y + (this.getSize()).y);
 		shapeMaker = new ShapeRenderer();
@@ -46,6 +50,15 @@ public class Button extends Component {
 		shapeMaker.setColor(this.getColor());
 		shapeMaker.rect(this.getPosition().x, this.getPosition().y, this.getSize().x, this.getSize().y);
 		shapeMaker.end();
+=======
+	}
+	
+	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer) {
+		shapeRenderer.begin(ShapeType.Filled);
+		shapeRenderer.setColor(this.getColor());
+		shapeRenderer.rect(this.getPosition().x, this.getPosition().y, this.getSize().x, this.getSize().y);
+		shapeRenderer.end();
+>>>>>>> 655f50c78fd46ed875747aa7b422115755907437
 	}
 	
 	public boolean onButtonArea(int x, int y) {
