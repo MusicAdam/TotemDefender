@@ -12,7 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 public class Button extends Component {
 	private FreeTypeFontGenerator generator;
 	private FreeTypeFontParameter parameter;
-	private BitmapFont bitMapFont = generator.generateFont(parameter); // font size 12 pixels
+	private BitmapFont bitMapFont;
 	private Vector2 textPosition;
 	
 	ShapeRenderer shapeMaker;
@@ -20,7 +20,7 @@ public class Button extends Component {
 	private Color color;
 	
 	public Button(String newLabel, Vector2 newSize, Vector2 newPosition, Color newColor) {
-		generator = new FreeTypeFontGenerator(Gdx.files.internal("assets/consola.ttf"));
+		generator = new FreeTypeFontGenerator(Gdx.files.internal("consola.ttf"));
 		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
 		parameter.size = 12;
 		bitMapFont = generator.generateFont(parameter); // font size 12 pixels
@@ -34,24 +34,19 @@ public class Button extends Component {
 		shapeMaker = new ShapeRenderer();
 	}
 	
-	public void render(SpriteBatch batch) {
-		
+	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer) {	
 		batch.begin();
 			bitMapFont.draw(batch, label, textPosition.x, textPosition.y);;
 		batch.end();
-		generator.dispose();
 		
-		shapeMaker.begin(ShapeType.Filled);
-		shapeMaker.setColor(this.getColor());
-		shapeMaker.rect(this.getPosition().x, this.getPosition().y, this.getSize().x, this.getSize().y);
-		shapeMaker.end();
-	}
-	
-	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer) {
 		shapeRenderer.begin(ShapeType.Filled);
 		shapeRenderer.setColor(this.getColor());
 		shapeRenderer.rect(this.getPosition().x, this.getPosition().y, this.getSize().x, this.getSize().y);
 		shapeRenderer.end();
+	}
+	
+	public void dispose() {
+		generator.dispose();
 	}
 	
 	public boolean onButtonArea(int x, int y) {
