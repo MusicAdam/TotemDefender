@@ -10,12 +10,6 @@ public class StartMenu extends Menu {
 	public StartMenu(){
 		
 	}
-	
-	@Override
-	public void render() {
-		// TODO Auto-generated method stub
-		Gdx.input.setInputProcessor(this);
-	}
 
 	@Override
 	public boolean keyDown(int keycode) {

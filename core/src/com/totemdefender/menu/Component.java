@@ -1,11 +1,12 @@
 package com.totemdefender.menu;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 public abstract class Component {
 	
 	private Vector2 size, position;
-	public abstract void render();
+	public abstract void render(SpriteBatch batch);
 	
 	public boolean onClick()
 	{ return false; }

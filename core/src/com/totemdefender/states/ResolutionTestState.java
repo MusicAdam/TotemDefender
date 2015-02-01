@@ -50,6 +50,7 @@ public class ResolutionTestState implements State {
 		shapeRenderer.circle(topRight.x, topRight.y, radius); //Circle tl corner
 		shapeRenderer.circle(bottomLeft.x, bottomLeft.y, radius); //Circle br corner
 		shapeRenderer.circle(0, 0, radius); //Center
+		shapeRenderer.line(0, topLeft.y, 0, bottomLeft.y);
 		shapeRenderer.end();
 	}
 

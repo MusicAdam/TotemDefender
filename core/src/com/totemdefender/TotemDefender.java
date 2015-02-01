@@ -6,6 +6,7 @@ import com.totemdefender.entities.Entity;
 import com.totemdefender.entities.TestEntity;
 import com.totemdefender.input.InputHandler;
 import com.totemdefender.input.KeyboardEvent;
+import com.totemdefender.menu.Menu;
 import com.totemdefender.states.ResolutionTestState;
 import com.totemdefender.states.StateManager;
 import com.totemdefender.states.TestState;
@@ -16,6 +17,7 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -47,6 +49,7 @@ public class TotemDefender extends ApplicationAdapter {
 	private int					screenHeight;	
 	private SpriteBatch 		batch;	//Sprite batch for rendering
 	private ArrayList<Entity> 	entities; //List of spawned entities
+	private ArrayList<Menu> 	menus; //List of spawned entities
 	private StateManager		stateManager; //Controls game's states.
 	private World				world; //Box2d physics world.
 	private OrthographicCamera  camera; //Games camera
@@ -82,6 +85,7 @@ public class TotemDefender extends ApplicationAdapter {
 		menuMultiplexer = new InputMultiplexer();
 		inputHandler = new InputHandler(this);
 		viewport = new ExtendViewport(screenWidth, screenHeight, camera);
+		menus = new ArrayList<Menu>();
 		
 		inputMultiplexer.addProcessor(menuMultiplexer);
 		inputMultiplexer.addProcessor(inputHandler);
@@ -89,6 +93,9 @@ public class TotemDefender extends ApplicationAdapter {
 		
 		world.setContactListener(new ContactHandler());
 		
+		//Load resources
+		assetManager.load("cannon.png", Texture.class);
+		assetManager.finishLoading(); //Block until finished loading for now.
 		
 		////		DEBUG STUFF	 /////	
 		stateManager.attachState(new ResolutionTestState());	
@@ -120,13 +127,15 @@ public class TotemDefender extends ApplicationAdapter {
 			world.step(STEP, 8, 6);
 			stateManager.update();
 			
+			for(Menu menu : menus){
+				menu.update();
+			}
+			
 			//Update entities
 			for(Entity ent : entities){
 				ent.update();
 			}
 		}
-		
-		
 		
 		//Update batch projection incase it has changed
 		batch.setProjectionMatrix(camera.combined);
@@ -137,6 +146,13 @@ public class TotemDefender extends ApplicationAdapter {
 			ent.render(batch);
 		}
 		
+		batch.end();
+		
+		
+		batch.begin();
+		for(Menu menu : menus){
+			menu.render(batch);
+		}
 		batch.end();
 		
 		//Debug b2d rendering
@@ -156,7 +172,7 @@ public class TotemDefender extends ApplicationAdapter {
 	 * @return true if the entity is spawned and was added, false otherwise	 */
 	public boolean addEntity(Entity ent){
 		if(!ent.isSpawned()) return false;
-		
+
 		return entities.add(ent);
 	}
 	
@@ -235,5 +251,16 @@ public class TotemDefender extends ApplicationAdapter {
 
 	public int getScreenHeight() {
 		return screenHeight;
+	}
+	
+	public void addMenu(Menu menu){
+		menus.add(menu);
+		menuMultiplexer.addProcessor(menu);
+		System.out.println("Added menu");
+	}
+	
+	public void removeMenu(Menu menu){
+		menus.remove(menu);
+		menuMultiplexer.removeProcessor(menu);
 	}
 }

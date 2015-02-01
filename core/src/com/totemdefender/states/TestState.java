@@ -16,6 +16,7 @@ import com.totemdefender.TotemDefender;
 import com.totemdefender.entities.TestEntity;
 import com.totemdefender.entities.WeaponEntity;
 import com.totemdefender.input.KeyboardEvent;
+import com.totemdefender.menu.BuildMenu;
 
 public class TestState implements State {
 	int count = 0;
@@ -75,8 +76,20 @@ public class TestState implements State {
 		lastTime = System.currentTimeMillis();
 		
 		WeaponEntity weaponEnt = new WeaponEntity(new Player(1));
+		weaponEnt.setName("Weapon 1");
 		weaponEnt.spawn(game);
 		game.addEntity(weaponEnt);
+		
+		WeaponEntity weaponEnt2 = new WeaponEntity(new Player(2));
+		weaponEnt2.setName("Weapon 2");
+		weaponEnt2.spawn(game);
+		game.addEntity(weaponEnt2);
+		
+	
+		BuildMenu buildMenu = new BuildMenu(game);
+		game.addMenu(buildMenu);
+		buildMenu.show();
+		
 	}
 
 	@Override

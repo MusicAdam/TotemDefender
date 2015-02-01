@@ -1,5 +1,6 @@
 package com.totemdefender.menu;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
@@ -14,12 +15,10 @@ public class Button extends Component {
 		setSize(newSize); 
 		setPosition(newPosition);
 		setColor(newColor);
+		shapeMaker = new ShapeRenderer();
 	}
-
-	public void create()
-	{ shapeMaker = new ShapeRenderer(); }
 	
-	public void render() {
+	public void render(SpriteBatch batch) {
 		shapeMaker.begin(ShapeType.Filled);
 		shapeMaker.setColor(this.getColor());
 		shapeMaker.rect(this.getPosition().x, this.getPosition().y, this.getSize().x, this.getSize().y);

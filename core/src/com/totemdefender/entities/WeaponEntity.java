@@ -12,7 +12,7 @@ import com.totemdefender.TotemDefender;
 
 public class WeaponEntity extends Entity {	
 	
-	public static final float WEAPON_LOCATION = 1/3f; //The weapon will be this proportion away from the side of the screen.
+	public static final float WEAPON_LOCATION = 3/4f; //The weapon will be this proportion away from the side of the screen.
 	
 	public WeaponEntity(Player owner){
 		super(owner);
@@ -20,7 +20,8 @@ public class WeaponEntity extends Entity {
 
 	@Override
 	public void spawn(TotemDefender game) {
-		setSprite(new Sprite(new Texture(Gdx.files.internal("cannon.png"))));
+		Texture weaponTexture = game.getAssetManager().get("cannon.png", Texture.class);
+		setSprite(new Sprite(weaponTexture));
 		
 		float aspectRatio = getSprite().getWidth()/getSprite().getHeight(); //Get aspect ratio to maintain for scaling
 		float scale = 1/10f; //Relative to screen;
