@@ -32,7 +32,7 @@ public class ChargeMeter extends Component{
 			shapeRenderer.setColor(chargeBG);
 			shapeRenderer.rect(xPos - padding/2* flip, yPos, width * flip + padding* flip , height + padding);
 			shapeRenderer.setColor(chargeFG);
-			shapeRenderer.rect(xPos + padding/2* flip , yPos + padding/2, width * weapon.getCharge() * flip - padding/2, height);
+			shapeRenderer.rect(xPos + padding/2* flip , yPos + padding/2, width * weapon.getCharge() * flip - padding/2 * flip, height);
 			shapeRenderer.end();
 		}
 	}
