@@ -3,6 +3,7 @@ package com.totemdefender.states;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.totemdefender.TotemDefender;
+import com.totemdefender.menu.BuildMenu;
 
 
 public class BuildState implements State {
@@ -10,8 +11,8 @@ public class BuildState implements State {
 	
 	private StateManager statemanager;
 	private Timer timer;
-	private Task task;
 	private boolean exit=false;
+	private BuildMenu buildmenu;
 	
 	@Override
 	public boolean canEnter(TotemDefender game) {
@@ -20,7 +21,8 @@ public class BuildState implements State {
 	@Override
 	public void onEnter(final TotemDefender game) {
 		statemanager=game.getStateManager();
-		
+		buildmenu=new BuildMenu(game);
+		game.addMenu(buildmenu);
 		timer.scheduleTask(new Task(){
 			
 			public void run(){
@@ -32,6 +34,7 @@ public class BuildState implements State {
 	}
 	@Override
 	public void onExit(TotemDefender game) {
+		game.removeMenu(buildmenu);
 		statemanager.attachState(new BattleState());
 		
 	}
