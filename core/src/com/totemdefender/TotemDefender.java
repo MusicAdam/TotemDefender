@@ -60,6 +60,7 @@ public class TotemDefender extends ApplicationAdapter {
 	private InputMultiplexer	menuMultiplexer; //Menus will attach to this
 	private InputHandler		inputHandler; //Game controls will add listeners to this
 	private Viewport			viewport;	//Keep the game looking good at any aspect ratio
+	private ShapeRenderer		shapeRenderer;
 	
 	/** Control Variables */
 	private boolean isDoneBuilding;
@@ -90,6 +91,7 @@ public class TotemDefender extends ApplicationAdapter {
 		inputHandler = new InputHandler(this);
 		viewport = new ExtendViewport(screenWidth, screenHeight, camera);
 		menus = new ArrayList<Menu>();
+		shapeRenderer = new ShapeRenderer();
 		
 		inputMultiplexer.addProcessor(menuMultiplexer);
 		inputMultiplexer.addProcessor(inputHandler);
@@ -103,8 +105,8 @@ public class TotemDefender extends ApplicationAdapter {
 		
 		////		DEBUG STUFF	 /////	
 		//stateManager.attachState(new ResolutionTestState());	
-		stateManager.attachState(new TestState());		
-		//stateManager.attachState(new BattleState());
+		//stateManager.attachState(new TestState());		
+		stateManager.attachState(new BattleState());
 		//Add an exit function
 		inputHandler.addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, Input.Keys.ESCAPE){
 			@Override
@@ -137,27 +139,22 @@ public class TotemDefender extends ApplicationAdapter {
 			
 			//Update entities
 			for(Entity ent : entities){
-				ent.update();
+				ent.update(this);
 			}
 		}
 		
 		//Update batch projection incase it has changed
 		batch.setProjectionMatrix(camera.combined);
-		batch.begin();
+		shapeRenderer.setProjectionMatrix(camera.combined);
 		
 		//Render entities
 		for(Entity ent : entities){
 			ent.render(batch);
 		}
 		
-		batch.end();
-		
-		
-		batch.begin();
 		for(Menu menu : menus){
-			menu.render(batch);
+			menu.render(batch, shapeRenderer);
 		}
-		batch.end();
 		
 		//Debug b2d rendering
 		if(DEBUG){
@@ -260,7 +257,6 @@ public class TotemDefender extends ApplicationAdapter {
 	public void addMenu(Menu menu){
 		menus.add(menu);
 		menuMultiplexer.addProcessor(menu);
-		System.out.println("Added menu");
 	}
 	
 	public void removeMenu(Menu menu){

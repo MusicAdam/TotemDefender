@@ -9,15 +9,41 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
+import com.totemdefender.states.BattleState;
 
 public class WeaponEntity extends Entity {	
 	
 	public static final float WEAPON_LOCATION = 3/4f; //The weapon will be this proportion away from the side of the screen.
+	public static final float CHARGE_RATE = 1 * TotemDefender.STEP;     //Speed at which the charge meter increases
+	
+	private float charge = 0; //0 <= charge <= 1
 	
 	public WeaponEntity(Player owner){
 		super(owner);
 	}
+	
+	@Override
+	public void update(TotemDefender game){
+		super.update(game);
+		
+		for(BattleState state : game.getStateManager().getAttachedState(BattleState.class)){
+			if(state.spaceIsDown()){
+				if(charge < 1){
+					charge += CHARGE_RATE;
+				}
+			}else{
+				if(charge > 0){
+					charge -= CHARGE_RATE;
+				}
+			}
 
+			if(charge > 1)
+				charge = 1;
+			if(charge < 0)
+				charge = 0;
+		}
+	}
+	
 	@Override
 	public void spawn(TotemDefender game) {
 		Texture weaponTexture = game.getAssetManager().get("cannon.png", Texture.class);
@@ -54,6 +80,10 @@ public class WeaponEntity extends Entity {
 		
 		setBody(body);
 		isSpawned = true;
+	}
+	
+	public float getCharge(){
+		return charge;
 	}
 
 }

@@ -95,5 +95,15 @@ public class StateManager {
 		detachState(state, true);
 	}
 	
-	public ArrayList<State> getActiveStates(){ return null; }
+	public <T> ArrayList<T> getAttachedState(Class<T> t){ 
+		ArrayList<T> states = new ArrayList<T>();
+		
+		for(StateWrapper sw : attachedStates){
+			if(sw.state.getClass().equals(t)){
+				states.add((T) sw.state);
+			}
+		}
+		
+		return states;
+	}
 }

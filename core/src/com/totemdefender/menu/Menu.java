@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 //Base menu from which all other menus derive. Should provide the ability
 //to add Buttons and Text. Should have its own input processor which its component buttons will attach to. 
@@ -13,11 +14,11 @@ public class Menu implements InputProcessor{
 	private ArrayList<Component> cmpList = new ArrayList<Component>();
 	private boolean shouldRender;
 
-	public void render(SpriteBatch batch){
+	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer){
 		if(!shouldRender) return;
 		
 		for(Component cmp : cmpList){
-			cmp.render(batch);
+			cmp.render(batch, shapeRenderer);
 		}
 	}
 	
@@ -97,7 +98,7 @@ public class Menu implements InputProcessor{
 		return false;
 	}
 
-	public boolean isShouldRender() 
+	public boolean shouldRender() 
 	{ return shouldRender; }
 
 	public void setShouldRender(boolean shouldRender) 

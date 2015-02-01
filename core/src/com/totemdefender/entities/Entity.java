@@ -35,7 +35,7 @@ public abstract class Entity {
 		this.owner=owner;
 	}
 	
-	public void update(){
+	public void update(TotemDefender game){
 		//Sprite follows b2dBody if it exists
 		if(this.getBody()!=null && sprite != null){
 			float bodyX = body.getPosition().x * TotemDefender.BOX_TO_WORLD;
@@ -49,7 +49,9 @@ public abstract class Entity {
 	}
 	public void render(SpriteBatch batch){
 		if(sprite != null){
+			batch.begin();
 			sprite.draw(batch);
+			batch.end();
 		}
 	}
 	
@@ -60,12 +62,12 @@ public abstract class Entity {
 	}
 	
 	public Vector2 getPosition(){
-	return body.getPosition();	
+		return body.getPosition().scl(TotemDefender.BOX_TO_WORLD);
 	}
 	
 	public void setPosition(Vector2 position){
 		
-		position=body.getWorldVector(position);
+		position=body.getWorldVector(position.scl(TotemDefender.WORLD_TO_BOX));
 		body.setTransform(position,getRotation());
 		
 		

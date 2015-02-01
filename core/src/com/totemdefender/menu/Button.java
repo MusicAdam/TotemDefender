@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 
 public class Button extends Component {
-	ShapeRenderer shapeMaker;
 	private String label;
 	private Color color;
 	
@@ -15,14 +14,13 @@ public class Button extends Component {
 		setSize(newSize); 
 		setPosition(newPosition);
 		setColor(newColor);
-		shapeMaker = new ShapeRenderer();
 	}
 	
-	public void render(SpriteBatch batch) {
-		shapeMaker.begin(ShapeType.Filled);
-		shapeMaker.setColor(this.getColor());
-		shapeMaker.rect(this.getPosition().x, this.getPosition().y, this.getSize().x, this.getSize().y);
-		shapeMaker.end();
+	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer) {
+		shapeRenderer.begin(ShapeType.Filled);
+		shapeRenderer.setColor(this.getColor());
+		shapeRenderer.rect(this.getPosition().x, this.getPosition().y, this.getSize().x, this.getSize().y);
+		shapeRenderer.end();
 	}
 	
 	public boolean onButtonArea(int x, int y) {
