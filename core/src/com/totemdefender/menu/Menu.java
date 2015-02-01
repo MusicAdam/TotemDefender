@@ -1,15 +1,18 @@
 package com.totemdefender.menu;
 import java.util.ArrayList;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
 //Base menu from which all other menus derive. Should provide the ability
 //to add Buttons and Text. Should have its own input processor which its component buttons will attach to. 
 
 public class Menu implements InputProcessor{
-	
 	private ArrayList<Component> cmpList = new ArrayList<Component>();
 	private boolean shouldRender;
 
@@ -48,6 +51,12 @@ public class Menu implements InputProcessor{
 	//Removes a listener
 	public void removeListener(InputProcessor listener, ArrayList<InputProcessor> list)
 	{ list.remove(listener); }
+	
+	public boolean isShouldRender() 
+	{ return shouldRender; }
+
+	public void setShouldRender(boolean shouldRender) 
+	{ this.shouldRender = shouldRender; }
 
 	@Override
 	public boolean keyDown(int keycode) {
@@ -96,10 +105,4 @@ public class Menu implements InputProcessor{
 		// TODO Auto-generated method stub
 		return false;
 	}
-
-	public boolean isShouldRender() 
-	{ return shouldRender; }
-
-	public void setShouldRender(boolean shouldRender) 
-	{ this.shouldRender = shouldRender; }
 }

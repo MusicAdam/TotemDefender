@@ -9,49 +9,27 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 
-public class BuildPhase extends Menu implements ApplicationListener {
-	private int mainWindowSizeX = TotemDefender.V_WIDTH;
-	private int mainWindowSizeY = TotemDefender.V_HEIGHT;
-	private Vector2 buttonSize = new Vector2(75,50);
-	private ShapeRenderer shapeMaker;
-	private float topArea = mainWindowSizeY - buttonSize.y;
-		
-	private Button triangle = new Button("Triangle", buttonSize, new Vector2(0,topArea), Color.GREEN);
-	private Button square = new Button("Square", buttonSize, 
-			new Vector2(mainWindowSizeX - (buttonSize.x),topArea), Color.YELLOW);
-	private Button rect = new Button("Rectangle", buttonSize, 
-			new Vector2(mainWindowSizeX - (buttonSize.x * 2),topArea), Color.RED);
-	private Button ready = new Button("READY!", buttonSize, 
-			new Vector2((mainWindowSizeX - buttonSize.x),topArea), Color.CYAN);
+public class BuildPhase extends Menu {
+	private Button triangle;
+	private Button square;
+	private Button rect;
+	private Button ready;
 	
-	public BuildPhase() {
+	public BuildPhase(TotemDefender game) {
+		Vector2 buttonSize = new Vector2(new Vector2((game.getScreenWidth()/4), 50));
+		float topArea = (game.getScreenHeight() - buttonSize.y);
+		
+		triangle = new Button("Triangle", buttonSize, new Vector2(0,topArea), Color.GREEN);
+		square = new Button("Square", buttonSize, new Vector2(buttonSize.x, topArea), Color.YELLOW);
+		rect = new Button("Rectangle", buttonSize, new Vector2(buttonSize.x * 2,topArea), Color.RED);
+		ready = new Button("READY!", buttonSize, new Vector2((buttonSize.x * 3),topArea), Color.CYAN);
 		
 		this.addComponent(ready);
 		this.addComponent(triangle);
 		this.addComponent(square);
 		this.addComponent(rect);
 	};
-	
-	@Override
-	public void create() {
-		// TODO Auto-generated method stub
-		shapeMaker = new ShapeRenderer();
-	}
-	
-	@Override
-	public void render() {
-		// TODO Auto-generated method stub
-		
-		//GL Housekeeping
-		Gdx.gl.glClearColor(0.1f, 0.1f, 0.18f, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
-		triangle.render();
-		square.render();
-		rect.render();
-		ready.render();
-	}
-	
+
 	@Override
 	public boolean keyDown(int keycode) {
 		// TODO Auto-generated method stub
@@ -77,30 +55,6 @@ public class BuildPhase extends Menu implements ApplicationListener {
 			//position player shape to the up
 		}
 		return false;
-	}
-
-	@Override
-	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void pause() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void resume() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void dispose() {
-		// TODO Auto-generated method stub
-		
 	}
 
 }
