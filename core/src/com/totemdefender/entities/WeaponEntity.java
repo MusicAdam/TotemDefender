@@ -44,8 +44,6 @@ public class WeaponEntity extends Entity {
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer){
 		super.render(batch, shapeRenderer);
 		
-		//System.out.println( getPosition().add(barrelPos.cpy().add(fireDirection.cpy().scl(10))));
-		System.out.println(getPosition().add(barrelPos));
 		shapeRenderer.begin(ShapeType.Line);
 		shapeRenderer.circle(getPosition().x + barrelPos.x, getPosition().y + barrelPos.y, 5);
 		shapeRenderer.line(getPosition().x + barrelPos.x, getPosition().y + barrelPos.y, getPosition().x + barrelPos.x + fireDirection.x * 10, getPosition().y + barrelPos.y + fireDirection.y * 10);
