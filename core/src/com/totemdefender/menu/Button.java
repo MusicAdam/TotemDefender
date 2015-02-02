@@ -12,7 +12,6 @@ import com.badlogic.gdx.math.Vector2;
 public class Button extends Component {
 	private FreeTypeFontGenerator generator;
 	private FreeTypeFontParameter parameter;
-<<<<<<< HEAD
 	private BitmapFont bitMapFont; // font size 12 pixels
 =======
 	private BitmapFont bitMapFont;

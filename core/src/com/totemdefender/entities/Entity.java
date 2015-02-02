@@ -2,6 +2,7 @@ package com.totemdefender.entities;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
@@ -11,13 +12,16 @@ import com.totemdefender.TotemDefender;
 
 
 public abstract class Entity {
+	public static final short PLAYER1 	= 	0x0001;
+	public static final short PLAYER2 	= 	0x0002;
+	public static final short GROUND 	=	0x0004;
 	
 	public String name="Entity";
 	private Body body;
 	private Sprite sprite;
 	protected boolean isSpawned=false;
 	protected Player owner;
-
+	
 	public Entity(){
 		
 	}
@@ -47,7 +51,7 @@ public abstract class Entity {
 		}
 		
 	}
-	public void render(SpriteBatch batch){
+	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer){
 		if(sprite != null){
 			batch.begin();
 			sprite.draw(batch);

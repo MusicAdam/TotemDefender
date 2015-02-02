@@ -23,6 +23,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
@@ -46,9 +47,10 @@ public class TotemDefender extends ApplicationAdapter {
 	public static final boolean DEBUG				= true;		//Debug rendering and output when true 
 
 	/** Instance variables */
+	private static TotemDefender game;
 	private int					screenWidth;
 	private int					screenHeight;	
-	private SpriteBatch 		batch;	//Sprite batch for rendering
+	private SpriteBatch 		entityBatch;	//Sprite batch for rendering
 	private ArrayList<Entity> 	entities; //List of spawned entities
 	private ArrayList<Menu> 	menus; //List of spawned entities
 	private StateManager		stateManager; //Controls game's states.
@@ -60,8 +62,11 @@ public class TotemDefender extends ApplicationAdapter {
 	private InputMultiplexer	menuMultiplexer; //Menus will attach to this
 	private InputHandler		inputHandler; //Game controls will add listeners to this
 	private Viewport			viewport;	//Keep the game looking good at any aspect ratio
-	private ShapeRenderer		shapeRenderer; //This is for menus and is therefore not not transformed by cam matrix
+	private ShapeRenderer		menuRenderer; //This is for menus and is therefore not not transformed by cam matrix
+	private ShapeRenderer		entityRenderer;
 	private SpriteBatch 		menuBatch; // ""			""
+	private Player				player1;
+	private Player				player2;
 	
 	/** Control Variables */
 	private boolean isDoneBuilding;
@@ -72,7 +77,8 @@ public class TotemDefender extends ApplicationAdapter {
 	@Override
 	public void create () {
 		//Initialize
-
+		game = this;
+		
 		//Set virtual size aspect ratio to the desktop's aspect ratio.
 		//Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode());
 		//screenWidth = Gdx.graphics.getWidth();
@@ -80,7 +86,7 @@ public class TotemDefender extends ApplicationAdapter {
 		screenWidth = 400;
 		screenHeight = 400;
 		
-		batch  = new SpriteBatch();
+		entityBatch  = new SpriteBatch();
 		camera = new OrthographicCamera(screenWidth, screenHeight);
 		camera.update();
 		world  = new World(GRAVITY, true);	
@@ -93,7 +99,8 @@ public class TotemDefender extends ApplicationAdapter {
 		inputHandler = new InputHandler(this);
 		viewport = new ExtendViewport(screenWidth, screenHeight, camera);
 		menus = new ArrayList<Menu>();
-		shapeRenderer = new ShapeRenderer();
+		menuRenderer = new ShapeRenderer();
+		entityRenderer = new ShapeRenderer();
 		menuBatch = new SpriteBatch();
 		
 		inputMultiplexer.addProcessor(menuMultiplexer);
@@ -107,9 +114,15 @@ public class TotemDefender extends ApplicationAdapter {
 		assetManager.finishLoading(); //Block until finished loading for now.
 		
 		////		DEBUG STUFF	 /////	
+<<<<<<< HEAD
 		//stateManager.attachState(new ResolutionTestState());
 		stateManager.attachState(new TestState());		
 		//stateManager.attachState(new BattleState());
+=======
+		//stateManager.attachState(new ResolutionTestState());	
+		//stateManager.attachState(new TestState());		
+		stateManager.attachState(new BattleState());
+>>>>>>> ce21ed1d2d7041f9ac64f13d3d20222aa1f7961d
 		//Add an exit function
 		inputHandler.addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, Input.Keys.ESCAPE){
 			@Override
@@ -118,6 +131,7 @@ public class TotemDefender extends ApplicationAdapter {
 				return true;
 			}
 		});
+		
 	}
 
 	@Override
@@ -147,15 +161,18 @@ public class TotemDefender extends ApplicationAdapter {
 		}
 		
 		//Update batch projection incase it has changed
-		batch.setProjectionMatrix(camera.combined);
+		entityBatch.setProjectionMatrix(camera.combined);
+		entityRenderer.setProjectionMatrix(camera.combined);
+		entityBatch.enableBlending();
+		menuBatch.enableBlending();
 		
 		//Render entities
 		for(Entity ent : entities){
-			ent.render(batch);
+			ent.render(entityBatch, entityRenderer);
 		}
 		
 		for(Menu menu : menus){
-			menu.render(menuBatch, shapeRenderer);
+			menu.render(menuBatch, menuRenderer);
 		}
 		
 		//Debug b2d rendering
@@ -278,4 +295,40 @@ public class TotemDefender extends ApplicationAdapter {
 	 * @param toggle boolean indicating whether both players have finished building
 	 */
 	public void setDoneBuilding(boolean toggle){ isDoneBuilding = toggle; }
+	
+	/**
+	 * 
+	 * @param world coordinates
+	 * @return screen coordinates 
+	 */
+	public Vector2 worldToScreen(Vector2 world){
+		Vector3 world3 = new Vector3(world.x, world.y, 0);
+		Vector3 screen3 = camera.project(world3);
+		return new Vector2(screen3.x, screen3.y);
+	}
+	
+	/**
+	 * 
+	 * @return static game reference
+	 */
+	public static TotemDefender Get(){
+		return game;
+	}
+	
+	/**
+	 * Shortcut to enable alpha channel for shaperenderer
+	 */
+	public static void EnableBlend(){
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+	    Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+	}
+	
+	public static void DisableBlend(){
+		Gdx.gl.glDisable(GL20.GL_BLEND);		
+	}
+	
+	public Player getPlayer1(){ return player1; }
+	public Player getPlayer2(){ return player2; }
+	public void setPlayer1(Player pl){ player1 = pl; }
+	public void setPlayer2(Player pl){ player2 = pl; }
 }
