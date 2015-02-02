@@ -12,7 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 public class Button extends Component {
 	private FreeTypeFontGenerator generator;
 	private FreeTypeFontParameter parameter;
-	private BitmapFont bitMapFont = generator.generateFont(parameter); // font size 12 pixels
+	private BitmapFont bitMapFont; // font size 12 pixels
 	private Vector2 textPosition;
 	
 	private ShapeRenderer shapeMaker;
@@ -21,8 +21,8 @@ public class Button extends Component {
 	
 	//gdx.files.internal("C/Windows/Fonts/Consolas")
 	public Button(String newLabel, Vector2 newSize, Vector2 newPosition, Color newColor) {
-		generator = new FreeTypeFontGenerator(Gdx.files.internal("assets/consola.ttf"));
-		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
+		generator = new FreeTypeFontGenerator(Gdx.files.internal("consola.ttf"));
+		parameter = new FreeTypeFontParameter();
 		parameter.size = 12;
 		bitMapFont = generator.generateFont(parameter); // font size 12 pixels
 		

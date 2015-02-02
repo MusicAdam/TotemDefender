@@ -36,6 +36,7 @@ public class TestState implements State {
 		//Make the ground
 		float hw = Gdx.graphics.getWidth() / 2;
 		float hh = 10;
+		
 		BodyDef groundDef = new BodyDef();
 		groundDef.type = BodyType.StaticBody;
 		groundDef.position.set(0, -Gdx.graphics.getHeight()/2 * TotemDefender.WORLD_TO_BOX + ((hh + 1) * TotemDefender.WORLD_TO_BOX));
