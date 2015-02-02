@@ -19,12 +19,11 @@ public class Button extends Component {
 	private String label;
 	private Color color;
 	
-	//gdx.files.internal("C/Windows/Fonts/Consolas")
 	public Button(String newLabel, Vector2 newSize, Vector2 newPosition, Color newColor) {
 		generator = new FreeTypeFontGenerator(Gdx.files.internal("consola.ttf"));
 		parameter = new FreeTypeFontParameter();
 		parameter.size = 12;
-		bitMapFont = generator.generateFont(parameter); // font size 12 pixels
+		bitMapFont = generator.generateFont(parameter);
 		
 		setLabel(newLabel);
 		setSize(newSize); 
@@ -37,6 +36,7 @@ public class Button extends Component {
 	
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer) {
 		batch.begin();
+			bitMapFont.setColor(Color.BLACK);
 			bitMapFont.draw(batch, label, textPosition.x, textPosition.y);;
 		batch.end();
 	
