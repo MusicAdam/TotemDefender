@@ -60,7 +60,8 @@ public class TotemDefender extends ApplicationAdapter {
 	private InputMultiplexer	menuMultiplexer; //Menus will attach to this
 	private InputHandler		inputHandler; //Game controls will add listeners to this
 	private Viewport			viewport;	//Keep the game looking good at any aspect ratio
-	private ShapeRenderer		shapeRenderer;
+	private ShapeRenderer		shapeRenderer; //This is for menus and is therefore not not transformed by cam matrix
+	private SpriteBatch 		menuBatch; // ""			""
 	
 	/** Control Variables */
 	private boolean isDoneBuilding;
@@ -92,6 +93,7 @@ public class TotemDefender extends ApplicationAdapter {
 		viewport = new ExtendViewport(screenWidth, screenHeight, camera);
 		menus = new ArrayList<Menu>();
 		shapeRenderer = new ShapeRenderer();
+		menuBatch = new SpriteBatch();
 		
 		inputMultiplexer.addProcessor(menuMultiplexer);
 		inputMultiplexer.addProcessor(inputHandler);
@@ -145,7 +147,6 @@ public class TotemDefender extends ApplicationAdapter {
 		
 		//Update batch projection incase it has changed
 		batch.setProjectionMatrix(camera.combined);
-		shapeRenderer.setProjectionMatrix(camera.combined);
 		
 		//Render entities
 		for(Entity ent : entities){
@@ -153,13 +154,16 @@ public class TotemDefender extends ApplicationAdapter {
 		}
 		
 		for(Menu menu : menus){
-			menu.render(batch, shapeRenderer);
+			menu.render(menuBatch, shapeRenderer);
 		}
 		
 		//Debug b2d rendering
 		if(DEBUG){
 			b2dRenderer.render(world, camera.combined.cpy().scl(BOX_TO_WORLD));
 		}
+		
+		camera.translate(1f, 0);
+		camera.update();
 	}
 	
 	@Override
