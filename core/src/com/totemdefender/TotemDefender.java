@@ -162,7 +162,6 @@ public class TotemDefender extends ApplicationAdapter {
 			b2dRenderer.render(world, camera.combined.cpy().scl(BOX_TO_WORLD));
 		}
 		
-		camera.translate(1f, 0);
 		camera.update();
 	}
 	
