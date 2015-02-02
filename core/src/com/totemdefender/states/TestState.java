@@ -85,7 +85,6 @@ public class TestState implements State {
 		weaponEnt2.spawn(game);
 		game.addEntity(weaponEnt2);
 		
-	
 		BuildMenu buildMenu = new BuildMenu(game);
 		game.addMenu(buildMenu);
 		buildMenu.show();
