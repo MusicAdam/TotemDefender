@@ -80,9 +80,9 @@ public class TotemDefender extends ApplicationAdapter {
 		game = this;
 		
 		//Set virtual size aspect ratio to the desktop's aspect ratio.
-		//Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode());
-		//screenWidth = Gdx.graphics.getWidth();
-		//screenHeight = Gdx.graphics.getHeight();
+		Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode());
+		screenWidth = Gdx.graphics.getWidth();
+		screenHeight = Gdx.graphics.getHeight();
 		screenWidth = 400;
 		screenHeight = 400;
 		
@@ -113,7 +113,7 @@ public class TotemDefender extends ApplicationAdapter {
 		assetManager.load("cannon.png", Texture.class);
 		assetManager.finishLoading(); //Block until finished loading for now.
 		
-		////		DEBUG STUFF	 /////	
+		////		DEBUG STUFF	 /////	 
 		//stateManager.attachState(new ResolutionTestState());	
 		//stateManager.attachState(new TestState());		
 		stateManager.attachState(new BattleState());

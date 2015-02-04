@@ -13,9 +13,6 @@ public class Button extends Component {
 	private FreeTypeFontGenerator generator;
 	private FreeTypeFontParameter parameter;
 	private BitmapFont bitMapFont; // font size 12 pixels
-=======
-	private BitmapFont bitMapFont;
->>>>>>> 3d3d30956b3221f31d4a1bc1e389de01c650fd24
 	private Vector2 textPosition;
 	
 	private ShapeRenderer shapeMaker;
@@ -24,11 +21,7 @@ public class Button extends Component {
 	
 	public Button(String newLabel, Vector2 newSize, Vector2 newPosition, Color newColor) {
 		generator = new FreeTypeFontGenerator(Gdx.files.internal("consola.ttf"));
-<<<<<<< HEAD
 		parameter = new FreeTypeFontParameter();
-=======
-		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
->>>>>>> 3d3d30956b3221f31d4a1bc1e389de01c650fd24
 		parameter.size = 12;
 		bitMapFont = generator.generateFont(parameter);
 		
@@ -41,16 +34,7 @@ public class Button extends Component {
 		shapeMaker = new ShapeRenderer();
 	}
 	
-<<<<<<< HEAD
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer) {
-		batch.begin();
-			bitMapFont.setColor(Color.BLACK);
-			bitMapFont.draw(batch, label, textPosition.x, textPosition.y);;
-		batch.end();
-	
-=======
-	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer) {	
->>>>>>> 3d3d30956b3221f31d4a1bc1e389de01c650fd24
 		shapeRenderer.begin(ShapeType.Filled);
 		shapeRenderer.setColor(this.getColor());
 		shapeRenderer.rect(this.getPosition().x, this.getPosition().y, this.getSize().x, this.getSize().y);
