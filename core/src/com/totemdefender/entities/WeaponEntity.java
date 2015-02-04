@@ -38,6 +38,10 @@ public class WeaponEntity extends Entity {
 		barrelPos = new Vector2(50, 25);
 		fireDirection = new Vector2(.5f, .4f);
 		fireDirection.nor();
+		if(owner.getID() == 2){
+			fireDirection.x *= -1;
+			barrelPos.x *= -1;
+		}
 	}
 	
 	@Override
