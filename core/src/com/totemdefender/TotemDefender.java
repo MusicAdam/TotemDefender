@@ -80,11 +80,9 @@ public class TotemDefender extends ApplicationAdapter {
 		game = this;
 		
 		//Set virtual size aspect ratio to the desktop's aspect ratio.
-		Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode());
+		//Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode());
 		screenWidth = Gdx.graphics.getWidth();
 		screenHeight = Gdx.graphics.getHeight();
-		screenWidth = 400;
-		screenHeight = 400;
 		
 		entityBatch  = new SpriteBatch();
 		camera = new OrthographicCamera(screenWidth, screenHeight);
