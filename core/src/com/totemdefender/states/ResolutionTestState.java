@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.totemdefender.TotemDefender;
+import com.totemdefender.menu.BuildMenu;
 
 public class ResolutionTestState implements State {
 	ShapeRenderer shapeRenderer;
@@ -52,6 +53,7 @@ public class ResolutionTestState implements State {
 		shapeRenderer.circle(0, 0, radius); //Center
 		shapeRenderer.line(0, topLeft.y, 0, bottomLeft.y);
 		shapeRenderer.end();
+		
 	}
 
 }

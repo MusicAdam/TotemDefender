@@ -12,18 +12,29 @@ import com.badlogic.gdx.math.Vector2;
 public class Button extends Component {
 	private FreeTypeFontGenerator generator;
 	private FreeTypeFontParameter parameter;
+<<<<<<< HEAD
 	private BitmapFont bitMapFont;
 	private Vector2 textPosition;
 	
 	ShapeRenderer shapeMaker;
+=======
+	private BitmapFont bitMapFont; // font size 12 pixels
+	private Vector2 textPosition;
+	
+	private ShapeRenderer shapeMaker;
+>>>>>>> 0995bd857380be7665d0fcc23440b2044287cb55
 	private String label;
 	private Color color;
 	
 	public Button(String newLabel, Vector2 newSize, Vector2 newPosition, Color newColor) {
 		generator = new FreeTypeFontGenerator(Gdx.files.internal("consola.ttf"));
+<<<<<<< HEAD
 		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
+=======
+		parameter = new FreeTypeFontParameter();
+>>>>>>> 0995bd857380be7665d0fcc23440b2044287cb55
 		parameter.size = 12;
-		bitMapFont = generator.generateFont(parameter); // font size 12 pixels
+		bitMapFont = generator.generateFont(parameter);
 		
 		setLabel(newLabel);
 		setSize(newSize); 
@@ -34,6 +45,7 @@ public class Button extends Component {
 		shapeMaker = new ShapeRenderer();
 	}
 	
+<<<<<<< HEAD
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer) {	
 		batch.begin();
 			bitMapFont.draw(batch, label, textPosition.x, textPosition.y);;
@@ -43,6 +55,17 @@ public class Button extends Component {
 		shapeRenderer.setColor(this.getColor());
 		shapeRenderer.rect(this.getPosition().x, this.getPosition().y, this.getSize().x, this.getSize().y);
 		shapeRenderer.end();
+=======
+	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer) {
+		shapeRenderer.begin(ShapeType.Filled);
+		shapeRenderer.setColor(this.getColor());
+		shapeRenderer.rect(this.getPosition().x, this.getPosition().y, this.getSize().x, this.getSize().y);
+		shapeRenderer.end();
+		
+		batch.begin();
+			bitMapFont.draw(batch, label, textPosition.x, textPosition.y);;
+		batch.end();
+>>>>>>> 0995bd857380be7665d0fcc23440b2044287cb55
 	}
 	
 	public void dispose() {

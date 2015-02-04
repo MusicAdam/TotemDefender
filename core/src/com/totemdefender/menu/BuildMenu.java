@@ -30,31 +30,4 @@ public class BuildMenu extends Menu {
 		this.addComponent(rect);
 	};
 
-	@Override
-	public boolean keyDown(int keycode) {
-		// TODO Auto-generated method stub
-		switch(keycode) {
-		//player 1
-		case Input.Keys.A:
-			//position player shape to the left
-		case Input.Keys.D:
-			//position player shape to the right
-		case Input.Keys.S:
-			//position player shape to the down
-		case Input.Keys.W:
-			//position player shape to the up
-		
-		//player 2
-		case Input.Keys.LEFT:
-			//position player shape to the left
-		case Input.Keys.RIGHT:
-			//position player shape to the right
-		case Input.Keys.DOWN:
-			//position player shape to the bottom
-		case Input.Keys.UP:
-			//position player shape to the up
-		}
-		return false;
-	}
-
 }
