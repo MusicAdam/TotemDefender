@@ -114,15 +114,9 @@ public class TotemDefender extends ApplicationAdapter {
 		assetManager.finishLoading(); //Block until finished loading for now.
 		
 		////		DEBUG STUFF	 /////	
-<<<<<<< HEAD
-		//stateManager.attachState(new ResolutionTestState());
-		stateManager.attachState(new TestState());		
-		//stateManager.attachState(new BattleState());
-=======
 		//stateManager.attachState(new ResolutionTestState());	
 		//stateManager.attachState(new TestState());		
 		stateManager.attachState(new BattleState());
->>>>>>> ce21ed1d2d7041f9ac64f13d3d20222aa1f7961d
 		//Add an exit function
 		inputHandler.addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, Input.Keys.ESCAPE){
 			@Override
