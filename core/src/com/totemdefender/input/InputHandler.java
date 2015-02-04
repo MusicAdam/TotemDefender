@@ -17,17 +17,17 @@ public class InputHandler implements InputProcessor{
 	/**
 	 * Default key bindings
 	 */
-	private int PL_1_L 		= Input.Keys.A;
-	private int PL_1_U 		= Input.Keys.W;
-	private int PL_1_R 		= Input.Keys.D;
-	private int PL_1_D 		= Input.Keys.S;
-	private int PL_1_SELECT = Input.Keys.SHIFT_LEFT; 
-	private int CHARGE_SHOT = Input.Keys.SPACE;
-	private int PL_2_L		= Input.Keys.J;
-	private int PL_2_U		= Input.Keys.I;
-	private int PL_2_R 		= Input.Keys.L;
-	private int PL_2_D		= Input.Keys.K;
-	private int PL_2_SELECT = Input.Keys.SHIFT_RIGHT;
+	public static int PL_1_L 		= Input.Keys.A;
+	public static int PL_1_U 		= Input.Keys.W;
+	public static int PL_1_R 		= Input.Keys.D;
+	public static int PL_1_D 		= Input.Keys.S;
+	public static int PL_1_SELECT = Input.Keys.SHIFT_LEFT; 
+	public static int CHARGE_SHOT = Input.Keys.SPACE;
+	public static int PL_2_L		= Input.Keys.J;
+	public static int PL_2_U		= Input.Keys.I;
+	public static int PL_2_R 		= Input.Keys.L;
+	public static int PL_2_D		= Input.Keys.K;
+	public static int PL_2_SELECT = Input.Keys.SHIFT_RIGHT;
 	
 	private ArrayList<KeyboardEvent> keyboardListeners;
 	private ArrayList<MouseEvent> mouseListeners;

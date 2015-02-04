@@ -66,13 +66,23 @@ public abstract class Entity {
 	}
 	
 	public Vector2 getPosition(){
-		return body.getPosition().scl(TotemDefender.BOX_TO_WORLD);
+		if(body != null){
+			return body.getPosition().scl(TotemDefender.BOX_TO_WORLD);
+		}else if(sprite != null){
+			return new Vector2(sprite.getX(), sprite.getY());
+		}
+		
+		return new Vector2();
 	}
 	
 	public void setPosition(Vector2 position){
+		if(body != null){
+			position=body.getWorldVector(position.scl(TotemDefender.WORLD_TO_BOX));
+			body.setTransform(position,getRotation());
+		}else if(sprite != null){
+			sprite.setPosition(position.x, position.y);
+		}
 		
-		position=body.getWorldVector(position.scl(TotemDefender.WORLD_TO_BOX));
-		body.setTransform(position,getRotation());
 		
 		
 	}

@@ -80,7 +80,7 @@ public class TotemDefender extends ApplicationAdapter {
 		game = this;
 		
 		//Set virtual size aspect ratio to the desktop's aspect ratio.
-		//Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode());
+		Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode());
 		screenWidth = Gdx.graphics.getWidth();
 		screenHeight = Gdx.graphics.getHeight();
 		
@@ -113,8 +113,8 @@ public class TotemDefender extends ApplicationAdapter {
 		
 		////		DEBUG STUFF	 /////	 
 		//stateManager.attachState(new ResolutionTestState());	
-		//stateManager.attachState(new TestState());		
-		stateManager.attachState(new BattleState());
+		stateManager.attachState(new TestState());		
+		//stateManager.attachState(new BattleState());
 		//Add an exit function
 		inputHandler.addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, Input.Keys.ESCAPE){
 			@Override
