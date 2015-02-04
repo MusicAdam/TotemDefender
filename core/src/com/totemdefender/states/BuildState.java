@@ -16,7 +16,7 @@ public class BuildState implements State {
 	
 	@Override
 	public boolean canEnter(TotemDefender game) {
-		return false;
+		return true;
 	}
 	@Override
 	public void onEnter(final TotemDefender game) {
@@ -45,10 +45,7 @@ public class BuildState implements State {
 	}
 	@Override
 	public void update(TotemDefender game) {
-		statemanager.detachState(this,canExit(game));
-		if(canExit(game)){
-			onExit(game);
-		}//end of if statement
+		
 		
 	}//end of update function
 }//end of class
