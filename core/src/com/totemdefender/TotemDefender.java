@@ -47,6 +47,7 @@ public class TotemDefender extends ApplicationAdapter {
 	public static final int 	VELOCITY_ITERATIONS = 8; 		//Velocity iterations for box2d
 	public static final boolean DEBUG				= true;		//Debug rendering and output when true 
 	public static final float	BLOCK_SIZE			= 30f;     //The default size of a block
+	public static final float 	STACK_LOCATION	 	= 3/4f; 	//The "stack" (player's weapon, pedastal, and build area) will be this proportion away from the center of the screen.
 
 	/** Instance variables */
 	private static TotemDefender game;

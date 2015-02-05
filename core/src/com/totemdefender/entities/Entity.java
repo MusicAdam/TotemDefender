@@ -47,7 +47,7 @@ public abstract class Entity {
 			float spriteHW = (sprite.getWidth() * sprite.getScaleX()) /2;
 			float spriteHH = (sprite.getHeight() * sprite.getScaleY()) /2;
 			sprite.setPosition(bodyX - spriteHW, bodyY - spriteHH);
-			sprite.setRotation(body.getAngle());
+			sprite.setRotation((float)Math.toDegrees(body.getAngle()));
 		}
 		
 	}
@@ -77,7 +77,7 @@ public abstract class Entity {
 	
 	public void setPosition(Vector2 position){
 		if(body != null){
-			position=body.getWorldVector(position.scl(TotemDefender.WORLD_TO_BOX));
+			position.scl(TotemDefender.WORLD_TO_BOX);
 			body.setTransform(position,getRotation());
 		}else if(sprite != null){
 			sprite.setPosition(position.x, position.y);
@@ -109,16 +109,10 @@ public abstract class Entity {
 		body.setTransform(getPosition().scl(TotemDefender.WORLD_TO_BOX),rotation);
 	}
 	
+	/*
 	public void rotateAround(float rotation, Vector2 point){
 		if(body != null){
-			float rad = (float)Math.toRadians(rotation);
-			Vector2 pos = body.getPosition().scl(TotemDefender.BOX_TO_WORLD);
-			
-			pos.sub(point);
-			pos.rotate(rotation);
-			pos.add(point);			
-			setPosition(pos);
-			
+			float rad = (float)Math.toRadians(rotation);		
 			setRotation(getBody().getAngle() + rad);
 		}
 		/*
@@ -127,8 +121,7 @@ public abstract class Entity {
 			sprite.rotate(rotation);
 			sprite.setPosition(sprite.getX() + point.x, sprite.getY() + point.y);
 		}
-		*/
-	}
+	}*/
 	
 	public void setSprite(Sprite sprite){
 		this.sprite=sprite;

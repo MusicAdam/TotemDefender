@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.totemdefender.CollisionListener;
+import com.totemdefender.Level;
 import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.entities.TestEntity;
@@ -76,17 +77,9 @@ public class TestState implements State {
 		
 		lastTime = System.currentTimeMillis();
 		
-		WeaponEntity weaponEnt = new WeaponEntity(new Player(1));
-		weaponEnt.setName("Weapon 1");
-		weaponEnt.spawn(game);
-		game.addEntity(weaponEnt);
+		Level level = new Level(game);
 		
-		WeaponEntity weaponEnt2 = new WeaponEntity(new Player(2));
-		weaponEnt2.setName("Weapon 2");
-		weaponEnt2.spawn(game);
-		game.addEntity(weaponEnt2);
-		
-		BuildMenu buildMenu = new BuildMenu(game);
+		BuildMenu buildMenu = new BuildMenu(game, level);
 		game.addMenu(buildMenu);
 		buildMenu.show();
 		

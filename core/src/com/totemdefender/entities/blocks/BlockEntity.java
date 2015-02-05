@@ -13,6 +13,7 @@ public abstract class BlockEntity extends Entity{
 	protected float cost;
 	protected float xScale, yScale; //This is the scale of the block in multiples of TotemDefender.BlockSize in each direction
 	private Fixture fixture;
+	private boolean rotated = false;
 	
 	public BlockEntity(Player owner, float cost, float xScale, float yScale){
 		super(owner);
@@ -62,9 +63,28 @@ public abstract class BlockEntity extends Entity{
 		this.cost = amount;
 	}
 	
+	public void rotate(){
+		float rad = (float)Math.toRadians(90);		
+		if(rotated){
+			setRotation(getBody().getAngle() - rad);
+			rotated = false;
+		}else{
+			rotated = true;
+			setRotation(getBody().getAngle() + rad);			
+		}
+	}
+	
 	public float getCost(){ return cost; }
 	public float getXScale(){ return xScale; }
 	public float getYScale(){ return yScale; }
-	public float getWidth(){ return xScale * TotemDefender.BLOCK_SIZE; }
-	public float getHeight(){ return yScale * TotemDefender.BLOCK_SIZE; }
+	public float getWidth(){ 
+		if(!rotated)
+			return xScale * TotemDefender.BLOCK_SIZE; 
+		return yScale * TotemDefender.BLOCK_SIZE;
+	}
+	public float getHeight(){ 
+		if(!rotated)
+			return yScale * TotemDefender.BLOCK_SIZE; 
+		return xScale * TotemDefender.BLOCK_SIZE;
+	}
 }

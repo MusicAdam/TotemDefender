@@ -23,8 +23,8 @@ public class HUD extends Menu{
 		this.game = game;
 		this.battleState = battleState;
 		
-		weapon1ChargeMeter = new ChargeMeter(battleState.getWeapon1());
-		weapon2ChargeMeter = new ChargeMeter(battleState.getWeapon2());
+		weapon1ChargeMeter = new ChargeMeter(battleState.getLevel().getPlayer1Weapon());
+		weapon2ChargeMeter = new ChargeMeter(battleState.getLevel().getPlayer2Weapon());
 		
 		addComponent(weapon1ChargeMeter);
 		addComponent(weapon2ChargeMeter);

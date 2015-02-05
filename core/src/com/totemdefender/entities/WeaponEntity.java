@@ -20,7 +20,6 @@ import com.totemdefender.states.BattleState;
 public class WeaponEntity extends Entity {	
 	
 	public static final boolean DEBUG_RENDER = true; //Renders debug positioning elements for the weapon
-	public static final float WEAPON_LOCATION = 3/4f; //The weapon will be this proportion away from the side of the screen.
 	public static final float CHARGE_RATE = 1/1000f;     //Speed at which the charge meter increases
 	public static final float ROTATION = 1f;  //Degrees the weapon will rotate
 	public static final float VELOCITY = 1000f;
@@ -115,7 +114,7 @@ public class WeaponEntity extends Entity {
 		
 		float hw = getSprite().getWidth()/2;
 		float hh = getSprite().getHeight()/2;
-		float xPos = (-game.getScreenWidth()/2) * WEAPON_LOCATION;
+		float xPos = (-game.getScreenWidth()/2) * TotemDefender.STACK_LOCATION;
 		float yPos = -game.getScreenHeight()/2 + 20; //20 is hardcoded ground size
 		
 		if(owner.getID() == 2){

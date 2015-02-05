@@ -16,16 +16,15 @@ public class Grid extends Component {
 	
 	private BlockEntity entity; 	//The entity being positioned.
 	private Vector2 index; 			//The current position in the grid.
-	private Vector2 position;  	//The origin of the grid (bottom left)
 	
 	public Grid(){
-		position = new Vector2(100, 100);
+		this.position = new Vector2();
 		index = new Vector2(WIDTH/2, HEIGHT/2);
 	}
 	
 	@Override
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer) {
-		if(entity == null) return;
+		if(!hasEntity()) return; 
 		
 		TotemDefender.EnableBlend();
 		shapeRenderer.begin(ShapeType.Line);
@@ -51,53 +50,79 @@ public class Grid extends Component {
 		TotemDefender.DisableBlend();
 	}
 	
+	public float getWidth(){
+		return WIDTH * TotemDefender.BLOCK_SIZE;
+	}
+	
+	public float getHeight(){
+		return HEIGHT * TotemDefender.BLOCK_SIZE;
+	}
+	
 	public void setEntity(BlockEntity entity){
 		this.entity = entity;
 		snapEntityToGrid();
 	}
 	
-	public void indexLeft(){
+	public BlockEntity getEntity(){
+		return entity;
+	}
+	
+	public boolean hasEntity(){
+		return !(entity == null);
+	}
+	
+	public void shiftIndexLeft(){
+		if(!hasEntity()) return; 
+		
 		if(index.x != 0){
 			index.x -= 1;
 			snapEntityToGrid();
 		}
 	}
 	
-	public void indexRight(){
+	public void shiftIndexRight(){
+		if(!hasEntity()) return; 
+		
 		if(index.x != WIDTH - 1){
 			index.x += 1;
 			snapEntityToGrid();
 		}
 	}
 	
-	public void indexUp(){
+	public void shiftIndexUp(){
+		if(!hasEntity()) return; 
+		
 		if(index.y != HEIGHT - 1){
 			index.y += 1;
 			snapEntityToGrid();
 		}
 	}
 	
-	public void indexDown(){
+	public void shiftIndexDown(){
+		if(!hasEntity()) return; 
+		
 		if(index.y != 0){
 			index.y -= 1;
 			snapEntityToGrid();
 		}
 	}
 	
-	public void rotate(){
-		TotemDefender game = TotemDefender.Get();
-		Vector2 screenOffset = new Vector2(game.getScreenWidth()/2, game.getScreenHeight()/2);
-		entity.rotateAround(90, getIndexPosition().add(screenOffset));
+	public void rotateEntity(){
+		if(!hasEntity()) return; 
+		
+		entity.rotate();
 		snapEntityToGrid();
 	}
 	
 	public void snapEntityToGrid(){
+		if(!hasEntity()) return; 
+		
 		TotemDefender game = TotemDefender.Get();
 		Vector2 screenOffset = new Vector2(-game.getScreenWidth()/2, -game.getScreenHeight()/2);
 		Vector2 screenCoordinates = new Vector2(position.x + (index.x * TotemDefender.BLOCK_SIZE), position.y + (index.y * TotemDefender.BLOCK_SIZE));
 		screenCoordinates.sub(-entity.getWidth()/2, -entity.getHeight()/2);
 		screenCoordinates.add(screenOffset);
-		entity.setPosition(screenCoordinates);		
+		entity.setPosition(screenCoordinates);	
 	}
 	
 	public Vector2 getIndexPosition(){
