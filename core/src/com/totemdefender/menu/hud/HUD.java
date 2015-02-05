@@ -4,8 +4,10 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.entities.WeaponEntity;
+import com.totemdefender.entities.blocks.SquareBlockEntity;
 import com.totemdefender.menu.Menu;
 import com.totemdefender.states.BattleState;
 
@@ -15,6 +17,7 @@ public class HUD extends Menu{
 	
 	ChargeMeter weapon1ChargeMeter;
 	ChargeMeter weapon2ChargeMeter;
+	Grid grid;
 	
 	public HUD(TotemDefender game, BattleState battleState){
 		this.game = game;

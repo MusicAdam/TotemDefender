@@ -10,6 +10,7 @@ import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
 
 public class ProjectileEntity extends Entity{
+	public static final float RADIUS = 7;
 	private Vector2 barrelPos;
 	public ProjectileEntity(Player owner, Vector2 barrelPos) {
 		super(owner);
@@ -19,22 +20,19 @@ public class ProjectileEntity extends Entity{
 
 	@Override
 	public void spawn(TotemDefender game) {
-		BodyDef testDef = new BodyDef();
-		testDef.type = BodyType.DynamicBody;
-		
-		float rnd = (float)Math.random() * (Gdx.graphics.getWidth()/10) - ((float)Math.random() * (Gdx.graphics.getWidth()/10)); //-width + 10 <= rnd <= width
-		
-		testDef.position.set(barrelPos.x * TotemDefender.WORLD_TO_BOX, barrelPos.y * TotemDefender.WORLD_TO_BOX);
-		setBody(game.getWorld().createBody(testDef));
+		BodyDef def = new BodyDef();
+		def.type = BodyType.DynamicBody;		
+		def.position.set(barrelPos.x * TotemDefender.WORLD_TO_BOX, barrelPos.y * TotemDefender.WORLD_TO_BOX);
+		setBody(game.getWorld().createBody(def));
 		
 		CircleShape shape = new CircleShape();
-		shape.setRadius(5f * TotemDefender.WORLD_TO_BOX);
+		shape.setRadius(RADIUS * TotemDefender.WORLD_TO_BOX);
 		
 		short categoryBits 	= (getOwner() == game.getPlayer1()) ? Entity.PLAYER1 : Entity.PLAYER2;
 		short maskBits 			= (categoryBits == Entity.PLAYER1) ? Entity.PLAYER2 : Entity.PLAYER1;
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = shape;
-		fixtureDef.density = 0.5f; 
+		fixtureDef.density = 1.0f; 
 		fixtureDef.friction = 0.4f;
 		fixtureDef.restitution = 0.4f;
 		fixtureDef.filter.categoryBits = categoryBits;
@@ -42,6 +40,7 @@ public class ProjectileEntity extends Entity{
 
 		// Create our fixture and attach it to the body
 		getBody().createFixture(fixtureDef);
+		getBody().setBullet(true);
 
 		shape.dispose();	
 	}

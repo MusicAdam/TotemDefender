@@ -82,9 +82,6 @@ public abstract class Entity {
 		}else if(sprite != null){
 			sprite.setPosition(position.x, position.y);
 		}
-		
-		
-		
 	}
 	
 	public Body getBody(){
@@ -109,8 +106,28 @@ public abstract class Entity {
 	}
 	
 	public void setRotation(float rotation){
-		
-		body.setTransform(getPosition(),rotation);
+		body.setTransform(getPosition().scl(TotemDefender.WORLD_TO_BOX),rotation);
+	}
+	
+	public void rotateAround(float rotation, Vector2 point){
+		if(body != null){
+			float rad = (float)Math.toRadians(rotation);
+			Vector2 pos = body.getPosition().scl(TotemDefender.BOX_TO_WORLD);
+			
+			pos.sub(point);
+			pos.rotate(rotation);
+			pos.add(point);			
+			setPosition(pos);
+			
+			setRotation(getBody().getAngle() + rad);
+		}
+		/*
+		if(sprite != null){
+			sprite.setPosition(sprite.getX() - point.x, sprite.getY() - point.y);
+			sprite.rotate(rotation);
+			sprite.setPosition(sprite.getX() + point.x, sprite.getY() + point.y);
+		}
+		*/
 	}
 	
 	public void setSprite(Sprite sprite){

@@ -5,6 +5,8 @@ import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.entities.GroundEntity;
 import com.totemdefender.entities.WeaponEntity;
+import com.totemdefender.entities.blocks.RectangleBlockEntity;
+import com.totemdefender.entities.blocks.SquareBlockEntity;
 import com.totemdefender.input.InputHandler;
 import com.totemdefender.input.KeyboardEvent;
 import com.totemdefender.menu.hud.HUD;
@@ -20,6 +22,8 @@ public class BattleState implements State {
 	private KeyboardEvent pl2UpKeyUpListener;
 	private KeyboardEvent pl1DownKeyDownListener;
 	private KeyboardEvent pl1DownKeyUpListener;
+	private KeyboardEvent pl2DownKeyDownListener;
+	private KeyboardEvent pl2DownKeyUpListener;
 	private WeaponEntity weapon1; //p1's weapon
 	private WeaponEntity weapon2; //p2's weapon
 	private GroundEntity ground; //the ground.
@@ -27,13 +31,16 @@ public class BattleState implements State {
 	private boolean spaceIsDown = false;
 	private Player turn; //the player whose turn it is
 	private boolean p1UpKeyDown = false;
-	private boolean p2UpKeyDown = false;
 	private boolean p1DownKeyDown = false;
+	private boolean p2UpKeyDown = false;
+	private boolean p2DownKeyDown = false;
+	
+	public BattleState(){
+	}
 	
 	@Override
 	public boolean canEnter(TotemDefender game) {
-		return true; // For testing
-		//return game.isDoneBuilding();
+		return game.isDoneBuilding();
 	}
 
 	@Override
@@ -45,57 +52,64 @@ public class BattleState implements State {
 			public boolean callback(){
 				return thisRef.onSpaceDown();
 			}
-		});
-		
+		});	
 		spaceUpListener = game.getInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, Input.Keys.SPACE){
 			@Override
 			public boolean callback(){
 				return thisRef.onSpaceUp();
 			}
-		});
-		
+		});		
 		pl1UpKeyDownListener = game.getInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, InputHandler.PL_1_U){
 			@Override
 			public boolean callback(){
 				return thisRef.p1UpKeyDown = true; 
 			}
-		});
-		
+		});		
 		pl1UpKeyUpListener = game.getInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, InputHandler.PL_1_U){
 			@Override
 			public boolean callback(){
-				return thisRef.p1UpKeyDown = false; 
+				thisRef.p1UpKeyDown = false; 
+				return true;
 			}
-		});
-		
+		});		
+		pl1DownKeyDownListener = game.getInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, InputHandler.PL_1_D){
+			@Override
+			public boolean callback(){
+				return thisRef.p1DownKeyDown = true; 
+			}
+		});		
+		pl1DownKeyUpListener = game.getInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, InputHandler.PL_1_D){
+			@Override
+			public boolean callback(){
+				thisRef.p1DownKeyDown = false;
+				return true;
+			}
+		});		
 		pl2UpKeyDownListener = game.getInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, InputHandler.PL_2_U){
 			@Override
 			public boolean callback(){
 				return thisRef.p2UpKeyDown = true; 
 			}
-		});
-		
+		});		
 		pl2UpKeyUpListener = game.getInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, InputHandler.PL_2_U){
 			@Override
 			public boolean callback(){
 				return thisRef.p2UpKeyDown = false; 
 			}
 		});
-		
-		pl1DownKeyDownListener = game.getInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, InputHandler.PL_1_D){
+		pl2DownKeyDownListener = game.getInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, InputHandler.PL_2_D){
 			@Override
 			public boolean callback(){
-				return thisRef.p1DownKeyDown = true; 
+				return thisRef.p2DownKeyDown = true; 
 			}
 		});
-		
-		pl1DownKeyUpListener = game.getInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, InputHandler.PL_1_D){
+		pl2DownKeyUpListener = game.getInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, InputHandler.PL_2_D){
 			@Override
 			public boolean callback(){
-				return thisRef.p1DownKeyDown = false; 
+				thisRef.p2DownKeyDown = false; 
+				return  true;
 			}
 		});
-		
 		/** TODO: REMOVE THIS */
 		resetListener = game.getInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, Input.Keys.R){
 			@Override
@@ -128,6 +142,10 @@ public class BattleState implements State {
 		hud = new HUD(game, this);
 		game.addMenu(hud);
 		
+		RectangleBlockEntity ent = new RectangleBlockEntity(game.getPlayer2());
+		ent.spawn(game);
+		game.addEntity(ent);
+		
 	}
 
 	@Override
@@ -137,10 +155,12 @@ public class BattleState implements State {
 		game.getInputHandler().removeListener(resetListener);
 		game.getInputHandler().removeListener(pl1UpKeyDownListener);
 		game.getInputHandler().removeListener(pl1UpKeyUpListener);
-		game.getInputHandler().removeListener(pl2UpKeyDownListener);
-		game.getInputHandler().removeListener(pl2UpKeyUpListener);
 		game.getInputHandler().removeListener(pl1DownKeyDownListener);
 		game.getInputHandler().removeListener(pl1DownKeyUpListener);
+		game.getInputHandler().removeListener(pl2UpKeyDownListener);
+		game.getInputHandler().removeListener(pl2UpKeyUpListener);
+		game.getInputHandler().removeListener(pl2DownKeyDownListener);
+		game.getInputHandler().removeListener(pl2DownKeyUpListener);
 	}
 
 	@Override
@@ -152,10 +172,13 @@ public class BattleState implements State {
 	public void update(TotemDefender game) {
 		if(p1UpKeyDown && game.getPlayer1() == getPlayerTurn())
 			weapon1.rotateUp();
-		if(p2UpKeyDown && game.getPlayer2() == getPlayerTurn())
-			weapon2.rotateUp();
 		if(p1DownKeyDown && game.getPlayer1() == getPlayerTurn())
 			weapon1.rotateDown();
+		if(p2UpKeyDown && game.getPlayer2() == getPlayerTurn())
+			weapon2.rotateUp();
+		if(p2DownKeyDown && game.getPlayer2() == getPlayerTurn())
+			weapon2.rotateDown();
+		
 			
 	}
 	
@@ -173,22 +196,6 @@ public class BattleState implements State {
 		weapon1.resetCharge();
 		weapon2.resetCharge();
 		return true;
-	}
-	
-	private boolean onPlayer1UpKey_down(){
-		if(getPlayerTurn().getID() == 1){
-			weapon1.rotateDown();
-			return true;
-		}
-		return false;
-	}
-	
-	private boolean onPlayer1UpKey_up(){
-		if(getPlayerTurn().getID() == 1){
-			weapon1.rotateUp();
-			return true;
-		}
-		return false;
 	}
 	
 	public WeaponEntity getWeapon1(){ return weapon1; }

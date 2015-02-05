@@ -21,12 +21,14 @@ public class InputHandler implements InputProcessor{
 	public static int PL_1_U 		= Input.Keys.W;
 	public static int PL_1_R 		= Input.Keys.D;
 	public static int PL_1_D 		= Input.Keys.S;
+	public static int PL_1_ROTATE	= Input.Keys.R;
 	public static int PL_1_SELECT = Input.Keys.SHIFT_LEFT; 
 	public static int CHARGE_SHOT = Input.Keys.SPACE;
-	public static int PL_2_L		= Input.Keys.J;
-	public static int PL_2_U		= Input.Keys.I;
-	public static int PL_2_R 		= Input.Keys.L;
-	public static int PL_2_D		= Input.Keys.K;
+	public static int PL_2_L		= Input.Keys.LEFT;
+	public static int PL_2_U		= Input.Keys.UP;
+	public static int PL_2_R 		= Input.Keys.RIGHT;
+	public static int PL_2_D		= Input.Keys.DOWN;
+	public static int PL_2_ROTATE	= Input.Keys.CONTROL_RIGHT;
 	public static int PL_2_SELECT = Input.Keys.SHIFT_RIGHT;
 	
 	private ArrayList<KeyboardEvent> keyboardListeners;

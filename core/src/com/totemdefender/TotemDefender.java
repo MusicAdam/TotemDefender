@@ -8,6 +8,7 @@ import com.totemdefender.input.InputHandler;
 import com.totemdefender.input.KeyboardEvent;
 import com.totemdefender.menu.Menu;
 import com.totemdefender.states.BattleState;
+import com.totemdefender.states.BuildState;
 import com.totemdefender.states.ResolutionTestState;
 import com.totemdefender.states.StateManager;
 import com.totemdefender.states.TestState;
@@ -45,6 +46,7 @@ public class TotemDefender extends ApplicationAdapter {
 	public static final int 	POSITION_ITERATIONS = 6; 		//Position iterations for box2d
 	public static final int 	VELOCITY_ITERATIONS = 8; 		//Velocity iterations for box2d
 	public static final boolean DEBUG				= true;		//Debug rendering and output when true 
+	public static final float	BLOCK_SIZE			= 30f;     //The default size of a block
 
 	/** Instance variables */
 	private static TotemDefender game;
@@ -80,7 +82,7 @@ public class TotemDefender extends ApplicationAdapter {
 		game = this;
 		
 		//Set virtual size aspect ratio to the desktop's aspect ratio.
-		Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode());
+		//Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode());
 		screenWidth = Gdx.graphics.getWidth();
 		screenHeight = Gdx.graphics.getHeight();
 		
@@ -113,8 +115,8 @@ public class TotemDefender extends ApplicationAdapter {
 		
 		////		DEBUG STUFF	 /////	 
 		//stateManager.attachState(new ResolutionTestState());	
-		stateManager.attachState(new TestState());		
-		//stateManager.attachState(new BattleState());
+		//stateManager.attachState(new TestState());		
+		stateManager.attachState(new BuildState());
 		//Add an exit function
 		inputHandler.addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, Input.Keys.ESCAPE){
 			@Override
@@ -290,13 +292,13 @@ public class TotemDefender extends ApplicationAdapter {
 	
 	/**
 	 * 
-	 * @param world coordinates
+	 * @param screen coordinates
 	 * @return screen coordinates 
 	 */
-	public Vector2 worldToScreen(Vector2 world){
-		Vector3 world3 = new Vector3(world.x, world.y, 0);
-		Vector3 screen3 = camera.project(world3);
-		return new Vector2(screen3.x, screen3.y);
+	public Vector2 screenToWorld(Vector2 screen){
+		Vector3 screen3 = new Vector3(screen.x, screen.y, 0);
+		Vector3 world3 = camera.project(screen3);
+		return new Vector2(world3.x, world3.y);
 	}
 	
 	/**

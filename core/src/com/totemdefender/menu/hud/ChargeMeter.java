@@ -10,8 +10,8 @@ import com.totemdefender.entities.WeaponEntity;
 import com.totemdefender.menu.Component;
 
 public class ChargeMeter extends Component{
-	private static final Color chargeBG = new Color(.01f, .5f, .01f, 1); 
-	private static final Color chargeFG = new Color(.8f, 1f, .8f, 1); 
+	private static final Color chargeFG = new Color(.24f, .85f, .01f, 1); 
+	private static final Color chargeBG = new Color(.29f, .5f, .09f, 1); 
 	WeaponEntity weapon;
 	
 	public ChargeMeter(WeaponEntity weapon){
@@ -20,16 +20,17 @@ public class ChargeMeter extends Component{
 	
 	@Override
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer) {
-		float spriteHeight = weapon.getSprite().getHeight();
+		float spriteHeight = weapon.getSprite().getBoundingRectangle().height;
 		float width = weapon.getSprite().getWidth();
 		float flip = (weapon.getOwner().getID() == 1) ? 1 : -1;
+		int   xOffset = (weapon.getOwner().getID() == 1) ? 0 : 1;
 		float height = 6;
 		float padding = 4;
 		
 		if(weapon.chargeStarted()){
-			Vector2 weaponPos = TotemDefender.Get().worldToScreen(weapon.getPosition());
-			float xPos = weaponPos.x - width/2 * flip;
-			float yPos = weaponPos.y + spriteHeight/2 +padding/2;
+			Vector2 weaponPos = TotemDefender.Get().screenToWorld(weapon.getPosition());
+			float xPos = weaponPos.x + (width * xOffset);
+			float yPos = weaponPos.y + spriteHeight +padding/2;
 			
 			Color fg = new Color(chargeFG.r, chargeFG.g, chargeFG.b, weapon.getCharge());
 			
