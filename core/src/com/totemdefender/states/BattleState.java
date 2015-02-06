@@ -164,7 +164,6 @@ public class BattleState implements State {
 		
 		if(turn.getID() == 1){
 			if(level.getPlayer1Weapon().isCompleted() && level.getPlayer1Weapon().getProjectile() == null){		
-				System.out.println(level.checkActivePlayerEntities(2));
 				if(!level.checkActivePlayerEntities(2)){
 					turn = game.getPlayer2();
 					level.getPlayer1Weapon().resetCharge();

@@ -22,7 +22,7 @@ public class WeaponEntity extends Entity {
 	public static final boolean DEBUG_RENDER = false; //Renders debug positioning elements for the weapon
 	public static final float CHARGE_RATE = 1/1000f;     //Speed at which the charge meter increases
 	public static final float ROTATION = 1f;  //Degrees the weapon will rotate
-	public static final float VELOCITY = 1000f;
+	public static final float VELOCITY = 1500f;
 	
 	private final float projectileVelocity;
 	private float currentRate = CHARGE_RATE; //Current charge rate as it will change as charge changes.
@@ -124,7 +124,7 @@ public class WeaponEntity extends Entity {
 		
 		float hw = getSprite().getWidth()/2;
 		float hh = getSprite().getHeight()/2;
-		float xPos = (-game.getScreenWidth()/2) * TotemDefender.STACK_LOCATION;
+		float xPos = (-game.getScreenWidth()/2) * TotemDefender.STACK_LOCATION + 200;
 		float yPos = -game.getScreenHeight()/2 + TotemDefender.GROUND_HEIGHT;
 		
 		if(owner.getID() == 2){

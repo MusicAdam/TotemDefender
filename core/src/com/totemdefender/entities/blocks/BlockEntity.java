@@ -1,5 +1,9 @@
 package com.totemdefender.entities.blocks;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -24,6 +28,24 @@ public abstract class BlockEntity extends Entity{
 	}
 	
 	@Override
+	public void render(SpriteBatch spriteBatch, ShapeRenderer shapeRenderer){
+		float angle = 0;
+		if(getBody().isActive()){
+			if(rotated)
+				angle = 90;
+			angle += (float)Math.toDegrees(getBody().getAngle());
+		}
+		shapeRenderer.begin(ShapeType.Filled);
+		shapeRenderer.setColor(.8f, .6f, 0, 1);
+		shapeRenderer.identity();
+		shapeRenderer.translate(getPosition().x, getPosition().y, 0);
+		shapeRenderer.rotate(0, 0, 1, angle);
+		shapeRenderer.rect(-getWidth()/2, -getHeight()/2, getWidth(), getHeight());
+		shapeRenderer.identity();
+		shapeRenderer.end();
+	}
+	
+	@Override
 	public void spawn(TotemDefender game) {
 		BodyDef def = new BodyDef();
 		def.type = BodyType.DynamicBody;
@@ -45,6 +67,8 @@ public abstract class BlockEntity extends Entity{
 		fixture = getBody().createFixture(fixtureDef);
 
 		shape.dispose();	
+		
+		isSpawned = true;
 	}
 	
 	public void setDensity(float density){

@@ -125,7 +125,6 @@ public class Level {
 			}
 		}
 		
-		System.out.println("TOTEM ACTIVE: " + player2Totem.getBody().isActive());
 		return ((plID == 1) ? player1Totem.getBody().isAwake() : player2Totem.getBody().isAwake());
 	}
 }

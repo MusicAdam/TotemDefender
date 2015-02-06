@@ -1,5 +1,8 @@
 package com.totemdefender.entities;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.Fixture;
@@ -17,6 +20,23 @@ public class TotemEntity extends BlockEntity {
 	public TotemEntity(Player owner) {
 		super(owner, 0, 1, 2);
 		setRotatable(false);
+	}
+	
+
+	@Override
+	public void render(SpriteBatch spriteBatch, ShapeRenderer shapeRenderer){
+		float angle = 0;
+		if(getBody().isActive()){
+			angle = (float)Math.toDegrees(getBody().getAngle());
+		}
+		shapeRenderer.begin(ShapeType.Filled);
+		shapeRenderer.setColor(.8f, .6f, .8f, 1);
+		shapeRenderer.identity();
+		shapeRenderer.translate(getPosition().x, getPosition().y, 0);
+		shapeRenderer.rotate(0, 0, 1, angle);
+		shapeRenderer.rect(-getWidth()/2, -getHeight()/2, getWidth(), getHeight());
+		shapeRenderer.identity();
+		shapeRenderer.end();
 	}
 	
 	@Override
