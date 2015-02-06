@@ -1,7 +1,9 @@
 package com.totemdefender.menu;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
@@ -12,50 +14,30 @@ import com.badlogic.gdx.math.Vector2;
 public class Button extends Component {
 	private FreeTypeFontGenerator generator;
 	private FreeTypeFontParameter parameter;
-<<<<<<< HEAD
 	private BitmapFont bitMapFont;
 	private Vector2 textPosition;
 	
-	ShapeRenderer shapeMaker;
-=======
-	private BitmapFont bitMapFont; // font size 12 pixels
-	private Vector2 textPosition;
-	
-	private ShapeRenderer shapeMaker;
->>>>>>> 0995bd857380be7665d0fcc23440b2044287cb55
 	private String label;
 	private Color color;
+	private Color textColor = Color.MAGENTA;
+	
+	Texture texture;
 	
 	public Button(String newLabel, Vector2 newSize, Vector2 newPosition, Color newColor) {
-		generator = new FreeTypeFontGenerator(Gdx.files.internal("consola.ttf"));
-<<<<<<< HEAD
-		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
-=======
-		parameter = new FreeTypeFontParameter();
->>>>>>> 0995bd857380be7665d0fcc23440b2044287cb55
-		parameter.size = 12;
-		bitMapFont = generator.generateFont(parameter);
-		
 		setLabel(newLabel);
 		setSize(newSize); 
 		setPosition(newPosition);
 		setColor(newColor);
 		
-		textPosition = new Vector2(this.getPosition().x + (this.getSize().x/2), this.getPosition().y + (this.getSize()).y);
-		shapeMaker = new ShapeRenderer();
+		generator = new FreeTypeFontGenerator(Gdx.files.internal("consola.ttf"));
+		parameter = new FreeTypeFontParameter();
+		parameter.size = 12;
+		bitMapFont = generator.generateFont(parameter);
+		
+		textPosition = new Vector2((this.getPosition().x + parameter.size/2), 
+									this.getPosition().y + ((this.getSize().y/2) + parameter.size/2));
 	}
 	
-<<<<<<< HEAD
-	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer) {	
-		batch.begin();
-			bitMapFont.draw(batch, label, textPosition.x, textPosition.y);;
-		batch.end();
-		
-		shapeRenderer.begin(ShapeType.Filled);
-		shapeRenderer.setColor(this.getColor());
-		shapeRenderer.rect(this.getPosition().x, this.getPosition().y, this.getSize().x, this.getSize().y);
-		shapeRenderer.end();
-=======
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer) {
 		shapeRenderer.begin(ShapeType.Filled);
 		shapeRenderer.setColor(this.getColor());
@@ -63,9 +45,9 @@ public class Button extends Component {
 		shapeRenderer.end();
 		
 		batch.begin();
+			bitMapFont.setColor(textColor);
 			bitMapFont.draw(batch, label, textPosition.x, textPosition.y);;
 		batch.end();
->>>>>>> 0995bd857380be7665d0fcc23440b2044287cb55
 	}
 	
 	public void dispose() {
@@ -100,5 +82,11 @@ public class Button extends Component {
 
 	public void setColor(Color color)
 	{ this.color = color; }
+	
+	public Vector2 getTextPosition()
+	{ return textPosition; }
+
+	public void setTextPosition(float x, float y)
+	{ this.textPosition = new Vector2(x,y); }
 
 }
