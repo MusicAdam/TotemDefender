@@ -2,17 +2,21 @@ package com.totemdefender.states;
 
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
+import com.totemdefender.Level;
+import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
+import com.totemdefender.input.InputHandler;
+import com.totemdefender.input.KeyboardEvent;
 import com.totemdefender.menu.BuildMenu;
+import com.totemdefender.menu.hud.HUD;
 
 
 public class BuildState implements State {
 	
-	
-	private StateManager statemanager;
-	private Timer timer;
+	//private Timer timer;
 	private boolean exit=false;
-	private BuildMenu buildmenu;
+	private BuildMenu buildMenu;
+	private Level level;
 	
 	@Override
 	public boolean canEnter(TotemDefender game) {
@@ -20,28 +24,37 @@ public class BuildState implements State {
 	}
 	@Override
 	public void onEnter(final TotemDefender game) {
-		statemanager=game.getStateManager();
-		buildmenu=new BuildMenu(game);
-		game.addMenu(buildmenu);
-		timer.scheduleTask(new Task(){
+		/** TODO: Move to pregame menu */
+		game.setPlayer1(new Player(1));
+		game.setPlayer2(new Player(2));
+		
+		level = new Level(game);
+		
+		buildMenu=new BuildMenu(game, level);
+		buildMenu.setShouldRender(true);
+		game.addMenu(buildMenu);
+		
+		
+		/* Disabling this for now
+		  timer.scheduleTask(new Task(){
+		 
 			
 			public void run(){
 				exit=true;
 			}
 			
 		}, 4000*60);
-		
+		*/
 	}
 	@Override
 	public void onExit(TotemDefender game) {
-		game.removeMenu(buildmenu);
-		statemanager.attachState(new BattleState());
+		game.removeMenu(buildMenu);
+		game.getStateManager().attachState(new BattleState(level));
 		
 	}
 	@Override
 	public boolean canExit(TotemDefender game) {
-		
-		return exit;
+		return exit || game.isDoneBuilding();
 	}
 	@Override
 	public void update(TotemDefender game) {

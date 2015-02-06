@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 
 public abstract class Component {
 	
-	private Vector2 size, position;
+	protected Vector2 size, position;
 	public abstract void render(SpriteBatch batch, ShapeRenderer shapeRenderer);
 	
 	public boolean onClick()

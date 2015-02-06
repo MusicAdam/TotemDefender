@@ -19,8 +19,10 @@ import com.totemdefender.states.BattleState;
 
 public class WeaponEntity extends Entity {	
 	
-	public static final float WEAPON_LOCATION = 3/4f; //The weapon will be this proportion away from the side of the screen.
+	public static final boolean DEBUG_RENDER = true; //Renders debug positioning elements for the weapon
 	public static final float CHARGE_RATE = 1/1000f;     //Speed at which the charge meter increases
+	public static final float ROTATION = 1f;  //Degrees the weapon will rotate
+	public static final float VELOCITY = 1000f;
 	
 	private final float projectileVelocity;
 	private float currentRate = CHARGE_RATE; //Current charge rate as it will change as charge changes.
@@ -30,28 +32,28 @@ public class WeaponEntity extends Entity {
 	private boolean completed = false; //True when the player releases spacebar or meter falls back to 0
 	private Vector2 fireDirection;
 	private Vector2 barrelPos;
+	private int flip;
 	
 	public WeaponEntity(Player owner){
 		super(owner);
 		
-		projectileVelocity = 500 * TotemDefender.WORLD_TO_BOX;
-		barrelPos = new Vector2(50, 25);
-		fireDirection = new Vector2(.5f, .4f);
-		fireDirection.nor();
-		if(owner.getID() == 2){
-			fireDirection.x *= -1;
-			barrelPos.x *= -1;
-		}
+		projectileVelocity = VELOCITY * TotemDefender.WORLD_TO_BOX;
+		flip = (owner.getID() == 1) ? 1 : -1;
 	}
 	
 	@Override
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer){
 		super.render(batch, shapeRenderer);
 		
-		shapeRenderer.begin(ShapeType.Line);
-		shapeRenderer.circle(getPosition().x + barrelPos.x, getPosition().y + barrelPos.y, 5);
-		shapeRenderer.line(getPosition().x + barrelPos.x, getPosition().y + barrelPos.y, getPosition().x + barrelPos.x + fireDirection.x * 10, getPosition().y + barrelPos.y + fireDirection.y * 10);
-		shapeRenderer.end();
+		if(DEBUG_RENDER){
+			shapeRenderer.begin(ShapeType.Line);
+			shapeRenderer.setColor(1, 0, 0, 1);
+			shapeRenderer.circle(getPosition().x + getSprite().getOriginX(), getPosition().y + getSprite().getOriginY(), 5);
+			shapeRenderer.setColor(1, 1, 1, 1);
+			shapeRenderer.circle(getPosition().x + barrelPos.x, getPosition().y + barrelPos.y, 5);
+			shapeRenderer.line(getPosition().x + barrelPos.x, getPosition().y + barrelPos.y, getPosition().x + barrelPos.x + fireDirection.x * 10, getPosition().y + barrelPos.y + fireDirection.y * 10);
+			shapeRenderer.end();
+		}
 	}
 	
 	@Override
@@ -112,14 +114,27 @@ public class WeaponEntity extends Entity {
 		
 		float hw = getSprite().getWidth()/2;
 		float hh = getSprite().getHeight()/2;
-		float xPos = (-game.getScreenWidth()/2) * WEAPON_LOCATION;
-		float yPos = -game.getScreenHeight()/2 + 20 + hh; //20 is hardcoded ground size
+		float xPos = (-game.getScreenWidth()/2) * TotemDefender.STACK_LOCATION;
+		float yPos = -game.getScreenHeight()/2 + 20; //20 is hardcoded ground size
 		
 		if(owner.getID() == 2){
 			xPos = -xPos; //Put it on the right side if its player 2
 			getSprite().flip(true, false);
+			getSprite().setOrigin(65, 12); //This is based on the logical rotation point on the cannon sprite
+		}else{
+			getSprite().setOrigin(36, 12); //This is based on the logical rotation point on the cannon sprite
 		}
 		
+		getSprite().setPosition(xPos - hw, yPos);
+		
+
+		barrelPos = new Vector2(getSprite().getOriginX() + 60 * flip, getSprite().getOriginY() + 45);
+		fireDirection = new Vector2(.5f, .225f);
+		fireDirection.nor();
+		if(owner.getID() == 2){
+			fireDirection.x *= -1;
+		}
+		/*
 		BodyDef weaponDef = new BodyDef();
 		weaponDef.type = BodyType.StaticBody;
 		weaponDef.position.set(xPos * TotemDefender.WORLD_TO_BOX, yPos * TotemDefender.WORLD_TO_BOX);
@@ -141,6 +156,7 @@ public class WeaponEntity extends Entity {
 		cannonShape.dispose();
 		
 		setBody(body);
+		*/
 		isSpawned = true;
 	}
 	
@@ -167,6 +183,26 @@ public class WeaponEntity extends Entity {
 		completed = false;
 		hasFilled = false;
 		currentRate = CHARGE_RATE;
+	}
+	
+	public void rotateUp(){
+		float pX = getSprite().getOriginX();
+		float pY = getSprite().getOriginY();
+		barrelPos.sub(pX, pY);
+		barrelPos.rotate(ROTATION * flip);
+		barrelPos.add(pX, pY);
+		fireDirection.rotate(ROTATION * flip);
+		getSprite().rotate(ROTATION * flip);
+	}
+	
+	public void rotateDown(){
+		float pX = getSprite().getOriginX();
+		float pY = getSprite().getOriginY();
+		barrelPos.sub(pX, pY);
+		barrelPos.rotate(-ROTATION * flip);
+		barrelPos.add(pX, pY);
+		fireDirection.rotate(-ROTATION * flip);
+		getSprite().rotate(-ROTATION * flip);
 	}
 
 }

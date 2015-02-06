@@ -1,10 +1,15 @@
 package com.totemdefender.states;
 
 import com.badlogic.gdx.Input;
+import com.totemdefender.Level;
 import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.entities.GroundEntity;
 import com.totemdefender.entities.WeaponEntity;
+import com.totemdefender.entities.blocks.BlockEntity;
+import com.totemdefender.entities.blocks.RectangleBlockEntity;
+import com.totemdefender.entities.blocks.SquareBlockEntity;
+import com.totemdefender.input.InputHandler;
 import com.totemdefender.input.KeyboardEvent;
 import com.totemdefender.menu.hud.HUD;
 
@@ -13,21 +18,42 @@ public class BattleState implements State {
 	private KeyboardEvent spaceDownListener;
 	private KeyboardEvent spaceUpListener;
 	private KeyboardEvent resetListener;
-	private WeaponEntity weapon1; //p1's weapon
-	private WeaponEntity weapon2; //p2's weapon
-	private GroundEntity ground; //the ground.
+	private KeyboardEvent pl1UpKeyDownListener;
+	private KeyboardEvent pl1UpKeyUpListener;
+	private KeyboardEvent pl2UpKeyDownListener;
+	private KeyboardEvent pl2UpKeyUpListener;
+	private KeyboardEvent pl1DownKeyDownListener;
+	private KeyboardEvent pl1DownKeyUpListener;
+	private KeyboardEvent pl2DownKeyDownListener;
+	private KeyboardEvent pl2DownKeyUpListener;
+	private Level level;
 	private HUD hud;
 	private boolean spaceIsDown = false;
 	private Player turn; //the player whose turn it is
+	private boolean p1UpKeyDown = false;
+	private boolean p1DownKeyDown = false;
+	private boolean p2UpKeyDown = false;
+	private boolean p2DownKeyDown = false;
+	
+	public BattleState(Level level){
+		this.level = level;
+	}
 	
 	@Override
 	public boolean canEnter(TotemDefender game) {
-		return true; // For testing
-		//return game.isDoneBuilding();
+		return game.isDoneBuilding();
 	}
 
 	@Override
 	public void onEnter(TotemDefender game) {
+		turn = game.getPlayer1();
+		hud = new HUD(game, this);
+		game.addMenu(hud);
+		
+		for(BlockEntity ent : level.getPlacedBlocks()){
+			ent.getBody().setActive(true);
+		}
+		
 		final BattleState thisRef = this;
 		//Add onSpaceDown listener
 		spaceDownListener = game.getInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, Input.Keys.SPACE){
@@ -35,15 +61,64 @@ public class BattleState implements State {
 			public boolean callback(){
 				return thisRef.onSpaceDown();
 			}
-		});
-		
+		});	
 		spaceUpListener = game.getInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, Input.Keys.SPACE){
 			@Override
 			public boolean callback(){
 				return thisRef.onSpaceUp();
 			}
+		});		
+		pl1UpKeyDownListener = game.getInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, InputHandler.PL_1_U){
+			@Override
+			public boolean callback(){
+				return thisRef.p1UpKeyDown = true; 
+			}
+		});		
+		pl1UpKeyUpListener = game.getInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, InputHandler.PL_1_U){
+			@Override
+			public boolean callback(){
+				thisRef.p1UpKeyDown = false; 
+				return true;
+			}
+		});		
+		pl1DownKeyDownListener = game.getInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, InputHandler.PL_1_D){
+			@Override
+			public boolean callback(){
+				return thisRef.p1DownKeyDown = true; 
+			}
+		});		
+		pl1DownKeyUpListener = game.getInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, InputHandler.PL_1_D){
+			@Override
+			public boolean callback(){
+				thisRef.p1DownKeyDown = false;
+				return true;
+			}
+		});		
+		pl2UpKeyDownListener = game.getInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, InputHandler.PL_2_U){
+			@Override
+			public boolean callback(){
+				return thisRef.p2UpKeyDown = true; 
+			}
+		});		
+		pl2UpKeyUpListener = game.getInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, InputHandler.PL_2_U){
+			@Override
+			public boolean callback(){
+				return thisRef.p2UpKeyDown = false; 
+			}
 		});
-		
+		pl2DownKeyDownListener = game.getInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, InputHandler.PL_2_D){
+			@Override
+			public boolean callback(){
+				return thisRef.p2DownKeyDown = true; 
+			}
+		});
+		pl2DownKeyUpListener = game.getInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, InputHandler.PL_2_D){
+			@Override
+			public boolean callback(){
+				thisRef.p2DownKeyDown = false; 
+				return  true;
+			}
+		});
 		/** TODO: REMOVE THIS */
 		resetListener = game.getInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, Input.Keys.R){
 			@Override
@@ -51,31 +126,6 @@ public class BattleState implements State {
 				return thisRef.dbg_resetWeapon();
 			}
 		});
-		
-		/** TODO: Should be in Pregame state **/
-		game.setPlayer1(new Player(1));
-		game.setPlayer2(new Player(2));
-		turn = game.getPlayer1();
-		
-		/** Create the world **/
-		ground = new GroundEntity();
-		ground.setName("Ground");
-		ground.spawn(game);
-		game.addEntity(ground);
-		
-		weapon1 = new WeaponEntity(game.getPlayer1());
-		weapon1.setName("Weapon 1");
-		weapon1.spawn(game);
-		game.addEntity(weapon1);
-		
-		weapon2 = new WeaponEntity(game.getPlayer2());
-		weapon2.setName("Weapon 2");
-		weapon2.spawn(game);
-		game.addEntity(weapon2);
-		
-		hud = new HUD(game, this);
-		game.addMenu(hud);
-		
 	}
 
 	@Override
@@ -83,6 +133,14 @@ public class BattleState implements State {
 		game.getInputHandler().removeListener(spaceDownListener);
 		game.getInputHandler().removeListener(spaceUpListener);
 		game.getInputHandler().removeListener(resetListener);
+		game.getInputHandler().removeListener(pl1UpKeyDownListener);
+		game.getInputHandler().removeListener(pl1UpKeyUpListener);
+		game.getInputHandler().removeListener(pl1DownKeyDownListener);
+		game.getInputHandler().removeListener(pl1DownKeyUpListener);
+		game.getInputHandler().removeListener(pl2UpKeyDownListener);
+		game.getInputHandler().removeListener(pl2UpKeyUpListener);
+		game.getInputHandler().removeListener(pl2DownKeyDownListener);
+		game.getInputHandler().removeListener(pl2DownKeyUpListener);
 	}
 
 	@Override
@@ -92,7 +150,16 @@ public class BattleState implements State {
 
 	@Override
 	public void update(TotemDefender game) {
+		if(p1UpKeyDown && game.getPlayer1() == getPlayerTurn())
+			level.getPlayer1Weapon().rotateUp();
+		if(p1DownKeyDown && game.getPlayer1() == getPlayerTurn())
+			level.getPlayer1Weapon().rotateDown();
+		if(p2UpKeyDown && game.getPlayer2() == getPlayerTurn())
+			level.getPlayer2Weapon().rotateUp();
+		if(p2DownKeyDown && game.getPlayer2() == getPlayerTurn())
+			level.getPlayer2Weapon().rotateDown();
 		
+			
 	}
 	
 	private boolean onSpaceDown(){
@@ -106,13 +173,12 @@ public class BattleState implements State {
 	}
 	
 	private boolean dbg_resetWeapon(){
-		weapon1.resetCharge();
-		weapon2.resetCharge();
+		level.getPlayer1Weapon().resetCharge();
+		level.getPlayer2Weapon().resetCharge();
 		return true;
 	}
 	
-	public WeaponEntity getWeapon1(){ return weapon1; }
-	public WeaponEntity getWeapon2(){ return weapon2; }
+	public Level getLevel(){ return level; }
 	public boolean spaceIsDown(){ return spaceIsDown; }
 	
 	public Player getPlayerTurn(){ return turn; }

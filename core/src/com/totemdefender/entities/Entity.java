@@ -47,7 +47,7 @@ public abstract class Entity {
 			float spriteHW = (sprite.getWidth() * sprite.getScaleX()) /2;
 			float spriteHH = (sprite.getHeight() * sprite.getScaleY()) /2;
 			sprite.setPosition(bodyX - spriteHW, bodyY - spriteHH);
-			sprite.setRotation(body.getAngle());
+			sprite.setRotation((float)Math.toDegrees(body.getAngle()));
 		}
 		
 	}
@@ -66,15 +66,22 @@ public abstract class Entity {
 	}
 	
 	public Vector2 getPosition(){
-		return body.getPosition().scl(TotemDefender.BOX_TO_WORLD);
+		if(body != null){
+			return body.getPosition().scl(TotemDefender.BOX_TO_WORLD);
+		}else if(sprite != null){
+			return new Vector2(sprite.getX(), sprite.getY());
+		}
+		
+		return new Vector2();
 	}
 	
 	public void setPosition(Vector2 position){
-		
-		position=body.getWorldVector(position.scl(TotemDefender.WORLD_TO_BOX));
-		body.setTransform(position,getRotation());
-		
-		
+		if(body != null){
+			position.scl(TotemDefender.WORLD_TO_BOX);
+			body.setTransform(position,getRotation());
+		}else if(sprite != null){
+			sprite.setPosition(position.x, position.y);
+		}
 	}
 	
 	public Body getBody(){
@@ -99,9 +106,22 @@ public abstract class Entity {
 	}
 	
 	public void setRotation(float rotation){
-		
-		body.setTransform(getPosition(),rotation);
+		body.setTransform(getPosition().scl(TotemDefender.WORLD_TO_BOX),rotation);
 	}
+	
+	/*
+	public void rotateAround(float rotation, Vector2 point){
+		if(body != null){
+			float rad = (float)Math.toRadians(rotation);		
+			setRotation(getBody().getAngle() + rad);
+		}
+		/*
+		if(sprite != null){
+			sprite.setPosition(sprite.getX() - point.x, sprite.getY() - point.y);
+			sprite.rotate(rotation);
+			sprite.setPosition(sprite.getX() + point.x, sprite.getY() + point.y);
+		}
+	}*/
 	
 	public void setSprite(Sprite sprite){
 		this.sprite=sprite;
