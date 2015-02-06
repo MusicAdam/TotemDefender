@@ -37,6 +37,7 @@ public class BattleState implements State {
 	
 	public BattleState(Level level){
 		this.level = level;
+		turn = TotemDefender.Get().getPlayer1();
 	}
 	
 	@Override
@@ -46,13 +47,15 @@ public class BattleState implements State {
 
 	@Override
 	public void onEnter(TotemDefender game) {
-		turn = game.getPlayer1();
 		hud = new HUD(game, this);
 		game.addMenu(hud);
 		
 		for(BlockEntity ent : level.getPlacedBlocks()){
 			ent.getBody().setActive(true);
 		}
+		
+		level.getPlayer1Totem().getBody().setActive(true);
+		level.getPlayer2Totem().getBody().setActive(true);
 		
 		final BattleState thisRef = this;
 		//Add onSpaceDown listener
@@ -159,7 +162,37 @@ public class BattleState implements State {
 		if(p2DownKeyDown && game.getPlayer2() == getPlayerTurn())
 			level.getPlayer2Weapon().rotateDown();
 		
-			
+		if(turn.getID() == 1){
+			if(level.getPlayer1Weapon().isCompleted() && level.getPlayer1Weapon().getProjectile() == null){
+				boolean stable = true;
+				for(BlockEntity ent : level.getPlacedBlocks()){
+					if(ent.getOwner().getID() == 2 && ent.getBody().isAwake()){
+						stable = false;
+						break;
+					}
+				}
+				
+				if(stable){
+					turn = game.getPlayer2();
+					level.getPlayer1Weapon().resetCharge();
+				}
+			}
+		}else{
+			if(level.getPlayer2Weapon().isCompleted() && level.getPlayer2Weapon().getProjectile() == null){
+				boolean stable = true;
+				for(BlockEntity ent : level.getPlacedBlocks()){
+					if(ent.getOwner().getID() == 1 && ent.getBody().isAwake()){
+						stable = false;
+						break;
+					}
+				}
+				
+				if(stable){
+					turn = game.getPlayer1();
+					level.getPlayer2Weapon().resetCharge();
+				}		
+			}
+		}
 	}
 	
 	private boolean onSpaceDown(){

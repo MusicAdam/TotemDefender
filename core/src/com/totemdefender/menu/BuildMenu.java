@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import com.totemdefender.Level;
 import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
+import com.totemdefender.entities.TotemEntity;
 import com.totemdefender.entities.blocks.BlockEntity;
 import com.totemdefender.entities.blocks.RectangleBlockEntity;
 import com.totemdefender.entities.blocks.SquareBlockEntity;
@@ -26,6 +27,7 @@ public class BuildMenu extends Menu {
 	private Grid player1Grid;
 	private Grid player2Grid;
 	private Level level;
+	private boolean placingTotem = false;
 	
 	public BuildMenu(TotemDefender game, Level level) {
 		this.level = level;
@@ -39,22 +41,24 @@ public class BuildMenu extends Menu {
 		rect = new Button("Rectangle", buttonSize, new Vector2(buttonSize.x * 2,topArea), Color.RED);
 		ready = new Button("READY!", buttonSize, new Vector2((buttonSize.x * 3),topArea), Color.CYAN);
 		
-		float screenCenterX = game.getScreenWidth()/2;		
-		player1Grid = new Grid();
-		player1Grid.setPosition(new Vector2(	screenCenterX - (screenCenterX * TotemDefender.STACK_LOCATION) - player1Grid.getWidth()/2,
-											100));
-		player2Grid = new Grid();
-		player2Grid.setPosition(new Vector2((game.getScreenWidth() * TotemDefender.STACK_LOCATION), 
-											100));
+		Vector2 ped1Pos = game.screenToWorld(level.getPlayer1Pedestal().getPosition());	
+		Vector2 ped2Pos = game.screenToWorld(level.getPlayer2Pedestal().getPosition());	
 		
-		RectangleBlockEntity entity = new RectangleBlockEntity(new Player(1));		
+		player1Grid = new Grid();
+		player1Grid.setPosition(new Vector2(	ped1Pos.x - player1Grid.getWidth()/2,
+												TotemDefender.PEDESTAL_HEIGHT + TotemDefender.GROUND_HEIGHT));
+		player2Grid = new Grid();
+		player2Grid.setPosition(new Vector2(ped2Pos.x - player1Grid.getWidth()/2, 
+											TotemDefender.PEDESTAL_HEIGHT + TotemDefender.GROUND_HEIGHT));
+		
+		RectangleBlockEntity entity = new RectangleBlockEntity(game.getPlayer1());		
 		entity.spawn(game);
 		game.addEntity(entity);
 		
 		entity.getBody().setActive(false);
 		player1Grid.setEntity(entity);
 		
-		RectangleBlockEntity entity2 = new RectangleBlockEntity(new Player(1));		
+		RectangleBlockEntity entity2 = new RectangleBlockEntity(game.getPlayer2());		
 		entity2.spawn(game);
 		game.addEntity(entity2);
 		
@@ -77,7 +81,8 @@ public class BuildMenu extends Menu {
 	public boolean keyUp(int keycode) {
 		/** PLAYER 1 INPUTS */
 		if(keycode == InputHandler.PL_1_SELECT && player1Grid.hasEntity()){
-			level.addPlacedBlock(player1Grid.getEntity());
+			if(!placingTotem)
+				level.addPlacedBlock(player1Grid.getEntity());
 			player1Grid.setEntity(null);
 			return true;
 		}
@@ -109,7 +114,8 @@ public class BuildMenu extends Menu {
 
 		/** PLAYER 2 INPUTS */
 		if(keycode == InputHandler.PL_2_SELECT && player2Grid.hasEntity()){
-			level.addPlacedBlock(player2Grid.getEntity());
+			if(!placingTotem)
+				level.addPlacedBlock(player2Grid.getEntity());
 			player2Grid.setEntity(null);
 			return true;
 		}
@@ -141,7 +147,29 @@ public class BuildMenu extends Menu {
 		
 		/** TODO: There should be a menu button for this */
 		if(keycode == Input.Keys.ENTER){
-			TotemDefender.Get().setDoneBuilding(true);
+			if(placingTotem){
+				TotemDefender.Get().setDoneBuilding(true);				
+			}else{
+				placingTotem = true;
+				
+				TotemDefender game = TotemDefender.Get();
+				TotemEntity p1Totem = new TotemEntity(game.getPlayer1());
+				p1Totem.setName("Player 1's Totem");
+				p1Totem.spawn(game);
+				p1Totem.getBody().setActive(false);
+				player1Grid.setEntity(p1Totem);
+				game.addEntity(p1Totem);
+				level.setPlayer1Totem(p1Totem);
+				
+				TotemEntity p2Totem = new TotemEntity(game.getPlayer2());
+				p2Totem.setName("Player 2's Totem");
+				p2Totem.spawn(game);
+				p2Totem.getBody().setActive(false);
+				player2Grid.setEntity(p2Totem);
+				game.addEntity(p2Totem);
+				level.setPlayer2Totem(p2Totem);		
+			}
+			return true;
 		}
 		return false;
 	}

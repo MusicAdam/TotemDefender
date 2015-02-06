@@ -33,6 +33,7 @@ public class WeaponEntity extends Entity {
 	private Vector2 fireDirection;
 	private Vector2 barrelPos;
 	private int flip;
+	private ProjectileEntity projectile;
 	
 	public WeaponEntity(Player owner){
 		super(owner);
@@ -60,11 +61,20 @@ public class WeaponEntity extends Entity {
 	public void update(TotemDefender game){
 		super.update(game);
 		
+		if(projectile != null){
+			if(projectile.shouldDelete()){
+				game.destroyEntity(projectile);
+				projectile.setShouldDelete(false);
+				projectile = null;
+			}
+			return; //Dont update while there still exists a projectile.
+		}
+		
 		if(completed)
 			return; //Don't bother with the update if completed.
 		
 		for(BattleState state : game.getStateManager().getAttachedState(BattleState.class)){
-			if(state.getPlayerTurn() == owner){
+			if(state.getPlayerTurn().getID() == owner.getID()){
 				if(state.spaceIsDown()){
 					started = true;
 					
@@ -115,7 +125,7 @@ public class WeaponEntity extends Entity {
 		float hw = getSprite().getWidth()/2;
 		float hh = getSprite().getHeight()/2;
 		float xPos = (-game.getScreenWidth()/2) * TotemDefender.STACK_LOCATION;
-		float yPos = -game.getScreenHeight()/2 + 20; //20 is hardcoded ground size
+		float yPos = -game.getScreenHeight()/2 + TotemDefender.GROUND_HEIGHT;
 		
 		if(owner.getID() == 2){
 			xPos = -xPos; //Put it on the right side if its player 2
@@ -162,11 +172,11 @@ public class WeaponEntity extends Entity {
 	
 	public void fireProjectile(TotemDefender game){
 		float vel = projectileVelocity * charge;
-		ProjectileEntity prj = new ProjectileEntity(owner, getPosition().add(barrelPos));
-		prj.spawn(game);
-		game.addEntity(prj);
+		projectile = new ProjectileEntity(owner, getPosition().add(barrelPos));
+		projectile.spawn(game);
+		game.addEntity(projectile);
 		
-		prj.getBody().applyForce(fireDirection.cpy().scl(vel), prj.getBody().getWorldCenter(), true);
+		projectile.getBody().applyForce(fireDirection.cpy().scl(vel), projectile.getBody().getWorldCenter(), true);
 	}
 	
 	public float getCharge(){
@@ -203,6 +213,12 @@ public class WeaponEntity extends Entity {
 		barrelPos.add(pX, pY);
 		fireDirection.rotate(-ROTATION * flip);
 		getSprite().rotate(-ROTATION * flip);
+	}
+	
+	public boolean isCompleted(){ return completed; }
+	
+	public ProjectileEntity getProjectile(){
+		return projectile;
 	}
 
 }

@@ -14,6 +14,7 @@ public abstract class BlockEntity extends Entity{
 	protected float xScale, yScale; //This is the scale of the block in multiples of TotemDefender.BlockSize in each direction
 	private Fixture fixture;
 	private boolean rotated = false;
+	private boolean rotatable = true;
 	
 	public BlockEntity(Player owner, float cost, float xScale, float yScale){
 		super(owner);
@@ -30,16 +31,15 @@ public abstract class BlockEntity extends Entity{
 		
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox((xScale * TotemDefender.BLOCK_SIZE * TotemDefender.WORLD_TO_BOX)/2, (yScale * TotemDefender.BLOCK_SIZE * TotemDefender.WORLD_TO_BOX)/2);
-		
-		short categoryBits 	= (getOwner() == game.getPlayer1()) ? Entity.PLAYER1 : Entity.PLAYER2;
-		short maskBits 			= (categoryBits == Entity.PLAYER1) ? Entity.PLAYER2 : Entity.PLAYER1;
+
+		short projectileMask = (getOwner().getID() == 1) ? Entity.PLAYER2_PROJECTILE : Entity.PLAYER1_PROJECTILE;
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = shape;
 		fixtureDef.density = 1.0f; 
 		fixtureDef.friction = 0.4f;
 		fixtureDef.restitution = 0.4f;
-		fixtureDef.filter.categoryBits = categoryBits;
-		fixtureDef.filter.maskBits = (short) (maskBits | Entity.GROUND);
+		fixtureDef.filter.categoryBits = Entity.BLOCK;
+		fixtureDef.filter.maskBits = (short) (Entity.GROUND | Entity.PEDESTAL | projectileMask | Entity.BLOCK);
 
 		// Create our fixture and attach it to the body
 		fixture = getBody().createFixture(fixtureDef);
@@ -64,6 +64,8 @@ public abstract class BlockEntity extends Entity{
 	}
 	
 	public void rotate(){
+		if(!isRotatable()) return;
+		
 		float rad = (float)Math.toRadians(90);		
 		if(rotated){
 			setRotation(getBody().getAngle() - rad);
@@ -86,5 +88,13 @@ public abstract class BlockEntity extends Entity{
 		if(!rotated)
 			return yScale * TotemDefender.BLOCK_SIZE; 
 		return xScale * TotemDefender.BLOCK_SIZE;
+	}
+
+	public boolean isRotatable() {
+		return rotatable;
+	}
+
+	public void setRotatable(boolean rotateable) {
+		this.rotatable = rotateable;
 	}
 }
