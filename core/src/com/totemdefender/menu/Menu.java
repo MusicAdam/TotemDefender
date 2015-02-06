@@ -9,10 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-<<<<<<< HEAD
-=======
 import com.badlogic.gdx.math.Vector2;
->>>>>>> 0995bd857380be7665d0fcc23440b2044287cb55
 
 //Base menu from which all other menus derive. Should provide the ability
 //to add Buttons and Text. Should have its own input processor which its component buttons will attach to. 
@@ -104,14 +101,9 @@ public class Menu implements InputProcessor{
 		// TODO Auto-generated method stub
 		return false;
 	}
-<<<<<<< HEAD
-
-=======
 	public boolean shouldRender() 
 	{ return shouldRender; }
 
 	public void setShouldRender(boolean shouldRender) 
 	{ this.shouldRender = shouldRender; }
-	
->>>>>>> 0995bd857380be7665d0fcc23440b2044287cb55
 }
