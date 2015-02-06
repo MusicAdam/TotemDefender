@@ -15,15 +15,30 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 
 public class BuildMenu extends Menu {
-	private Button triangle;
-	private Button square;
-	private Button rect;
+	private Button p1Funding;
+	private Button p2Funding;
 	private Button ready;
+	private Button quit;
+	private int p1Amount = 1000;
+	private int p2Amount = 1000;
+	
+	private Button p1Circle;
+	private Button p1Triangle;
+	private Button p1Square;
+	private Button p1Rect;
+	
+	private Button p2Circle;
+	private Button p2Triangle;
+	private Button p2Square;
+	private Button p2Rect;
+
 	private Grid player1Grid;
 	private Grid player2Grid;
 	private Level level;
@@ -31,21 +46,41 @@ public class BuildMenu extends Menu {
 	
 	public BuildMenu(TotemDefender game, Level level) {
 		this.level = level;
-		
-		
-		Vector2 buttonSize = new Vector2(new Vector2((game.getScreenWidth()/4), 50));
+		Vector2 squareButton = new Vector2((game.getScreenHeight()/8), (game.getScreenHeight()/8));
+		Vector2 buttonSize = new Vector2((game.getScreenWidth()/4), squareButton.y);
 		float topArea = (game.getScreenHeight() - buttonSize.y);
+		float rightSide = (game.getScreenWidth() - squareButton.x);
+		float screenCenterX = game.getScreenWidth()/2;	
 		
-		triangle = new Button("Triangle", buttonSize, new Vector2(0,topArea), Color.GREEN);
-		square = new Button("Square", buttonSize, new Vector2(buttonSize.x, topArea), Color.YELLOW);
-		rect = new Button("Rectangle", buttonSize, new Vector2(buttonSize.x * 2,topArea), Color.RED);
-		ready = new Button("READY!", buttonSize, new Vector2((buttonSize.x * 3),topArea), Color.CYAN);
+		p1Funding = new Button("Player 1", new Vector2((game.getScreenWidth()/4), 20), 
+				new Vector2(0, 0), new Color(0, 0, 0, 0));
+		ready = new Button("Game Turn", new Vector2((game.getScreenWidth()/4), 20),
+				new Vector2((game.getScreenWidth()/4), 0), new Color(0, 0, 0, 0));
+		quit = new Button("QUIT", new Vector2((game.getScreenWidth()/4), 20), 
+				new Vector2((game.getScreenWidth()/2), 0), new Color(0, 0, 0, 0));
+		p2Funding = new Button("Player 2", new Vector2((game.getScreenWidth()/4), 20), 
+				new Vector2((float) (game.getScreenWidth() * 0.75), 0), new Color(0, 0, 0, 0));
+		
+		p1Funding.setTextPosition(p1Funding.getPosition().x + p1Funding.getSize().x/2, p1Funding.getPosition().y + 12);
+		p2Funding.setTextPosition(p2Funding.getPosition().x + p1Funding.getSize().x/2, p2Funding.getPosition().y + 12);
+		ready.setTextPosition(ready.getPosition().x + p1Funding.getSize().x/2, ready.getPosition().y + 12);
+		quit.setTextPosition(quit.getPosition().x + p1Funding.getSize().x/2, quit.getPosition().y + 12);
+		
+		p1Circle = new Button("Circle", squareButton, new Vector2(0, topArea), Color.BLUE);
+		p1Triangle = new Button("Triangle", squareButton, new Vector2(0, topArea - squareButton.y), Color.GREEN);
+		p1Square = new Button("Square", squareButton, new Vector2(0, topArea - squareButton.y * 2), Color.RED);
+		p1Rect = new Button("Rectangle", squareButton, new Vector2(0, topArea - squareButton.y * 3), Color.YELLOW);
+		
+		p2Circle = new Button("Circle", squareButton, new Vector2(rightSide, topArea), Color.BLUE);
+		p2Triangle = new Button("Triangle", squareButton, new Vector2(rightSide, topArea - squareButton.y), Color.GREEN);
+		p2Square = new Button("Square", squareButton, new Vector2(rightSide, topArea - squareButton.y * 2), Color.RED);
+		p2Rect = new Button("Rectangle", squareButton, new Vector2(rightSide, topArea - squareButton.y * 3), Color.YELLOW);
 		
 		Vector2 ped1Pos = game.screenToWorld(level.getPlayer1Pedestal().getPosition());	
 		Vector2 ped2Pos = game.screenToWorld(level.getPlayer2Pedestal().getPosition());	
 		
 		player1Grid = new Grid();
-		player1Grid.setPosition(new Vector2(	ped1Pos.x - player1Grid.getWidth()/2,
+		player1Grid.setPosition(new Vector2(ped1Pos.x - player1Grid.getWidth()/2,
 												TotemDefender.PEDESTAL_HEIGHT + TotemDefender.GROUND_HEIGHT));
 		player2Grid = new Grid();
 		player2Grid.setPosition(new Vector2(ped2Pos.x - player1Grid.getWidth()/2, 
@@ -65,12 +100,22 @@ public class BuildMenu extends Menu {
 		entity2.getBody().setActive(false);
 		player2Grid.setEntity(entity2);
 		
-		this.addComponent(ready);
-		this.addComponent(triangle);
-		this.addComponent(square);
-		this.addComponent(rect);
+		this.addComponent(p1Funding);
+		this.addComponent(p2Funding);
 		this.addComponent(player1Grid);
 		this.addComponent(player2Grid);
+		this.addComponent(ready);
+		this.addComponent(quit);
+		
+		this.addComponent(p1Circle);
+		this.addComponent(p1Triangle);
+		this.addComponent(p1Square);
+		this.addComponent(p1Rect);
+		
+		this.addComponent(p2Circle);
+		this.addComponent(p2Triangle);
+		this.addComponent(p2Square);
+		this.addComponent(p2Rect);
 	};
 	
 	public Grid getGrid(){

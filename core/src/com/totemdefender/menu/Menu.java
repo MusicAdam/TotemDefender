@@ -106,5 +106,4 @@ public class Menu implements InputProcessor{
 
 	public void setShouldRender(boolean shouldRender) 
 	{ this.shouldRender = shouldRender; }
-	
 }
