@@ -49,6 +49,8 @@ public class BattleState implements State {
 	public void onEnter(TotemDefender game) {
 		hud = new HUD(game, this);
 		game.addMenu(hud);
+
+		game.getStateManager().attachState(new PostGameState(hud));
 		
 		for(BlockEntity ent : level.getPlacedBlocks()){
 			ent.getBody().setActive(true);
@@ -148,7 +150,16 @@ public class BattleState implements State {
 
 	@Override
 	public boolean canExit(TotemDefender game) {
-		return false; //Totem is on ground?
+		if(level.checkTotemStatus() != null){
+			if(level.checkTotemStatus().getID() == 1){
+				game.setWinner(game.getPlayer2());
+			}else{
+				game.setWinner(game.getPlayer1());				
+			}
+			return true;
+		}
+		
+		return false;
 	}
 
 	@Override

@@ -127,4 +127,14 @@ public class Level {
 		
 		return ((plID == 1) ? player1Totem.getBody().isAwake() : player2Totem.getBody().isAwake());
 	}
+	
+	public Player checkTotemStatus(){
+		if(player1Totem.isOnGround()){
+			return player1Totem.getOwner();
+		}else if(player2Totem.isOnGround()){
+			return player2Totem.getOwner();
+		}
+		
+		return null;
+	}
 }

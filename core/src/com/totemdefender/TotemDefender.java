@@ -66,6 +66,7 @@ public class TotemDefender extends ApplicationAdapter {
 	private SpriteBatch 		menuBatch; // ""			""
 	private Player				player1;
 	private Player				player2;
+	private Player				winner; //The winner of the last game
 	private Queue<Entity> 		deleteQueue;
 	
 	/** Control Variables */
@@ -335,4 +336,12 @@ public class TotemDefender extends ApplicationAdapter {
 	public Player getPlayer2(){ return player2; }
 	public void setPlayer1(Player pl){ player1 = pl; }
 	public void setPlayer2(Player pl){ player2 = pl; }
+
+	public Player getWinner() {
+		return winner;
+	}
+
+	public void setWinner(Player winner) {
+		this.winner = winner;
+	}
 }
