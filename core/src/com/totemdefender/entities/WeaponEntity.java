@@ -19,7 +19,7 @@ import com.totemdefender.states.BattleState;
 
 public class WeaponEntity extends Entity {	
 	
-	public static final boolean DEBUG_RENDER = true; //Renders debug positioning elements for the weapon
+	public static final boolean DEBUG_RENDER = false; //Renders debug positioning elements for the weapon
 	public static final float CHARGE_RATE = 1/1000f;     //Speed at which the charge meter increases
 	public static final float ROTATION = 1f;  //Degrees the weapon will rotate
 	public static final float VELOCITY = 1000f;
@@ -117,7 +117,7 @@ public class WeaponEntity extends Entity {
 		setSprite(new Sprite(weaponTexture));
 		
 		float aspectRatio = getSprite().getWidth()/getSprite().getHeight(); //Get aspect ratio to maintain for scaling
-		float scale = 1/10f; //Relative to screen;
+		float scale = 1/20f; //Relative to screen;
 		
 		getSprite().setSize(getSprite().getWidth() * scale * aspectRatio,
 							getSprite().getHeight() * scale * aspectRatio);
@@ -130,16 +130,16 @@ public class WeaponEntity extends Entity {
 		if(owner.getID() == 2){
 			xPos = -xPos; //Put it on the right side if its player 2
 			getSprite().flip(true, false);
-			getSprite().setOrigin(65, 12); //This is based on the logical rotation point on the cannon sprite
+			getSprite().setOrigin(78, 9); //This is based on the logical rotation point on the cannon sprite
 		}else{
-			getSprite().setOrigin(36, 12); //This is based on the logical rotation point on the cannon sprite
+			getSprite().setOrigin(22, 9); //This is based on the logical rotation point on the cannon sprite
 		}
 		
 		getSprite().setPosition(xPos - hw, yPos);
 		
 
-		barrelPos = new Vector2(getSprite().getOriginX() + 60 * flip, getSprite().getOriginY() + 45);
-		fireDirection = new Vector2(.5f, .225f);
+		barrelPos = new Vector2(getSprite().getOriginX() + 75 * flip, getSprite().getOriginY() + 20);
+		fireDirection = new Vector2(.5f, 0);
 		fireDirection.nor();
 		if(owner.getID() == 2){
 			fireDirection.x *= -1;
