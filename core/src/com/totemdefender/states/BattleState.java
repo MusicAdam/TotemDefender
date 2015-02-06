@@ -163,15 +163,16 @@ public class BattleState implements State {
 			level.getPlayer2Weapon().rotateDown();
 		
 		if(turn.getID() == 1){
-			if(level.getPlayer1Weapon().isCompleted() && level.getPlayer1Weapon().getProjectile() == null){				
-				if(level.checkActivePlayerEntities(1)){
+			if(level.getPlayer1Weapon().isCompleted() && level.getPlayer1Weapon().getProjectile() == null){		
+				System.out.println(level.checkActivePlayerEntities(2));
+				if(!level.checkActivePlayerEntities(2)){
 					turn = game.getPlayer2();
 					level.getPlayer1Weapon().resetCharge();
 				}
 			}
 		}else{
 			if(level.getPlayer2Weapon().isCompleted() && level.getPlayer2Weapon().getProjectile() == null){
-				if(level.checkActivePlayerEntities(1)){
+				if(!level.checkActivePlayerEntities(1)){
 					turn = game.getPlayer1();
 					level.getPlayer2Weapon().resetCharge();
 				}		
