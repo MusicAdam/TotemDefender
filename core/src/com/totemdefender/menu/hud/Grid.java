@@ -59,6 +59,7 @@ public class Grid extends Component {
 	}
 	
 	public void setEntity(BlockEntity entity){
+		index = new Vector2(WIDTH/2, HEIGHT/2);
 		this.entity = entity;
 		snapEntityToGrid();
 	}
