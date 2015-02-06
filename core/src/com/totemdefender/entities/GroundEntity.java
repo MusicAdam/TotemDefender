@@ -28,7 +28,7 @@ public class GroundEntity extends Entity{
 		Fixture fix = groundBody.createFixture(groundShape, 0.0f);
 		Filter filter = fix.getFilterData();
 		filter.categoryBits = Entity.GROUND;		
-		filter.maskBits = (short) 0xFFFF; //Everything
+		filter.maskBits = Entity.EVERYTHING;
 		fix.setFilterData(filter);
 		
 		groundShape.dispose();

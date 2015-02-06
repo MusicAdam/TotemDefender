@@ -11,11 +11,13 @@ import com.totemdefender.TotemDefender;
 
 
 public abstract class Entity {
-	public static final short PLAYER1 		= 	0x0001;
-	public static final short PLAYER2 		= 	0x0002;
-	public static final short GROUND 		=	0x0004;
-	public static final short PEDESTAL 		=	0x0008;
-	public static final short PROJECTILE 	=	0x0010;
+	/** Setup Bitmasks */
+	public static final short GROUND 				=	0x0001;
+	public static final short PEDESTAL 				=	0x0002;
+	public static final short BLOCK		 			=	0x0004;
+	public static final short PLAYER1_PROJECTILE 	= 	0x0008;
+	public static final short PLAYER2_PROJECTILE 	= 	0x0010;
+	public static final short EVERYTHING	= 	(short) 0xFFFF;
 	
 	public String name="Entity";
 	private Body body;

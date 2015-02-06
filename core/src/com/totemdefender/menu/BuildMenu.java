@@ -81,7 +81,8 @@ public class BuildMenu extends Menu {
 	public boolean keyUp(int keycode) {
 		/** PLAYER 1 INPUTS */
 		if(keycode == InputHandler.PL_1_SELECT && player1Grid.hasEntity()){
-			level.addPlacedBlock(player1Grid.getEntity());
+			if(!placingTotem)
+				level.addPlacedBlock(player1Grid.getEntity());
 			player1Grid.setEntity(null);
 			return true;
 		}
@@ -113,7 +114,8 @@ public class BuildMenu extends Menu {
 
 		/** PLAYER 2 INPUTS */
 		if(keycode == InputHandler.PL_2_SELECT && player2Grid.hasEntity()){
-			level.addPlacedBlock(player2Grid.getEntity());
+			if(!placingTotem)
+				level.addPlacedBlock(player2Grid.getEntity());
 			player2Grid.setEntity(null);
 			return true;
 		}
@@ -149,7 +151,7 @@ public class BuildMenu extends Menu {
 				TotemDefender.Get().setDoneBuilding(true);				
 			}else{
 				placingTotem = true;
-				/*
+				
 				TotemDefender game = TotemDefender.Get();
 				TotemEntity p1Totem = new TotemEntity(game.getPlayer1());
 				p1Totem.setName("Player 1's Totem");
@@ -165,8 +167,7 @@ public class BuildMenu extends Menu {
 				p2Totem.getBody().setActive(false);
 				player2Grid.setEntity(p2Totem);
 				game.addEntity(p2Totem);
-				level.setPlayer1Totem(p2Totem);
-				*/				
+				level.setPlayer2Totem(p2Totem);		
 			}
 			return true;
 		}

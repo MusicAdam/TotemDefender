@@ -47,13 +47,15 @@ public class BattleState implements State {
 
 	@Override
 	public void onEnter(TotemDefender game) {
-		System.out.println("On enter");
 		hud = new HUD(game, this);
 		game.addMenu(hud);
 		
 		for(BlockEntity ent : level.getPlacedBlocks()){
 			ent.getBody().setActive(true);
 		}
+		
+		level.getPlayer1Totem().getBody().setActive(true);
+		level.getPlayer2Totem().getBody().setActive(true);
 		
 		final BattleState thisRef = this;
 		//Add onSpaceDown listener

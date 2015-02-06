@@ -37,7 +37,7 @@ public class PedestalEntity extends Entity{
 		Fixture fix = body.createFixture(shape, 0.0f);
 		Filter filter = fix.getFilterData();
 		filter.categoryBits = Entity.PEDESTAL;
-		filter.maskBits = Entity.PLAYER1 | Entity.PLAYER2;
+		filter.maskBits = Entity.BLOCK;
 		fix.setFilterData(filter);
 		
 		shape.dispose();

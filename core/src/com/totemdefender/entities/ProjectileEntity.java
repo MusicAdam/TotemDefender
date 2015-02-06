@@ -35,15 +35,13 @@ public class ProjectileEntity extends Entity{
 		CircleShape shape = new CircleShape();
 		shape.setRadius(RADIUS * TotemDefender.WORLD_TO_BOX);
 		
-		short categoryBits 	= (getOwner() == game.getPlayer1()) ? Entity.PLAYER1 : Entity.PLAYER2;
-		short maskBits 			= (categoryBits == Entity.PLAYER1) ? Entity.PLAYER2 : Entity.PLAYER1;
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = shape;
 		fixtureDef.density = 1.0f; 
 		fixtureDef.friction = 0.4f;
 		fixtureDef.restitution = 0.4f;
-		fixtureDef.filter.categoryBits = Entity.PROJECTILE;
-		fixtureDef.filter.maskBits = (short) (maskBits | Entity.GROUND);
+		fixtureDef.filter.categoryBits = (getOwner().getID() == 1) ? Entity.PLAYER1_PROJECTILE : Entity.PLAYER2_PROJECTILE;
+		fixtureDef.filter.maskBits = Entity.GROUND | Entity.BLOCK;
 
 		// Create our fixture and attach it to the body
 		final ProjectileEntity thisRef = this;
