@@ -120,11 +120,12 @@ public class Level {
 	
 	public boolean checkActivePlayerEntities(int plID){
 		for(BlockEntity ent : getPlacedBlocks()){
-			if(ent.getOwner().getID() == 1 && ent.getBody().isAwake()){
-				return false;
+			if(ent.getOwner().getID() == plID && ent.getBody().isAwake()){
+				return true;
 			}
 		}
 		
-		return (plID == 1) ? player1Totem.getBody().isActive() : player2Totem.getBody().isActive();
+		System.out.println("TOTEM ACTIVE: " + player2Totem.getBody().isActive());
+		return ((plID == 1) ? player1Totem.getBody().isAwake() : player2Totem.getBody().isAwake());
 	}
 }
