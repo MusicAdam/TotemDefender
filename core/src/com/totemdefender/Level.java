@@ -2,6 +2,7 @@ package com.totemdefender;
 
 import java.util.ArrayList;
 
+import com.totemdefender.entities.BackgroundEntity;
 import com.totemdefender.entities.GroundEntity;
 import com.totemdefender.entities.PedestalEntity;
 import com.totemdefender.entities.TotemEntity;
@@ -16,12 +17,18 @@ public class Level {
 	private PedestalEntity 	player1Pedestal;
 	private PedestalEntity	player2Pedestal;
 	private TotemEntity		player1Totem;
+	private BackgroundEntity background; 
 
 	private TotemEntity		player2Totem;
 	private ArrayList<BlockEntity> placedBlocks = new ArrayList<BlockEntity>();
 	
 	public Level(TotemDefender game){		
 		/** Create the world **/
+		/*background = new BackgroundEntity();
+		background.setName("Background");
+		background.spawn(game);
+		game.addEntity(background);*/
+		
 		ground = new GroundEntity();
 		ground.setName("Ground");
 		ground.spawn(game);
@@ -109,5 +116,15 @@ public class Level {
 
 	public void setPlayer2Totem(TotemEntity player2Totem) {
 		this.player2Totem = player2Totem;
+	}
+	
+	public boolean checkActivePlayerEntities(int plID){
+		for(BlockEntity ent : getPlacedBlocks()){
+			if(ent.getOwner().getID() == 1 && ent.getBody().isAwake()){
+				return false;
+			}
+		}
+		
+		return (plID == 1) ? player1Totem.getBody().isActive() : player2Totem.getBody().isActive();
 	}
 }

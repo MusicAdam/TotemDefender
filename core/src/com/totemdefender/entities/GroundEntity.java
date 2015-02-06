@@ -1,6 +1,13 @@
 package com.totemdefender.entities;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Filter;
@@ -12,8 +19,16 @@ import com.totemdefender.TotemDefender;
 public class GroundEntity extends Entity{
 
 	@Override
+	public void render(SpriteBatch spriteBatch, ShapeRenderer shapeRenderer){
+		TotemDefender game = TotemDefender.Get();
+		shapeRenderer.begin(ShapeType.Filled);
+		shapeRenderer.setColor(Color.GREEN);
+		shapeRenderer.rect(-game.getScreenWidth()/2, -game.getScreenHeight()/2, game.getScreenWidth(), TotemDefender.GROUND_HEIGHT);
+		shapeRenderer.end();
+	}
+	
+	@Override
 	public void spawn(TotemDefender game) {
-		//Make the ground
 		float hw = Gdx.graphics.getWidth() * 2;
 		float hh = 10;
 		BodyDef groundDef = new BodyDef();
