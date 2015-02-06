@@ -1,17 +1,15 @@
 package com.totemdefender;
 
 import java.util.ArrayList;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.totemdefender.entities.Entity;
-import com.totemdefender.entities.TestEntity;
 import com.totemdefender.input.InputHandler;
 import com.totemdefender.input.KeyboardEvent;
 import com.totemdefender.menu.Menu;
-import com.totemdefender.states.BattleState;
 import com.totemdefender.states.BuildState;
-import com.totemdefender.states.ResolutionTestState;
 import com.totemdefender.states.StateManager;
-import com.totemdefender.states.TestState;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -22,19 +20,11 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class TotemDefender extends ApplicationAdapter {
@@ -48,6 +38,10 @@ public class TotemDefender extends ApplicationAdapter {
 	public static final boolean DEBUG				= true;		//Debug rendering and output when true 
 	public static final float	BLOCK_SIZE			= 30f;     //The default size of a block
 	public static final float 	STACK_LOCATION	 	= 3/4f; 	//The "stack" (player's weapon, pedastal, and build area) will be this proportion away from the center of the screen.
+	public static final	float	PEDESTAL_WIDTH		= 75;
+	public static final	float	PEDESTAL_HEIGHT		= 100;
+	public static final float 	GROUND_HEIGHT		= 20;
+	
 
 	/** Instance variables */
 	private static TotemDefender game;
@@ -70,6 +64,7 @@ public class TotemDefender extends ApplicationAdapter {
 	private SpriteBatch 		menuBatch; // ""			""
 	private Player				player1;
 	private Player				player2;
+	private Queue<Entity> 		deleteQueue;
 	
 	/** Control Variables */
 	private boolean isDoneBuilding;
@@ -103,6 +98,7 @@ public class TotemDefender extends ApplicationAdapter {
 		menuRenderer = new ShapeRenderer();
 		entityRenderer = new ShapeRenderer();
 		menuBatch = new SpriteBatch();
+		deleteQueue = new ConcurrentLinkedQueue<Entity>();
 		
 		inputMultiplexer.addProcessor(menuMultiplexer);
 		inputMultiplexer.addProcessor(inputHandler);
@@ -135,8 +131,17 @@ public class TotemDefender extends ApplicationAdapter {
 		Gdx.gl.glClearColor(0.1f, 0.1f, 0.18f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
+		
+		//Process deletions
+		while(!deleteQueue.isEmpty()){
+			Entity ent = deleteQueue.poll();
+			world.destroyBody(ent.getBody());
+		}
+		
 		accum += Gdx.graphics.getDeltaTime(); //Add previous frame time to accumulator
 				
+		
+		
 		//Maintain updates at the STEP rate
 		while(accum >= STEP){
 			accum -= STEP;
@@ -181,8 +186,8 @@ public class TotemDefender extends ApplicationAdapter {
 	@Override
 	public void resize(int w, int h){
 		viewport.update(w, h);
-		screenWidth = w;
-		screenHeight = h;
+		screenWidth = Gdx.graphics.getWidth();
+		screenHeight = Gdx.graphics.getHeight();
 	}
 	
 	/** addEntity registers a spawned entity with the game so it will be rendered and updated.
@@ -196,8 +201,10 @@ public class TotemDefender extends ApplicationAdapter {
 	/** destroyEntity removes a spawned entity from the entities list and also removes it from the box2d world if it has a body 
 	 * @return true on success, false on failure*/
 	public boolean destroyEntity(Entity ent){
-		if(ent.getBody() != null)
-			world.destroyBody(ent.getBody());
+		if(ent.getBody() != null){
+			if(!deleteQueue.contains(ent))
+				deleteQueue.add(ent);
+		}
 		
 		return entities.remove(ent);
 	}

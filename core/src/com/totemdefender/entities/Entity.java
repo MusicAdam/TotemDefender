@@ -5,16 +5,17 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.World;
 import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
 
 
 
 public abstract class Entity {
-	public static final short PLAYER1 	= 	0x0001;
-	public static final short PLAYER2 	= 	0x0002;
-	public static final short GROUND 	=	0x0004;
+	public static final short PLAYER1 		= 	0x0001;
+	public static final short PLAYER2 		= 	0x0002;
+	public static final short GROUND 		=	0x0004;
+	public static final short PEDESTAL 		=	0x0008;
+	public static final short PROJECTILE 	=	0x0010;
 	
 	public String name="Entity";
 	private Body body;

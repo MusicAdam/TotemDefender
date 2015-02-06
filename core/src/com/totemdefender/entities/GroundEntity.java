@@ -14,13 +14,14 @@ public class GroundEntity extends Entity{
 	@Override
 	public void spawn(TotemDefender game) {
 		//Make the ground
-		float hw = Gdx.graphics.getWidth() / 2;
+		float hw = Gdx.graphics.getWidth() * 2;
 		float hh = 10;
 		BodyDef groundDef = new BodyDef();
 		groundDef.type = BodyType.StaticBody;
 		groundDef.position.set(0, -Gdx.graphics.getHeight()/2 * TotemDefender.WORLD_TO_BOX + ((hh + 1) * TotemDefender.WORLD_TO_BOX));
 		
 		Body groundBody = game.getWorld().createBody(groundDef);
+		groundBody.setUserData(this);
 		
 		PolygonShape groundShape = new PolygonShape();
 		groundShape.setAsBox((hw - 1) * TotemDefender.WORLD_TO_BOX, hh * TotemDefender.WORLD_TO_BOX);
