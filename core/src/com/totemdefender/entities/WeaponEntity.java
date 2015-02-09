@@ -18,8 +18,6 @@ import com.totemdefender.TotemDefender;
 import com.totemdefender.states.BattleState;
 
 public class WeaponEntity extends Entity {	
-	
-	public static final boolean DEBUG_RENDER = false; //Renders debug positioning elements for the weapon
 	public static final float CHARGE_RATE = 1/1000f;     //Speed at which the charge meter increases
 	public static final float ROTATION = 1f;  //Degrees the weapon will rotate
 	public static final float VELOCITY = 1500f;
@@ -46,7 +44,7 @@ public class WeaponEntity extends Entity {
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer){
 		super.render(batch, shapeRenderer);
 		
-		if(DEBUG_RENDER){
+		if(TotemDefender.DEBUG){
 			shapeRenderer.begin(ShapeType.Line);
 			shapeRenderer.setColor(1, 0, 0, 1);
 			shapeRenderer.circle(getPosition().x + getSprite().getOriginX(), getPosition().y + getSprite().getOriginY(), 5);

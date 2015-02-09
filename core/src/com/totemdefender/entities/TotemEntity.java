@@ -18,7 +18,7 @@ public class TotemEntity extends BlockEntity {
 	private boolean onGround = false;
 	
 	public TotemEntity(Player owner) {
-		super(owner, 0, 1, 2);
+		super(owner, Material.Totem, Shape.Totem);
 		setRotatable(false);
 	}
 	
