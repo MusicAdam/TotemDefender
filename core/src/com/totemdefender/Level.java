@@ -24,10 +24,10 @@ public class Level {
 	
 	public Level(TotemDefender game){		
 		/** Create the world **/
-		/*background = new BackgroundEntity();
+		background = new BackgroundEntity();
 		background.setName("Background");
 		background.spawn(game);
-		game.addEntity(background);*/
+		game.addEntity(background);
 		
 		ground = new GroundEntity();
 		ground.setName("Ground");

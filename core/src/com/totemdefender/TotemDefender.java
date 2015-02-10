@@ -139,6 +139,8 @@ public class TotemDefender extends ApplicationAdapter {
 		assetManager.load("wooden_pedestal.png", Texture.class);
 		assetManager.load("blocks/block_square_stone_1.png", Texture.class);
 		assetManager.load("blocks/block_square_stone_2.png", Texture.class);
+		assetManager.load("totem_face.png", Texture.class);
+		assetManager.load("bg.png", Texture.class);
 		//assetManager.load("blocks/block_stone_square_2.png", Texture.class);
 		//assetManager.load("blocks/block_stone_square_3.png", Texture.class);
 		assetManager.finishLoading(); //Block until finished loading for now.

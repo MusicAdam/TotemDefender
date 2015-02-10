@@ -116,28 +116,13 @@ public class BuildMenu extends Menu {
 		player2Grid = new Grid();
 		player2Grid.setPosition(new Vector2(ped2Pos.x - player2Grid.getWidth()/2, 
 											TotemDefender.PEDESTAL_HEIGHT + TotemDefender.GROUND_HEIGHT));
-		
-		/*
-		RectangleBlockEntity entity = new RectangleBlockEntity(game.getPlayer1());		
-		entity.spawn(game);
-		game.addEntity(entity);
-		
-		entity.getBody().setActive(false);
-		player1Grid.setEntity(entity);
-		
-		RectangleBlockEntity entity2 = new RectangleBlockEntity(game.getPlayer2());		
-		entity2.spawn(game);
-		game.addEntity(entity2);
-		
-		entity2.getBody().setActive(false);
-		player2Grid.setEntity(entity2);
-		*/
-		this.addComponent(p1Funding);
-		this.addComponent(p2Funding);
+
+		//this.addComponent(p1Funding);
+		//this.addComponent(p2Funding);
 		this.addComponent(player1Grid);
 		this.addComponent(player2Grid);
-		this.addComponent(ready);
-		this.addComponent(quit);
+		//this.addComponent(ready);
+		//this.addComponent(quit);
 		
 		//this.addComponent(p1Circle);
 		//this.addComponent(p1Triangle);

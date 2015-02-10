@@ -1,5 +1,7 @@
 package com.totemdefender.entities;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -22,26 +24,14 @@ public class TotemEntity extends BlockEntity {
 		setRotatable(false);
 	}
 	
-
-	@Override
-	public void render(SpriteBatch spriteBatch, ShapeRenderer shapeRenderer){
-		float angle = 0;
-		if(getBody().isActive()){
-			angle = (float)Math.toDegrees(getBody().getAngle());
-		}
-		shapeRenderer.begin(ShapeType.Filled);
-		shapeRenderer.setColor(.8f, .6f, .8f, 1);
-		shapeRenderer.identity();
-		shapeRenderer.translate(getPosition().x, getPosition().y, 0);
-		shapeRenderer.rotate(0, 0, 1, angle);
-		shapeRenderer.rect(-getWidth()/2, -getHeight()/2, getWidth(), getHeight());
-		shapeRenderer.identity();
-		shapeRenderer.end();
-	}
-	
 	@Override
 	public void spawn(TotemDefender game){
 		super.spawn(game);
+		
+		Texture tex = game.getAssetManager().get("totem_face.png", Texture.class);
+		setSprite(new Sprite(tex));
+		getSprite().setSize(TotemDefender.BLOCK_SIZE * xScale, TotemDefender.BLOCK_SIZE * yScale);
+		getSprite().setOriginCenter();
 		
 		final TotemEntity thisRef = this;
 		getBody().getFixtureList().first().setUserData(new CollisionListener(){
@@ -58,6 +48,8 @@ public class TotemEntity extends BlockEntity {
 			}
 			
 		});
+		
+		isSpawned = true;
 	}
 	
 	public boolean isOnGround(){

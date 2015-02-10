@@ -69,7 +69,7 @@ public class ResolutionTestState implements State {
 		//Test screen/world translations
 		Vector2 worldOrigin = game.worldToScreen(new Vector2(0, 0)); //Get the world origin (0, 0) in screen coordinates
 		Vector2 originFromWorld = game.screenToWorld(new Vector2(w/2, h/2)); //Get screen origin from worlds origin (relative to screen)
-		float radius = 15;
+		float radius = 5;
 		
 		System.out.println(worldOrigin);
 		

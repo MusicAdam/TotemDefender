@@ -8,7 +8,7 @@ public class BackgroundEntity extends Entity{
 	
 	@Override
 	public void spawn(TotemDefender game) {
-		Texture bg = game.getAssetManager().get("background.png", Texture.class);
+		Texture bg = game.getAssetManager().get("bg.png", Texture.class);
 		setSprite(new Sprite(bg));
 		
 		getSprite().setSize(TotemDefender.V_WIDTH, TotemDefender.V_HEIGHT);
