@@ -14,6 +14,8 @@ public class SquareBlockEntity extends BlockEntity {
 	public void spawn(TotemDefender game){
 		super.spawn(game);
 		
+		
+		
 		setDensity(DENSITY);
 	}
 }

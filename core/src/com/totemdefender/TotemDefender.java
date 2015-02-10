@@ -1,6 +1,7 @@
 package com.totemdefender;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -51,7 +52,7 @@ public class TotemDefender extends ApplicationAdapter {
 	public static final Vector2 GRAVITY				= new Vector2(0, -9.8f); //Gravity for physics simulation
 	public static final int 	POSITION_ITERATIONS = 6; 		//Position iterations for box2d
 	public static final int 	VELOCITY_ITERATIONS = 8; 		//Velocity iterations for box2d
-	public static final boolean DEBUG				= true;		//Debug rendering and output when true 
+	public static final boolean DEBUG				= false;		//Debug rendering and output when true 
 	public static final float	BLOCK_SIZE			= 30f;     //The default size of a block
 	public static final float 	STACK_LOCATION	 	= 3/4f; 	//The "stack" (player's weapon, pedastal, and build area) will be this proportion away from the center of the screen.
 	public static final	float	PEDESTAL_WIDTH		= BLOCK_SIZE * 4;
@@ -81,7 +82,10 @@ public class TotemDefender extends ApplicationAdapter {
 	private Player				player1;
 	private Player				player2;
 	private Player				winner; //The winner of the last game
-	private Queue<Entity> 		deleteQueue;
+	private Queue<Entity> 		entityDeleteQueue; //Need these queues to avoid concurrent modifications during box2d step and menu/entity iteration
+	private Queue<Entity> 		entityAddQueue;
+	private Queue<Menu> 		menuDeleteQueue;
+	private Queue<Menu> 		menuAddQueue;
 	
 	/** Control Variables */
 	private boolean isDoneBuilding;
@@ -118,7 +122,10 @@ public class TotemDefender extends ApplicationAdapter {
 		menuMultiplexer = new InputMultiplexer();
 		inputHandler = new InputHandler(this);
 		menus = new ArrayList<Menu>();
-		deleteQueue = new ConcurrentLinkedQueue<Entity>();
+		entityDeleteQueue = new ConcurrentLinkedQueue<Entity>();
+		entityAddQueue = new ConcurrentLinkedQueue<Entity>();
+		menuDeleteQueue = new ConcurrentLinkedQueue<Menu>();
+		menuAddQueue = new ConcurrentLinkedQueue<Menu>();
 		
 		inputMultiplexer.addProcessor(menuMultiplexer);
 		inputMultiplexer.addProcessor(inputHandler);
@@ -128,11 +135,16 @@ public class TotemDefender extends ApplicationAdapter {
 		
 		//Load resources
 		assetManager.load("cannon.png", Texture.class);
+		assetManager.load("projectiles/cannon_projectile.png", Texture.class);		
+		assetManager.load("wooden_pedestal.png", Texture.class);
 		assetManager.load("blocks/block_square_stone_1.png", Texture.class);
+		assetManager.load("blocks/block_square_stone_2.png", Texture.class);
 		//assetManager.load("blocks/block_stone_square_2.png", Texture.class);
 		//assetManager.load("blocks/block_stone_square_3.png", Texture.class);
 		assetManager.finishLoading(); //Block until finished loading for now.
 		
+		
+		Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode()); //Default to fullscreen desktop mode
 		////		DEBUG STUFF	 /////	 
 		//stateManager.attachState(new ResolutionTestState());	
 		//stateManager.attachState(new TestState());		
@@ -146,7 +158,7 @@ public class TotemDefender extends ApplicationAdapter {
 			}
 		});
 
-		//Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode());
+		
 	}
 
 	@Override
@@ -156,17 +168,35 @@ public class TotemDefender extends ApplicationAdapter {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		
-		//Process deletions
-		while(!deleteQueue.isEmpty()){
-			Entity ent = deleteQueue.poll();
-			world.destroyBody(ent.getBody());
+		/** QUEUES **/
+		//Process additions
+		while(!entityAddQueue.isEmpty()){
+			Entity ent = entityAddQueue.poll();
+			entities.add(ent);
 		}
 		
-		accum += Gdx.graphics.getDeltaTime(); //Add previous frame time to accumulator
-				
+		while(!menuAddQueue.isEmpty()){
+			Menu menu = menuAddQueue.poll();
+			menus.add(menu);
+			menuMultiplexer.addProcessor(menu);
+		}
 		
+		//Process deletions
+		while(!entityDeleteQueue.isEmpty()){
+			Entity ent = entityDeleteQueue.poll();
+			if(ent.getBody() != null)
+				world.destroyBody(ent.getBody());
+			entities.remove(ent);
+		}
+		
+		while(!menuDeleteQueue.isEmpty()){
+			Menu menu = menuDeleteQueue.poll();
+			menus.remove(menu);
+			menuMultiplexer.removeProcessor(menu);
+		}
 		
 		//Maintain updates at the STEP rate
+		accum += Gdx.graphics.getDeltaTime(); //Add previous frame time to accumulator		
 		while(accum >= STEP){
 			accum -= STEP;
 			
@@ -174,11 +204,19 @@ public class TotemDefender extends ApplicationAdapter {
 			world.step(STEP, 8, 6);
 			stateManager.update();
 			
+			Iterator<Menu> menuIterator = menus.iterator(); //Use an interator to avoid concurrent modification
+			/*while(menuIterator.hasNext()){
+				menuIterator.next().update();
+			}*/
 			for(Menu menu : menus){
 				menu.update();
 			}
 			
 			//Update entities
+			/*Iterator<Entity> entityIterator = entities.iterator(); //Use an interator to avoid concurrent modification
+			while(entityIterator.hasNext()){
+				entityIterator.next().update(this);
+			}*/
 			for(Entity ent : entities){
 				ent.update(this);
 			}
@@ -218,6 +256,8 @@ public class TotemDefender extends ApplicationAdapter {
 		menuViewport.update(w, h);
 		menuCamera.translate(menuViewport.getWorldWidth()/2, menuViewport.getWorldHeight()/2); //Translate to world origin
 		
+		setVirtualSize(w/(float)h);
+		
 		System.out.println(w +", " + h);
 	}
 	
@@ -241,18 +281,15 @@ public class TotemDefender extends ApplicationAdapter {
 	public boolean addEntity(Entity ent){
 		if(!ent.isSpawned()) return false;
 
-		return entities.add(ent);
+		return entityAddQueue.add(ent);
 	}
 	
 	/** destroyEntity removes a spawned entity from the entities list and also removes it from the box2d world if it has a body 
 	 * @return true on success, false on failure*/
 	public boolean destroyEntity(Entity ent){
-		if(ent.getBody() != null){
-			if(!deleteQueue.contains(ent))
-				deleteQueue.add(ent);
-		}
-		
-		return entities.remove(ent);
+		if(!entityDeleteQueue.contains(ent))
+			return entityDeleteQueue.add(ent);
+		return false;
 	}
 	
 	/** 
@@ -320,13 +357,11 @@ public class TotemDefender extends ApplicationAdapter {
 	}
 	
 	public void addMenu(Menu menu){
-		menus.add(menu);
-		menuMultiplexer.addProcessor(menu);
+		menuAddQueue.add(menu);
 	}
 	
 	public void removeMenu(Menu menu){
-		menus.remove(menu);
-		menuMultiplexer.removeProcessor(menu);
+		menuDeleteQueue.add(menu);
 	}
 	
 	/**

@@ -4,6 +4,7 @@ import java.util.Random;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -93,7 +94,7 @@ public abstract class BlockEntity extends Entity{
 		}
 		
 		Random rand = new Random();
-		int num = 1;//rand.nextInt(3) + 1;
+		int num = rand.nextInt(2) + 1;
 		
 		return "blocks/block_"+shapeId+"_"+materialId+"_"+num+".png";
 	}
@@ -101,8 +102,9 @@ public abstract class BlockEntity extends Entity{
 	@Override
 	public void spawn(TotemDefender game) {
 		if(shape != Shape.Totem){
-			Texture bockTexture = game.getAssetManager().get(getRandomAsset(), Texture.class);
-			setSprite(new Sprite(bockTexture));
+			Texture blockTexture = game.getAssetManager().get(getRandomAsset(), Texture.class);
+			blockTexture.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
+			setSprite(new Sprite(blockTexture));
 			getSprite().setSize(TotemDefender.BLOCK_SIZE, TotemDefender.BLOCK_SIZE);
 			getSprite().setOriginCenter();
 		}

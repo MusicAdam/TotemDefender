@@ -1,5 +1,7 @@
 package com.totemdefender.entities;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
@@ -17,6 +19,10 @@ public class PedestalEntity extends Entity{
 	
 	@Override
 	public void spawn(TotemDefender game) {
+		Texture pedestalTexutre = game.getAssetManager().get("wooden_pedestal.png", Texture.class);
+		setSprite(new Sprite(pedestalTexutre));
+		getSprite().setSize(TotemDefender.PEDESTAL_WIDTH, TotemDefender.PEDESTAL_HEIGHT);
+		
 		float hw   = TotemDefender.PEDESTAL_WIDTH/2;
 		float hh   = TotemDefender.PEDESTAL_HEIGHT/2;
 		float xPos = (-TotemDefender.V_WIDTH/2) * TotemDefender.STACK_LOCATION;
@@ -43,6 +49,8 @@ public class PedestalEntity extends Entity{
 		shape.dispose();
 		
 		setBody(body);
+		
+		isSpawned = true;
 	}
 
 }

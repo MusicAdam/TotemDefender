@@ -1,6 +1,8 @@
 package com.totemdefender.entities;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
@@ -27,6 +29,9 @@ public class ProjectileEntity extends Entity{
 
 	@Override
 	public void spawn(TotemDefender game) {
+		Texture texture = game.getAssetManager().get("projectiles/cannon_projectile.png", Texture.class);
+		setSprite(new Sprite(texture));
+		
 		BodyDef def = new BodyDef();
 		def.type = BodyType.DynamicBody;		
 		def.position.set(barrelPos.x * TotemDefender.WORLD_TO_BOX, barrelPos.y * TotemDefender.WORLD_TO_BOX);
@@ -63,6 +68,8 @@ public class ProjectileEntity extends Entity{
 		shape.dispose();
 		
 		startTime = System.currentTimeMillis();
+		
+		isSpawned = true;
 	}
 	
 	@Override
