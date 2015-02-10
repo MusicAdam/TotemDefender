@@ -53,20 +53,20 @@ public class BuildMenu extends Menu {
 		p1ButtonOrder = new ArrayList<Button>();
 		p2ButtonOrder = new ArrayList<Button>();
 		
-		Vector2 squareButton = new Vector2((game.getScreenHeight()/8), (game.getScreenHeight()/8));
-		Vector2 buttonSize = new Vector2((game.getScreenWidth()/4), squareButton.y);
-		float topArea = (game.getScreenHeight() - buttonSize.y);
-		float rightSide = (game.getScreenWidth() - squareButton.x);
-		float screenCenterX = game.getScreenWidth()/2;	
+		Vector2 squareButton = new Vector2((TotemDefender.V_HEIGHT/8), (TotemDefender.V_HEIGHT/8));
+		Vector2 buttonSize = new Vector2((TotemDefender.V_WIDTH/4), squareButton.y);
+		float topArea = (TotemDefender.V_HEIGHT - buttonSize.y);
+		float rightSide = (TotemDefender.V_WIDTH - squareButton.x);
+		float screenCenterX = TotemDefender.V_WIDTH/2;	
 		
-		p1Funding = new Button("Player 1", new Vector2((game.getScreenWidth()/4), 20), 
+		p1Funding = new Button("Player 1", new Vector2((TotemDefender.V_WIDTH/4), 20), 
 				new Vector2(0, 0), new Color(0, 0, 0, 0));
-		ready = new Button("Game Turn", new Vector2((game.getScreenWidth()/4), 20),
-				new Vector2((game.getScreenWidth()/4), 0), new Color(0, 0, 0, 0));
-		quit = new Button("QUIT", new Vector2((game.getScreenWidth()/4), 20), 
-				new Vector2((game.getScreenWidth()/2), 0), new Color(0, 0, 0, 0));
-		p2Funding = new Button("Player 2", new Vector2((game.getScreenWidth()/4), 20), 
-				new Vector2((float) (game.getScreenWidth() * 0.75), 0), new Color(0, 0, 0, 0));
+		ready = new Button("Game Turn", new Vector2((TotemDefender.V_WIDTH/4), 20),
+				new Vector2((TotemDefender.V_WIDTH/4), 0), new Color(0, 0, 0, 0));
+		quit = new Button("QUIT", new Vector2((TotemDefender.V_WIDTH/4), 20), 
+				new Vector2((TotemDefender.V_WIDTH/2), 0), new Color(0, 0, 0, 0));
+		p2Funding = new Button("Player 2", new Vector2((TotemDefender.V_WIDTH/4), 20), 
+				new Vector2((float) (TotemDefender.V_WIDTH * 0.75), 0), new Color(0, 0, 0, 0));
 		
 		p1Funding.setTextPosition(p1Funding.getPosition().x + p1Funding.getSize().x/2, p1Funding.getPosition().y + 12);
 		p2Funding.setTextPosition(p2Funding.getPosition().x + p1Funding.getSize().x/2, p2Funding.getPosition().y + 12);
@@ -107,14 +107,14 @@ public class BuildMenu extends Menu {
 			}
 		};
 		
-		Vector2 ped1Pos = game.screenToWorld(level.getPlayer1Pedestal().getPosition());	
-		Vector2 ped2Pos = game.screenToWorld(level.getPlayer2Pedestal().getPosition());	
+		Vector2 ped1Pos = game.worldToScreen(level.getPlayer1Pedestal().getPosition());	
+		Vector2 ped2Pos = game.worldToScreen(level.getPlayer2Pedestal().getPosition());	
 		
 		player1Grid = new Grid();
 		player1Grid.setPosition(new Vector2(ped1Pos.x - player1Grid.getWidth()/2,
 												TotemDefender.PEDESTAL_HEIGHT + TotemDefender.GROUND_HEIGHT));
 		player2Grid = new Grid();
-		player2Grid.setPosition(new Vector2(ped2Pos.x - player1Grid.getWidth()/2, 
+		player2Grid.setPosition(new Vector2(ped2Pos.x - player2Grid.getWidth()/2, 
 											TotemDefender.PEDESTAL_HEIGHT + TotemDefender.GROUND_HEIGHT));
 		
 		/*
@@ -303,7 +303,7 @@ public class BuildMenu extends Menu {
 				player2Grid.shiftIndexUp();
 			}else{
 				dehighlightIndex(p2ButtonOrder, p2Index);
-				p2Index = indexDown(p1Index);
+				p2Index = indexDown(p2Index);
 				highlightIndex(p2ButtonOrder, p2Index);
 			}
 			return true;

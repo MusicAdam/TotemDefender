@@ -24,22 +24,22 @@ public class HUD extends Menu{
 	Grid grid;
 	
 	public HUD(TotemDefender game, BattleState battleState){
-		float buttonHeight = game.getScreenHeight()/10;
-		float topArea = game.getScreenHeight() - buttonHeight;
+		float buttonHeight = TotemDefender.V_HEIGHT/10;
+		float topArea = TotemDefender.V_HEIGHT - buttonHeight;
 		this.game = game;
 		this.battleState = battleState;
 		
 		weapon1ChargeMeter = new ChargeMeter(battleState.getLevel().getPlayer1Weapon());
 		weapon2ChargeMeter = new ChargeMeter(battleState.getLevel().getPlayer2Weapon());
 		
-		player1 = new Button("Player 1", new Vector2((game.getScreenWidth()/4), buttonHeight), 
+		player1 = new Button("Player 1", new Vector2((TotemDefender.V_WIDTH/4), buttonHeight), 
 				new Vector2(0, topArea), new Color(0, 0, 0, 0));
-		gameTurn = new Button("Game Turn", new Vector2((game.getScreenWidth()/4), buttonHeight),
-				new Vector2((game.getScreenWidth()/4), topArea), new Color(0, 0, 0, 0));
-		quit = new Button("QUIT", new Vector2((game.getScreenWidth()/4), buttonHeight), 
-				new Vector2((game.getScreenWidth()/2), topArea), new Color(0, 0, 0, 0));
-		player2 = new Button("Player 2", new Vector2((game.getScreenWidth()/4), buttonHeight), 
-				new Vector2((float) (game.getScreenWidth() * 0.75), topArea), new Color(0, 0, 0, 0));
+		gameTurn = new Button("Game Turn", new Vector2((TotemDefender.V_WIDTH/4), buttonHeight),
+				new Vector2((TotemDefender.V_WIDTH/4), topArea), new Color(0, 0, 0, 0));
+		quit = new Button("QUIT", new Vector2((TotemDefender.V_WIDTH/4), buttonHeight), 
+				new Vector2((TotemDefender.V_WIDTH/2), topArea), new Color(0, 0, 0, 0));
+		player2 = new Button("Player 2", new Vector2((TotemDefender.V_WIDTH/4), buttonHeight), 
+				new Vector2((float) (TotemDefender.V_WIDTH * 0.75), topArea), new Color(0, 0, 0, 0));
 		
 		player1.setTextPosition(player1.getPosition().x + player1.getSize().x/2, player1.getPosition().y + 12);
 		player2.setTextPosition(player2.getPosition().x + player1.getSize().x/2, player2.getPosition().y + 12);

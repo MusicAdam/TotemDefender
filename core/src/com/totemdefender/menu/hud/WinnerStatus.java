@@ -32,7 +32,7 @@ public class WinnerStatus extends Component {
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer) {
 		batch.begin();
 			bitMapFont.setColor(Color.WHITE);
-			bitMapFont.draw(batch, text, TotemDefender.Get().getScreenWidth()/2 - 300, TotemDefender.Get().getScreenHeight()/2);
+			bitMapFont.draw(batch, text, TotemDefender.V_WIDTH/2 - 300, TotemDefender.V_HEIGHT/2);
 		batch.end();
 	}
 

@@ -28,7 +28,7 @@ public class ChargeMeter extends Component{
 		float padding = 4;
 		
 		if(weapon.chargeStarted()){
-			Vector2 weaponPos = TotemDefender.Get().screenToWorld(weapon.getPosition());
+			Vector2 weaponPos = TotemDefender.Get().worldToScreen(weapon.getPosition());
 			float xPos = weaponPos.x + (width * xOffset);
 			float yPos = weaponPos.y + spriteHeight +padding/2;
 			

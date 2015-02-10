@@ -14,7 +14,7 @@ public class StartMenu extends Menu {
 	private Button instruction;
 	
 	public StartMenu(TotemDefender game){
-		Vector2 buttonSize = new Vector2(new Vector2((game.getScreenWidth()/3),game.getScreenHeight()/6));
+		Vector2 buttonSize = new Vector2(new Vector2((TotemDefender.V_WIDTH/3),TotemDefender.V_HEIGHT/6));
 		
 		start = new Button("Start Game", buttonSize, 
 				new Vector2(buttonSize.x, buttonSize.y * 4), Color.GREEN);

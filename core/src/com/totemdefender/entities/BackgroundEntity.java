@@ -11,8 +11,8 @@ public class BackgroundEntity extends Entity{
 		Texture bg = game.getAssetManager().get("background.png", Texture.class);
 		setSprite(new Sprite(bg));
 		
-		getSprite().setSize(game.getScreenWidth(), game.getScreenHeight());
-		getSprite().setPosition(-game.getScreenWidth()/2, -game.getScreenHeight()/2);
+		getSprite().setSize(TotemDefender.V_WIDTH, TotemDefender.V_HEIGHT);
+		getSprite().setPosition(-TotemDefender.V_WIDTH/2, -TotemDefender.V_HEIGHT/2);
 		
 		isSpawned = true;
 	}

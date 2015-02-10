@@ -19,11 +19,11 @@ public class PedestalEntity extends Entity{
 	public void spawn(TotemDefender game) {
 		float hw   = TotemDefender.PEDESTAL_WIDTH/2;
 		float hh   = TotemDefender.PEDESTAL_HEIGHT/2;
-		float xPos = (-game.getScreenWidth()/2) * TotemDefender.STACK_LOCATION;
-		float yPos = -game.getScreenHeight()/2 + 20 + hh; //20 is hardcoded ground size
+		float xPos = (-TotemDefender.V_WIDTH/2) * TotemDefender.STACK_LOCATION;
+		float yPos = -TotemDefender.V_HEIGHT/2 + 20 + hh; //20 is hardcoded ground size
 		
 		if(getOwner().getID() == 2)
-			xPos = (game.getScreenWidth()/2) * TotemDefender.STACK_LOCATION;
+			xPos = (TotemDefender.V_WIDTH/2) * TotemDefender.STACK_LOCATION;
 		
 		BodyDef weaponDef = new BodyDef();
 		weaponDef.type = BodyType.StaticBody;

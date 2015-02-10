@@ -122,8 +122,8 @@ public class WeaponEntity extends Entity {
 		
 		float hw = getSprite().getWidth()/2;
 		float hh = getSprite().getHeight()/2;
-		float xPos = (-game.getScreenWidth()/2) * TotemDefender.STACK_LOCATION + 200;
-		float yPos = -game.getScreenHeight()/2 + TotemDefender.GROUND_HEIGHT;
+		float xPos = (-TotemDefender.V_WIDTH/2) * TotemDefender.STACK_LOCATION + 200;
+		float yPos = -TotemDefender.V_HEIGHT/2 + TotemDefender.GROUND_HEIGHT;
 		
 		if(owner.getID() == 2){
 			xPos = -xPos; //Put it on the right side if its player 2

@@ -9,6 +9,7 @@ import com.totemdefender.input.InputHandler;
 import com.totemdefender.input.KeyboardEvent;
 import com.totemdefender.menu.Menu;
 import com.totemdefender.states.BuildState;
+import com.totemdefender.states.ResolutionTestState;
 import com.totemdefender.states.StateManager;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -27,10 +28,23 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.FillViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class TotemDefender extends ApplicationAdapter {
 	/** Static configuration variables */
+	public static int		V_WIDTH				= 1280;
+	public static int		V_HEIGHT			= 800;
+	
+	/** Setup supported resolutions on 16:10, 16:9, and 4:3 aspect ratios */
+	public static final int		V_WIDTH_43		= 1280;
+	public static final int		V_HEIGHT_43		= 960;
+	public static final int		V_WIDTH_169		= 1280;
+	public static final int		V_HEIGHT_169	= 720;
+	public static final int		V_WIDTH_1610	= 1280;
+	public static final int		V_HEIGHT_1610	= 800;
+	
 	public static final float 	STEP 				= 1/60f; 	//Time step for simulation in seconds.
 	public static final float 	WORLD_TO_BOX = 0.01f;
 	public static final float   BOX_TO_WORLD = 100f;
@@ -47,20 +61,20 @@ public class TotemDefender extends ApplicationAdapter {
 
 	/** Instance variables */
 	private static TotemDefender game;
-	private int					screenWidth;
-	private int					screenHeight;	
 	private SpriteBatch 		entityBatch;	//Sprite batch for rendering
 	private ArrayList<Entity> 	entities; //List of spawned entities
 	private ArrayList<Menu> 	menus; //List of spawned entities
 	private StateManager		stateManager; //Controls game's states.
 	private World				world; //Box2d physics world.
-	private OrthographicCamera  camera; //Games camera
+	private OrthographicCamera  worldCamera; //World camera
+	private OrthographicCamera  menuCamera; //Menu camera
 	private float 				accum = 0;	//Time accumulator to ensure updates are performed at the same rate as step.
 	private AssetManager 		assetManager; //Libgdx utility to asynchronusly load assets.
 	private InputMultiplexer	inputMultiplexer; //Multiplexer for input handling
 	private InputMultiplexer	menuMultiplexer; //Menus will attach to this
 	private InputHandler		inputHandler; //Game controls will add listeners to this
-	private Viewport			viewport;	//Keep the game looking good at any aspect ratio
+	private Viewport			worldViewport;	//Keep the game looking good at any aspect ratio
+	private Viewport			menuViewport;	//Can't have two cameras on the same viewport
 	private ShapeRenderer		menuRenderer; //This is for menus and is therefore not not transformed by cam matrix
 	private ShapeRenderer		entityRenderer;
 	private SpriteBatch 		menuBatch; // ""			""
@@ -80,14 +94,21 @@ public class TotemDefender extends ApplicationAdapter {
 		//Initialize
 		game = this;
 		
-		//Set virtual size aspect ratio to the desktop's aspect ratio.
-		Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode());
-		screenWidth = Gdx.graphics.getWidth();
-		screenHeight = Gdx.graphics.getHeight();
+		/** Intialize aspect ratio and Virtual resolution to desktop aspect ratio */
+		setVirtualSize((float)Gdx.graphics.getDesktopDisplayMode().width/(float)Gdx.graphics.getDesktopDisplayMode().height);
 		
+		/** Rendering */
+		worldCamera = new OrthographicCamera(V_WIDTH, V_HEIGHT);
+		worldCamera.update();
+		menuCamera = new OrthographicCamera(V_WIDTH, V_HEIGHT);
+		menuCamera.update();
+		worldViewport = new ExtendViewport(V_WIDTH, V_HEIGHT, worldCamera);
+		menuViewport = new ExtendViewport(V_WIDTH, V_HEIGHT, menuCamera);
+		menuRenderer = new ShapeRenderer();
+		menuBatch = new SpriteBatch();
+		entityRenderer = new ShapeRenderer();
 		entityBatch  = new SpriteBatch();
-		camera = new OrthographicCamera(screenWidth, screenHeight);
-		camera.update();
+		
 		world  = new World(GRAVITY, true);	
 		stateManager= new StateManager(this); 
 		entities 	= new ArrayList<Entity>(); 	
@@ -96,11 +117,7 @@ public class TotemDefender extends ApplicationAdapter {
 		inputMultiplexer = new InputMultiplexer();
 		menuMultiplexer = new InputMultiplexer();
 		inputHandler = new InputHandler(this);
-		viewport = new ExtendViewport(screenWidth, screenHeight, camera);
 		menus = new ArrayList<Menu>();
-		menuRenderer = new ShapeRenderer();
-		entityRenderer = new ShapeRenderer();
-		menuBatch = new SpriteBatch();
 		deleteQueue = new ConcurrentLinkedQueue<Entity>();
 		
 		inputMultiplexer.addProcessor(menuMultiplexer);
@@ -128,7 +145,8 @@ public class TotemDefender extends ApplicationAdapter {
 				return true;
 			}
 		});
-		
+
+		//Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode());
 	}
 
 	@Override
@@ -167,8 +185,10 @@ public class TotemDefender extends ApplicationAdapter {
 		}
 		
 		//Update batch projection incase it has changed
-		entityBatch.setProjectionMatrix(camera.combined);
-		entityRenderer.setProjectionMatrix(camera.combined);
+		entityBatch.setProjectionMatrix(worldCamera.combined);
+		entityRenderer.setProjectionMatrix(worldCamera.combined);
+		menuBatch.setProjectionMatrix(menuCamera.combined);
+		menuBatch.setProjectionMatrix(menuCamera.combined);
 		entityBatch.enableBlending();
 		menuBatch.enableBlending();
 		
@@ -183,17 +203,37 @@ public class TotemDefender extends ApplicationAdapter {
 		
 		//Debug b2d rendering
 		if(DEBUG){
-			b2dRenderer.render(world, camera.combined.cpy().scl(BOX_TO_WORLD));
+			b2dRenderer.render(world, worldCamera.combined.cpy().scl(BOX_TO_WORLD));
 		}
 		
-		camera.update();
+		worldCamera.update();
+		menuCamera.update();
 	}
 	
 	@Override
 	public void resize(int w, int h){
-		viewport.update(w, h);
-		screenWidth = Gdx.graphics.getWidth();
-		screenHeight = Gdx.graphics.getHeight();
+		worldViewport.update(w, h);
+
+		menuCamera.translate(-menuViewport.getWorldWidth()/2, -menuViewport.getWorldHeight()/2); //Move origin to screen coordinates
+		menuViewport.update(w, h);
+		menuCamera.translate(menuViewport.getWorldWidth()/2, menuViewport.getWorldHeight()/2); //Translate to world origin
+		
+		System.out.println(w +", " + h);
+	}
+	
+	private void setVirtualSize(float aspectRatio){
+		if(aspectRatio == (float)V_WIDTH_43/V_HEIGHT_43){
+			V_WIDTH = V_WIDTH_43;
+			V_HEIGHT = V_HEIGHT_43;
+		}else if(aspectRatio == (float)V_WIDTH_169/V_HEIGHT_169){
+			V_WIDTH = V_WIDTH_169;
+			V_HEIGHT = V_HEIGHT_169;			
+		}else if(aspectRatio == (float)V_WIDTH_1610/V_HEIGHT_1610){
+			V_WIDTH = V_WIDTH_1610;
+			V_HEIGHT = V_HEIGHT_1610;				
+		}else{
+			System.out.println("Unsuported aspect ratio: " + aspectRatio);
+		}
 	}
 	
 	/** addEntity registers a spawned entity with the game so it will be rendered and updated.
@@ -263,8 +303,12 @@ public class TotemDefender extends ApplicationAdapter {
 	 * 
 	 * @return camera instance
 	 */
-	public OrthographicCamera getCamera(){
-		return camera;
+	public OrthographicCamera getEntityCamera(){
+		return worldCamera;
+	}
+	
+	public OrthographicCamera getMenuCamera(){
+		return menuCamera;
 	}
 	
 	/**
@@ -273,14 +317,6 @@ public class TotemDefender extends ApplicationAdapter {
 	 */
 	public InputHandler getInputHandler(){
 		return inputHandler;
-	}
-
-	public int getScreenWidth() {
-		return screenWidth;
-	}
-
-	public int getScreenHeight() {
-		return screenHeight;
 	}
 	
 	public void addMenu(Menu menu){
@@ -304,15 +340,33 @@ public class TotemDefender extends ApplicationAdapter {
 	 */
 	public void setDoneBuilding(boolean toggle){ isDoneBuilding = toggle; }
 	
-	/**
+	/** Translates given screen space vector to world space.
+	 * Example: Let 100, 100 be the center of the screen. In world space, the origin (0, 0) is the center
+	 * 			if you pass 100, 100 you will get 0, 0 back. 
 	 * 
 	 * @param screen coordinates
-	 * @return screen coordinates 
+	 * @return world coordinates 
 	 */
 	public Vector2 screenToWorld(Vector2 screen){
-		Vector3 screen3 = new Vector3(screen.x, screen.y, 0);
-		Vector3 world3 = camera.project(screen3);
-		return new Vector2(world3.x, world3.y);
+		Vector2 offsetScreen = screen.cpy();
+		offsetScreen = menuViewport.project(offsetScreen);
+		return worldViewport.unproject(offsetScreen);
+	}
+	
+	/** Translates given world space vector to screen space.
+	 * Example: Let 100, 100 be the center of the screen. In world space, the origin (0, 0) is the center
+	 * 			if you pass 0, 0 you will get 100, 100 back. 
+	 * 
+	 * @param screen coordinates
+	 * @return world coordinates 
+	 */
+	public Vector2 worldToScreen(Vector2 world){
+		Vector2 offsetWorld = world.cpy();
+		offsetWorld.y *= -1;
+		offsetWorld = worldViewport.project(offsetWorld);
+		offsetWorld = menuViewport.unproject(offsetWorld);
+		//offsetWorld.y *= -1;
+		return offsetWorld;
 	}
 	
 	/**
