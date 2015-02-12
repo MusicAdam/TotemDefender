@@ -1,6 +1,7 @@
 package com.totemdefender.entities;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -28,7 +29,7 @@ public class TotemEntity extends BlockEntity {
 	public void spawn(TotemDefender game){
 		super.spawn(game);
 		
-		Texture tex = game.getAssetManager().get("totem_face.png", Texture.class);
+		Texture tex = game.getAssetManager().get("totem_face_shaded.png", Texture.class);
 		setSprite(new Sprite(tex));
 		getSprite().setSize(TotemDefender.BLOCK_SIZE * xScale, TotemDefender.BLOCK_SIZE * yScale);
 		getSprite().setOriginCenter();

@@ -21,6 +21,7 @@ import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -134,13 +135,17 @@ public class TotemDefender extends ApplicationAdapter {
 		world.setContactListener(new ContactHandler());
 		
 		//Load resources
-		assetManager.load("cannon.png", Texture.class);
-		assetManager.load("projectiles/cannon_projectile.png", Texture.class);		
-		assetManager.load("wooden_pedestal.png", Texture.class);
-		assetManager.load("blocks/block_square_stone_1.png", Texture.class);
-		assetManager.load("blocks/block_square_stone_2.png", Texture.class);
-		assetManager.load("totem_face.png", Texture.class);
-		assetManager.load("bg.png", Texture.class);
+		TextureParameter param = new TextureParameter();
+		param.minFilter = TextureFilter.Linear;
+		param.magFilter = TextureFilter.Linear;
+		assetManager.load("cannon.png", Texture.class, param);
+		assetManager.load("projectiles/cannon_projectile.png", Texture.class, param);		
+		assetManager.load("wooden_pedestal.png", Texture.class, param);
+		assetManager.load("blocks/block_square_stone_1.png", Texture.class, param);
+		assetManager.load("blocks/block_square_stone_2.png", Texture.class, param);
+		assetManager.load("totem_face_flat.png", Texture.class, param);
+		assetManager.load("totem_face_shaded.png", Texture.class, param);
+		assetManager.load("bg.png", Texture.class, param);
 		//assetManager.load("blocks/block_stone_square_2.png", Texture.class);
 		//assetManager.load("blocks/block_stone_square_3.png", Texture.class);
 		assetManager.finishLoading(); //Block until finished loading for now.
@@ -167,7 +172,7 @@ public class TotemDefender extends ApplicationAdapter {
 	public void render () {		
 		//GL Housekeeping
 		Gdx.gl.glClearColor(0.1f, 0.1f, 0.18f, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
 		
 		
 		/** QUEUES **/

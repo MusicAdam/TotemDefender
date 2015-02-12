@@ -1,6 +1,7 @@
 package com.totemdefender.entities;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -38,7 +39,7 @@ public class PedestalEntity extends Entity{
 		Body body = game.getWorld().createBody(weaponDef);
 		
 		PolygonShape shape = new PolygonShape();
-		shape.setAsBox((hw - 1) * TotemDefender.WORLD_TO_BOX, hh * TotemDefender.WORLD_TO_BOX);
+		shape.setAsBox((hw - 1) * TotemDefender.WORLD_TO_BOX, (hh - 2) * TotemDefender.WORLD_TO_BOX);
 	
 		Fixture fix = body.createFixture(shape, 0.0f);
 		Filter filter = fix.getFilterData();
