@@ -217,7 +217,7 @@ public class Menu extends InputHandler{
 		}
 		
 		if(!components.get(index).isSelectable())
-			indexUp();
+			indexUp(count++);
 		if(getFocus() != null){
 			getFocus().onCursorExit();
 		}
@@ -299,7 +299,7 @@ public class Menu extends InputHandler{
 		addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, InputHandler.PL_2_D){
 			@Override
 			public boolean callback(){
-				indexDown();
+				indexUp();
 				traverseIndexDown = true;
 				return false;
 			}

@@ -51,14 +51,14 @@ public class BuildMenu extends Menu {
 		square = new Button(this, "Square", buttonSize, new Vector2(right, top - buttonSize.y * 2), Color.RED){
 			@Override
 			public boolean onSelect(){
-				spawnSquare(TotemDefender.Get().getPlayer1());
+				spawnSquare();
 				return true;
 			}
 		};
 		rect = new Button(this, "Rectangle", buttonSize, new Vector2(right, top - buttonSize.y * 3), Color.YELLOW){
 			@Override
 			public boolean onSelect(){
-				spawnRectangle(TotemDefender.Get().getPlayer1());
+				spawnRectangle();
 				return true;
 			}
 		};
@@ -81,16 +81,16 @@ public class BuildMenu extends Menu {
 		}
 	};
 	
-	public void spawnSquare(Player player){
-		SquareBlockEntity ent = new SquareBlockEntity(player);
+	public void spawnSquare(){
+		SquareBlockEntity ent = new SquareBlockEntity(owner);
 		ent.spawn(TotemDefender.Get());
 		TotemDefender.Get().addEntity(ent);
 		ent.getBody().setActive(false);
 		grid.setEntity(ent);
 	}
 	
-	public void spawnRectangle(Player player){
-		RectangleBlockEntity ent = new RectangleBlockEntity(player);
+	public void spawnRectangle(){
+		RectangleBlockEntity ent = new RectangleBlockEntity(owner);
 		ent.spawn(TotemDefender.Get());
 		TotemDefender.Get().addEntity(ent);
 		ent.getBody().setActive(false);
@@ -118,6 +118,17 @@ public class BuildMenu extends Menu {
 	
 	public void attachListeners() {
 		/** Select key listener */
+		addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, owner.getSelectKey()){
+			@Override
+			public boolean callback(){
+				if(grid.hasEntity()){
+					return true;
+				}
+				
+				return false;
+			}
+		});
+		
 		addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, owner.getSelectKey()){
 			@Override
 			public boolean callback(){
