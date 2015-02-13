@@ -27,13 +27,14 @@ public class Button extends Component {
 	
 	Texture texture;
 	
-	public Button(String newLabel, Vector2 newSize, Vector2 newPosition, Color newColor) {
+	public Button(Menu parent, String newLabel, Vector2 newSize, Vector2 newPosition, Color newColor) {
+		super(parent);
 		setLabel(newLabel);
 		setSize(newSize); 
 		setPosition(newPosition);
 		setColor(newColor);
 		
-		generator = new FreeTypeFontGenerator(Gdx.files.internal("consola.ttf"));
+		generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/consola.ttf"));
 		parameter = new FreeTypeFontParameter();
 		parameter.size = 12;
 		bitMapFont = generator.generateFont(parameter);

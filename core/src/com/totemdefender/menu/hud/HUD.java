@@ -24,21 +24,23 @@ public class HUD extends Menu{
 	Grid grid;
 	
 	public HUD(TotemDefender game, BattleState battleState){
+		super(game, false);
+		
 		float buttonHeight = TotemDefender.V_HEIGHT/10;
 		float topArea = TotemDefender.V_HEIGHT - buttonHeight;
 		this.game = game;
 		this.battleState = battleState;
 		
-		weapon1ChargeMeter = new ChargeMeter(battleState.getLevel().getPlayer1Weapon());
-		weapon2ChargeMeter = new ChargeMeter(battleState.getLevel().getPlayer2Weapon());
+		weapon1ChargeMeter = new ChargeMeter(this, battleState.getLevel().getPlayer1Weapon());
+		weapon2ChargeMeter = new ChargeMeter(this, battleState.getLevel().getPlayer2Weapon());
 		
-		player1 = new Button("Player 1", new Vector2((TotemDefender.V_WIDTH/4), buttonHeight), 
+		player1 = new Button(this, "Player 1", new Vector2((TotemDefender.V_WIDTH/4), buttonHeight), 
 				new Vector2(0, topArea), new Color(0, 0, 0, 0));
-		gameTurn = new Button("Game Turn", new Vector2((TotemDefender.V_WIDTH/4), buttonHeight),
+		gameTurn = new Button(this, "Game Turn", new Vector2((TotemDefender.V_WIDTH/4), buttonHeight),
 				new Vector2((TotemDefender.V_WIDTH/4), topArea), new Color(0, 0, 0, 0));
-		quit = new Button("QUIT", new Vector2((TotemDefender.V_WIDTH/4), buttonHeight), 
+		quit = new Button(this, "QUIT", new Vector2((TotemDefender.V_WIDTH/4), buttonHeight), 
 				new Vector2((TotemDefender.V_WIDTH/2), topArea), new Color(0, 0, 0, 0));
-		player2 = new Button("Player 2", new Vector2((TotemDefender.V_WIDTH/4), buttonHeight), 
+		player2 = new Button(this, "Player 2", new Vector2((TotemDefender.V_WIDTH/4), buttonHeight), 
 				new Vector2((float) (TotemDefender.V_WIDTH * 0.75), topArea), new Color(0, 0, 0, 0));
 		
 		player1.setTextPosition(player1.getPosition().x + player1.getSize().x/2, player1.getPosition().y + 12);

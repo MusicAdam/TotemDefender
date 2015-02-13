@@ -9,6 +9,7 @@ import com.totemdefender.TotemDefender;
 import com.totemdefender.entities.blocks.BlockEntity;
 import com.totemdefender.entities.blocks.SquareBlockEntity;
 import com.totemdefender.menu.Component;
+import com.totemdefender.menu.Menu;
 
 public class Grid extends Component {
 	public static final int WIDTH = 6;
@@ -17,7 +18,8 @@ public class Grid extends Component {
 	private BlockEntity entity; 	//The entity being positioned.
 	private Vector2 index; 			//The current position in the grid.
 	
-	public Grid(){
+	public Grid(Menu parent){
+		super(parent);
 		this.position = new Vector2();
 		index = new Vector2(WIDTH/2, HEIGHT/2);
 	}

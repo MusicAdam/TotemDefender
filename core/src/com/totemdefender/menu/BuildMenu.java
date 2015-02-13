@@ -49,6 +49,8 @@ public class BuildMenu extends Menu {
 	private boolean placingTotem = false;
 	
 	public BuildMenu(TotemDefender game, Level level) {
+		super(game);
+		
 		this.level = level;
 		p1ButtonOrder = new ArrayList<Button>();
 		p2ButtonOrder = new ArrayList<Button>();
@@ -59,13 +61,13 @@ public class BuildMenu extends Menu {
 		float rightSide = (TotemDefender.V_WIDTH - squareButton.x);
 		float screenCenterX = TotemDefender.V_WIDTH/2;	
 		
-		p1Funding = new Button("Player 1", new Vector2((TotemDefender.V_WIDTH/4), 20), 
+		p1Funding = new Button(this, "Player 1", new Vector2((TotemDefender.V_WIDTH/4), 20), 
 				new Vector2(0, 0), new Color(0, 0, 0, 0));
-		ready = new Button("Game Turn", new Vector2((TotemDefender.V_WIDTH/4), 20),
+		ready = new Button(this, "Game Turn", new Vector2((TotemDefender.V_WIDTH/4), 20),
 				new Vector2((TotemDefender.V_WIDTH/4), 0), new Color(0, 0, 0, 0));
-		quit = new Button("QUIT", new Vector2((TotemDefender.V_WIDTH/4), 20), 
+		quit = new Button(this, "QUIT", new Vector2((TotemDefender.V_WIDTH/4), 20), 
 				new Vector2((TotemDefender.V_WIDTH/2), 0), new Color(0, 0, 0, 0));
-		p2Funding = new Button("Player 2", new Vector2((TotemDefender.V_WIDTH/4), 20), 
+		p2Funding = new Button(this, "Player 2", new Vector2((TotemDefender.V_WIDTH/4), 20), 
 				new Vector2((float) (TotemDefender.V_WIDTH * 0.75), 0), new Color(0, 0, 0, 0));
 		
 		p1Funding.setTextPosition(p1Funding.getPosition().x + p1Funding.getSize().x/2, p1Funding.getPosition().y + 12);
@@ -73,35 +75,35 @@ public class BuildMenu extends Menu {
 		ready.setTextPosition(ready.getPosition().x + p1Funding.getSize().x/2, ready.getPosition().y + 12);
 		quit.setTextPosition(quit.getPosition().x + p1Funding.getSize().x/2, quit.getPosition().y + 12);
 		
-		p1Circle = new Button("Circle", squareButton, new Vector2(0, topArea), Color.BLUE);
-		p1Triangle = new Button("Triangle", squareButton, new Vector2(0, topArea - squareButton.y), Color.GREEN);
-		p1Square = new Button("Square", squareButton, new Vector2(0, topArea - squareButton.y * 2), Color.RED){
+		p1Circle = new Button(this, "Circle", squareButton, new Vector2(0, topArea), Color.BLUE);
+		p1Triangle = new Button(this, "Triangle", squareButton, new Vector2(0, topArea - squareButton.y), Color.GREEN);
+		p1Square = new Button(this, "Square", squareButton, new Vector2(0, topArea - squareButton.y * 2), Color.RED){
 			@Override
-			public boolean onClick(){
+			public boolean onSelect(){
 				spawnSquare(TotemDefender.Get().getPlayer1());
 				return true;
 			}
 		};
-		p1Rect = new Button("Rectangle", squareButton, new Vector2(0, topArea - squareButton.y * 3), Color.YELLOW){
+		p1Rect = new Button(this, "Rectangle", squareButton, new Vector2(0, topArea - squareButton.y * 3), Color.YELLOW){
 			@Override
-			public boolean onClick(){
+			public boolean onSelect(){
 				spawnRectangle(TotemDefender.Get().getPlayer1());
 				return true;
 			}
 		};
 		
-		p2Circle = new Button("Circle", squareButton, new Vector2(rightSide, topArea), Color.BLUE);
-		p2Triangle = new Button("Triangle", squareButton, new Vector2(rightSide, topArea - squareButton.y), Color.GREEN);
-		p2Square = new Button("Square", squareButton, new Vector2(rightSide, topArea - squareButton.y * 2), Color.RED){
+		p2Circle = new Button(this, "Circle", squareButton, new Vector2(rightSide, topArea), Color.BLUE);
+		p2Triangle = new Button(this, "Triangle", squareButton, new Vector2(rightSide, topArea - squareButton.y), Color.GREEN);
+		p2Square = new Button(this, "Square", squareButton, new Vector2(rightSide, topArea - squareButton.y * 2), Color.RED){
 			@Override
-			public boolean onClick(){
+			public boolean onSelect(){
 				spawnSquare(TotemDefender.Get().getPlayer2());
 				return true;
 			}
 		};
-		p2Rect = new Button("Rectangle", squareButton, new Vector2(rightSide, topArea - squareButton.y * 3), Color.YELLOW){
+		p2Rect = new Button(this, "Rectangle", squareButton, new Vector2(rightSide, topArea - squareButton.y * 3), Color.YELLOW){
 			@Override
-			public boolean onClick(){
+			public boolean onSelect(){
 				spawnRectangle(TotemDefender.Get().getPlayer2());
 				return true;
 			}
@@ -110,10 +112,10 @@ public class BuildMenu extends Menu {
 		Vector2 ped1Pos = game.worldToScreen(level.getPlayer1Pedestal().getPosition());	
 		Vector2 ped2Pos = game.worldToScreen(level.getPlayer2Pedestal().getPosition());	
 		
-		player1Grid = new Grid();
+		player1Grid = new Grid(this);
 		player1Grid.setPosition(new Vector2(ped1Pos.x - player1Grid.getWidth()/2,
 												TotemDefender.PEDESTAL_HEIGHT + TotemDefender.GROUND_HEIGHT));
-		player2Grid = new Grid();
+		player2Grid = new Grid(this);
 		player2Grid.setPosition(new Vector2(ped2Pos.x - player2Grid.getWidth()/2, 
 											TotemDefender.PEDESTAL_HEIGHT + TotemDefender.GROUND_HEIGHT));
 
@@ -211,7 +213,7 @@ public class BuildMenu extends Menu {
 	
 	public boolean clickIndex(ArrayList<Button> buttonList, int index){
 		if(index == -1) return false;
-		return buttonList.get(index).onClick();
+		return buttonList.get(index).onSelect();
 	}
 	
 	@Override

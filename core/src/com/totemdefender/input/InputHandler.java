@@ -22,19 +22,19 @@ public class InputHandler implements InputProcessor{
 	public static int PL_1_R 		= Input.Keys.D;
 	public static int PL_1_D 		= Input.Keys.S;
 	public static int PL_1_ROTATE	= Input.Keys.R;
-	public static int PL_1_SELECT = Input.Keys.SHIFT_LEFT; 
-	public static int CHARGE_SHOT = Input.Keys.SPACE;
+	public static int PL_1_SELECT 	= Input.Keys.SHIFT_LEFT; 
+	public static int CHARGE_SHOT 	= Input.Keys.SPACE;
 	public static int PL_2_L		= Input.Keys.LEFT;
 	public static int PL_2_U		= Input.Keys.UP;
 	public static int PL_2_R 		= Input.Keys.RIGHT;
 	public static int PL_2_D		= Input.Keys.DOWN;
 	public static int PL_2_ROTATE	= Input.Keys.CONTROL_RIGHT;
-	public static int PL_2_SELECT = Input.Keys.SHIFT_RIGHT;
+	public static int PL_2_SELECT 	= Input.Keys.SHIFT_RIGHT;
 	
 	private ArrayList<KeyboardEvent> keyboardListeners;
 	private ArrayList<MouseEvent> mouseListeners;
 	
-	private TotemDefender game;
+	public TotemDefender game;
 	
 	public InputHandler(TotemDefender game){
 		this.game = game;
@@ -74,6 +74,9 @@ public class InputHandler implements InputProcessor{
 	private boolean dispatchMouseEvent(MouseEvent cmp){
 		for(MouseEvent evt : mouseListeners){
 			if(cmp.equals(evt)){
+				evt.button = cmp.button;
+				evt.delta = cmp.delta;
+				evt.mousePosition = cmp.mousePosition;
 				if(evt.callback()){
 					return true;
 				}
@@ -84,13 +87,14 @@ public class InputHandler implements InputProcessor{
 	
 	/**
 	 * Takes mouse coordinates and converts them into game (window) coordinates
+	 * TODO: I don't think this will work as intended.
 	 * 
 	 * @param coord - Mouse coordinates
 	 * @return window coordinates
 	 */
-	private Vector2 screenCoordsToGame(Vector2 coord, Camera cam){
+	private Vector2 screenCoordsToGame(Vector2 coord){
 		Vector3 screenCoord = new Vector3(coord.x, coord.y, 0);
-		cam.unproject(screenCoord);
+		game.getMenuCamera().unproject(screenCoord);
 		return new Vector2(screenCoord.x, screenCoord.y);
 	}
 	
@@ -111,12 +115,12 @@ public class InputHandler implements InputProcessor{
 	}
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		MouseEvent cmp = new MouseEvent(MouseEvent.MOUSE_DOWN, button, screenCoordsToGame(new Vector2(screenX, screenY), game.getEntityCamera()), 0);
+		MouseEvent cmp = new MouseEvent(MouseEvent.MOUSE_DOWN, button, screenCoordsToGame(new Vector2(screenX, screenY)), 0);
 		return dispatchMouseEvent(cmp);
 	}
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		MouseEvent cmp = new MouseEvent(MouseEvent.MOUSE_UP, button, screenCoordsToGame(new Vector2(screenX, screenY), game.getEntityCamera()), 0);
+		MouseEvent cmp = new MouseEvent(MouseEvent.MOUSE_UP, button, screenCoordsToGame(new Vector2(screenX, screenY)), 0);
 		return dispatchMouseEvent(cmp);
 	}
 	@Override
@@ -126,7 +130,7 @@ public class InputHandler implements InputProcessor{
 	}
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
-		MouseEvent cmp = new MouseEvent(MouseEvent.MOUSE_MOVE, -1, screenCoordsToGame(new Vector2(screenX, screenY), game.getEntityCamera()), 0);
+		MouseEvent cmp = new MouseEvent(MouseEvent.MOUSE_MOVE, -1, screenCoordsToGame(new Vector2(screenX, screenY)), 0);
 		return dispatchMouseEvent(cmp);
 	}
 	@Override

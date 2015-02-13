@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.menu.Component;
+import com.totemdefender.menu.Menu;
 
 public class WinnerStatus extends Component {
 
@@ -17,11 +18,10 @@ public class WinnerStatus extends Component {
 	private BitmapFont bitMapFont;
 	private String text;
 	
-	public WinnerStatus(){
-		generator = new FreeTypeFontGenerator(Gdx.files.internal("consola.ttf"));
-		parameter = new FreeTypeFontParameter();
-		parameter.size = 72;
-		bitMapFont = generator.generateFont(parameter);
+	public WinnerStatus(Menu parent)
+	{
+		super(parent);
+		bitMapFont = parent.game.getAssetManager().get("hud_large.ttf", BitmapFont.class);
 	}
 	
 	public void setText(String text){

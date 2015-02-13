@@ -14,15 +14,17 @@ public class StartMenu extends Menu {
 	private Button instruction;
 	
 	public StartMenu(TotemDefender game){
+		super(game);
+		
 		Vector2 buttonSize = new Vector2(new Vector2((TotemDefender.V_WIDTH/3),TotemDefender.V_HEIGHT/6));
 		
-		start = new Button("Start Game", buttonSize, 
+		start = new Button(this, "Start Game", buttonSize, 
 				new Vector2(buttonSize.x, buttonSize.y * 4), Color.GREEN);
-		leaderboard = new Button("Leaderboard", buttonSize, 
+		leaderboard = new Button(this, "Leaderboard", buttonSize, 
 				new Vector2(buttonSize.x, buttonSize.y * 3), Color.YELLOW);
-		option = new Button("Option", buttonSize, 
+		option = new Button(this, "Option", buttonSize, 
 				new Vector2(buttonSize.x, buttonSize.y * 2), Color.RED);
-		instruction = new Button("Instruction", buttonSize, 
+		instruction = new Button(this, "Instruction", buttonSize, 
 				new Vector2(buttonSize.x ,buttonSize.y), Color.CYAN);
 		
 		this.addComponent(start);
