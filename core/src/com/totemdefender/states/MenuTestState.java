@@ -37,6 +37,7 @@ public class MenuTestState implements State{
 		testCmp3.setBackgroundColor(Color.GREEN);
 		testCmp3.setSize(100, 100);
 		testCmp3.setPosition(200, 0);
+		testCmp3.setSelectable(true);
 		menu.addComponent(testCmp3);
 		
 		

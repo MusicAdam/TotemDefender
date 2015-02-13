@@ -35,24 +35,18 @@ public class Component {
 	public void update(TotemDefender game){}
 	
 	public boolean onSelect()
-	{ 
-		System.out.println("Select"); return false; }
+	{ return false; }
 
 	public boolean onMouseUp()
-	{System.out.println("MouseUp " + backgroundColor);
-		return onSelect(); }
+	{ return onSelect(); }
 	public boolean onCursorOver()
-	{ 
-		System.out.println("Over: " + backgroundColor);
-		return false; }
+	{ return false; }
 	
 	public boolean onCursorExit()
-	{ System.out.println("Exit: " + backgroundColor);
-		return false; }
+	{ return false; }
 	
 	public boolean onMouseDown()
-	{ System.out.println("MouseDown " + backgroundColor);
-	return false; }
+	{ return false; }
 	
 	public void onLoseFocus(){}
 	public void onGainFocus(){}

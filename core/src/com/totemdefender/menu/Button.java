@@ -41,6 +41,8 @@ public class Button extends Component {
 		
 		textPosition = new Vector2((this.getPosition().x + parameter.size/2), 
 									this.getPosition().y + ((this.getSize().y/2) + parameter.size/2));
+		
+		setSelectable(true);
 	}
 	
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer) {
@@ -63,21 +65,16 @@ public class Button extends Component {
 		generator.dispose();
 	}
 	
-	public boolean onButtonArea(int x, int y) {
-		float positionX = getPosition().x;
-		float positionY = getPosition().y;
-		float halfSizeX = (getSize().x / 2);
-		float halfSizeY = (getSize().y / 2);
-		
-		float minX = positionX - halfSizeX;
-		float minY = positionY - halfSizeY;
-		float maxX = positionX + halfSizeX;
-		float maxY = positionY + halfSizeY;
-		
-		if((x >= minX && x <= maxX) && (y >= minY && y <= maxY)) 
-		{ return true; }
-		
-		return false;
+	@Override
+	public boolean onCursorOver(){
+		setHighlighted(true);
+		return true;
+	}
+	
+	@Override
+	public boolean onCursorExit(){
+		setHighlighted(false);
+		return true;
 	}
 	
 	public String getLabel() 

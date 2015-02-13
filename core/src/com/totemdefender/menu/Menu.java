@@ -1,14 +1,9 @@
 package com.totemdefender.menu;
 import java.util.ArrayList;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Matrix4;
@@ -96,6 +91,7 @@ public class Menu extends InputHandler{
 	}
 	
 	//Calculates size based on attached components
+	//TODO: This is a little buggy, needs further testing. Should be okay for now.
 	public void calculateSize(){
 		size.x = 0;
 		size.y = 0;
@@ -161,13 +157,6 @@ public class Menu extends InputHandler{
 		}else if(focus == null){
 			index = -1;
 		}
-		
-		if(focus != null){
-			System.out.println("Focus: " + focus.getBackgroundColor());
-		}else{
-			System.out.println("Focus: null");			
-		}
-		
 	}
 	
 	public void setFocus(Component focus){
@@ -197,7 +186,11 @@ public class Menu extends InputHandler{
 		if(!components.get(index).isSelectable())
 			indexDown(count++);
 		
+		if(getFocus() != null){
+			getFocus().onCursorExit();
+		}
 		setFocus(index);
+		getFocus().onCursorOver();
 		lastTraversalTime = System.currentTimeMillis();
 	}
 	
@@ -225,7 +218,12 @@ public class Menu extends InputHandler{
 		
 		if(!components.get(index).isSelectable())
 			indexUp();
+		if(getFocus() != null){
+			getFocus().onCursorExit();
+		}
 		setFocus(index);
+		getFocus().onCursorOver();
+
 		lastTraversalTime = System.currentTimeMillis();
 	}
 	
@@ -240,7 +238,7 @@ public class Menu extends InputHandler{
 			public boolean callback(){
 				indexDown();
 				traverseIndexDown = true;
-				return true;
+				return false;
 			}
 		});
 		/** Up Key Up Listener */
@@ -248,16 +246,16 @@ public class Menu extends InputHandler{
 			@Override
 			public boolean callback(){
 				traverseIndexDown = false;
-				return true;
+				return false;
 			}
 		});
 		/** Down Key down Listener */
 		addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, InputHandler.PL_1_D){
 			@Override
 			public boolean callback(){
-				indexDown();
+				indexUp();
 				traverseIndexDown = true;
-				return true;
+				return false;
 			}
 		});
 		/** Down Key Up Listener */
@@ -265,7 +263,7 @@ public class Menu extends InputHandler{
 			@Override
 			public boolean callback(){
 				traverseIndexDown = false;
-				return true;
+				return false;
 			}
 		});
 		/** Select Listener */
@@ -286,7 +284,7 @@ public class Menu extends InputHandler{
 			public boolean callback(){
 				indexDown();
 				traverseIndexDown = true;
-				return true;
+				return false;
 			}
 		});
 		/** Up Key Up Listener */
@@ -294,7 +292,7 @@ public class Menu extends InputHandler{
 			@Override
 			public boolean callback(){
 				traverseIndexDown = false;
-				return true;
+				return false;
 			}
 		});
 		/** Down Key down Listener */
@@ -303,7 +301,7 @@ public class Menu extends InputHandler{
 			public boolean callback(){
 				indexDown();
 				traverseIndexDown = true;
-				return true;
+				return false;
 			}
 		});
 		/** Down Key Up Listener */
@@ -311,7 +309,7 @@ public class Menu extends InputHandler{
 			@Override
 			public boolean callback(){
 				traverseIndexDown = false;
-				return true;
+				return false;
 			}
 		});
 		/** Select Listener */

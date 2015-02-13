@@ -150,8 +150,7 @@ public class TotemDefender extends ApplicationAdapter {
 		////		DEBUG STUFF	 /////	 
 		//stateManager.attachState(new ResolutionTestState());	
 		//stateManager.attachState(new TestState());		
-		//stateManager.attachState(new BuildState());
-		stateManager.attachState(new MenuTestState());
+		stateManager.attachState(new BuildState());
 		//Add an exit function
 		inputHandler.addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, Input.Keys.ESCAPE){
 			@Override

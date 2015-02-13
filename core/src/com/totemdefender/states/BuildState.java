@@ -15,7 +15,8 @@ public class BuildState implements State {
 	
 	//private Timer timer;
 	private boolean exit=false;
-	private BuildMenu buildMenu;
+	private BuildMenu p1BuildMenu;
+	private BuildMenu p2BuildMenu;
 	private Level level;
 	
 	@Override
@@ -30,9 +31,13 @@ public class BuildState implements State {
 		
 		level = new Level(game);
 		
-		buildMenu=new BuildMenu(game, level);
-		buildMenu.setShouldRender(true);
-		game.addMenu(buildMenu);
+		p1BuildMenu=new BuildMenu(game, level, game.getPlayer1());
+		p1BuildMenu.setShouldRender(true);
+		game.addMenu(p1BuildMenu);
+		
+		p2BuildMenu=new BuildMenu(game, level, game.getPlayer2());
+		p2BuildMenu.setShouldRender(true);
+		game.addMenu(p2BuildMenu);
 		
 		
 		/* Disabling this for now
@@ -48,7 +53,8 @@ public class BuildState implements State {
 	}
 	@Override
 	public void onExit(TotemDefender game) {
-		game.removeMenu(buildMenu);
+		game.removeMenu(p1BuildMenu);
+		game.removeMenu(p2BuildMenu);
 		game.getStateManager().attachState(new BattleState(level));
 		
 	}
