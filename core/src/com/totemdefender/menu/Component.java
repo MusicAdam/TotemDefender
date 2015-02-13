@@ -14,6 +14,7 @@ public class Component {
 	protected Sprite backgroundSprite;
 	protected Color backgroundColor;
 	protected Menu parent; //Parent menu
+	protected boolean selectable; //Determines whether a component in a menu will recieve "onSelect" events and can be traversed/hovered with mouse
 	
 	public Component(Menu parent){
 		position = new Vector2();
@@ -34,16 +35,18 @@ public class Component {
 	public void update(TotemDefender game){}
 	
 	public boolean onSelect()
-	{ System.out.println("Select"); return false; }
+	{ 
+		System.out.println("Select"); return false; }
 
 	public boolean onMouseUp()
 	{System.out.println("MouseUp " + backgroundColor);
 		return onSelect(); }
-	public boolean onMouseOver()
-	{ System.out.println("Over: " + backgroundColor);
+	public boolean onCursorOver()
+	{ 
+		System.out.println("Over: " + backgroundColor);
 		return false; }
 	
-	public boolean onMouseExit()
+	public boolean onCursorExit()
 	{ System.out.println("Exit: " + backgroundColor);
 		return false; }
 	
@@ -102,6 +105,14 @@ public class Component {
 				point.x <= position.x + size.x &&
 				point.y >= position.y &&
 				point.y <= position.y + size.y);
+	}
+
+	public boolean isSelectable() {
+		return selectable;
+	}
+
+	public void setSelectable(boolean selectable) {
+		this.selectable = selectable;
 	}
 	
 }

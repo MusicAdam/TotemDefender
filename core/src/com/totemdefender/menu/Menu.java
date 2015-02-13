@@ -110,8 +110,6 @@ public class Menu extends InputHandler{
 				size.y = component.getPosition().y + component.getHeight();
 			}
 		}
-		
-		System.out.println(size);
 	}
 	
 	//Allows menu to be rendered
@@ -181,7 +179,12 @@ public class Menu extends InputHandler{
 		setFocus(components.get(index), false);
 	}
 	
-	public void indexDown(){
+	public void indexDown(int count){
+		if(count >= components.size()){
+			index = -1;
+			return;
+		}
+		
 		if(index == -1){
 			index = 0;
 		}else{
@@ -190,11 +193,27 @@ public class Menu extends InputHandler{
 			if(index < 0)
 				index = components.size() - 1;
 		}
+
+		if(!components.get(index).isSelectable())
+			indexDown(count++);
+		
 		setFocus(index);
 		lastTraversalTime = System.currentTimeMillis();
 	}
 	
+	public void indexDown(){
+		indexDown(0);
+	}
+	
 	public void indexUp(){
+		indexUp(0);
+	}
+	public void indexUp(int count){
+		if(count >= components.size()){
+			index = -1;
+			return;
+		}
+		
 		if(index == -1){
 			index = 0;
 		}else{		
@@ -203,8 +222,15 @@ public class Menu extends InputHandler{
 			if(index == components.size())
 				index = 0;
 		}
+		
+		if(!components.get(index).isSelectable())
+			indexUp();
 		setFocus(index);
 		lastTraversalTime = System.currentTimeMillis();
+	}
+	
+	public void setIndex(Component cmp){
+		index = components.indexOf(cmp);
 	}
 	
 	public void attachPlayer1Listeners(){
@@ -323,6 +349,8 @@ public class Menu extends InputHandler{
 				
 				//Look for component that was clicked
 				for(Component component : components){
+					if(!component.isSelectable()) continue;
+					
 					if(component.pointIsInBounds(mousePosition) ){
 						setFocus(component);
 						focus.onGainFocus();
@@ -362,15 +390,19 @@ public class Menu extends InputHandler{
 				if(mouseOver == null){
 					//Find the component we are over if any
 					for(Component component : components){
+						if(!component.isSelectable()) continue;
+						
 						if(component.pointIsInBounds(mousePosition) ){
 							mouseOver = component;
-							return mouseOver.onMouseOver();
+							setIndex(mouseOver);
+							return mouseOver.onCursorOver();
 						}
 					}
 				}else{
 					if(!mouseOver.pointIsInBounds(mousePosition)){
-						boolean handled = mouseOver.onMouseExit();
+						boolean handled = mouseOver.onCursorExit();
 						mouseOver = null;
+						index = -1;
 						return handled;
 					}
 				}

@@ -24,6 +24,7 @@ public class MenuTestState implements State{
 		Component testCmp = new Component(menu);
 		testCmp.setBackgroundColor(Color.WHITE);
 		testCmp.setSize(100, 100);
+		testCmp.setSelectable(false);
 		menu.addComponent(testCmp);
 		
 		Component testCmp2 = new Component(menu);
