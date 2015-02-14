@@ -10,6 +10,7 @@ import com.totemdefender.input.InputHandler;
 import com.totemdefender.input.KeyboardEvent;
 import com.totemdefender.menu.Menu;
 import com.totemdefender.states.BuildState;
+import com.totemdefender.states.MenuTestState;
 import com.totemdefender.states.ResolutionTestState;
 import com.totemdefender.states.StateManager;
 import com.badlogic.gdx.ApplicationAdapter;
@@ -17,13 +18,19 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
+import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -33,6 +40,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader.FreeTypeFontLoaderParameter;
 
 public class TotemDefender extends ApplicationAdapter {
 	/** Static configuration variables */
@@ -134,28 +142,16 @@ public class TotemDefender extends ApplicationAdapter {
 		
 		world.setContactListener(new ContactHandler());
 		
-		//Load resources
-		TextureParameter param = new TextureParameter();
-		param.minFilter = TextureFilter.Linear;
-		param.magFilter = TextureFilter.Linear;
-		assetManager.load("cannon.png", Texture.class, param);
-		assetManager.load("projectiles/cannon_projectile.png", Texture.class, param);		
-		assetManager.load("wooden_pedestal.png", Texture.class, param);
-		assetManager.load("blocks/block_square_stone_1.png", Texture.class, param);
-		assetManager.load("blocks/block_square_stone_2.png", Texture.class, param);
-		assetManager.load("totem_face_flat.png", Texture.class, param);
-		assetManager.load("totem_face_shaded.png", Texture.class, param);
-		assetManager.load("bg.png", Texture.class, param);
-		//assetManager.load("blocks/block_stone_square_2.png", Texture.class);
-		//assetManager.load("blocks/block_stone_square_3.png", Texture.class);
+		loadResources();
 		assetManager.finishLoading(); //Block until finished loading for now.
 		
 		
-		Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode()); //Default to fullscreen desktop mode
+		//Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode()); //Default to fullscreen desktop mode
 		////		DEBUG STUFF	 /////	 
 		//stateManager.attachState(new ResolutionTestState());	
 		//stateManager.attachState(new TestState());		
 		stateManager.attachState(new BuildState());
+		//stateManager.attachState(new MenuTestState());
 		//Add an exit function
 		inputHandler.addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, Input.Keys.ESCAPE){
 			@Override
@@ -211,19 +207,11 @@ public class TotemDefender extends ApplicationAdapter {
 			world.step(STEP, 8, 6);
 			stateManager.update();
 			
-			Iterator<Menu> menuIterator = menus.iterator(); //Use an interator to avoid concurrent modification
-			/*while(menuIterator.hasNext()){
-				menuIterator.next().update();
-			}*/
 			for(Menu menu : menus){
-				menu.update();
+				menu.update(this);
 			}
 			
 			//Update entities
-			/*Iterator<Entity> entityIterator = entities.iterator(); //Use an interator to avoid concurrent modification
-			while(entityIterator.hasNext()){
-				entityIterator.next().update(this);
-			}*/
 			for(Entity ent : entities){
 				ent.update(this);
 			}
@@ -281,6 +269,50 @@ public class TotemDefender extends ApplicationAdapter {
 		}else{
 			System.out.println("Unsuported aspect ratio: " + aspectRatio);
 		}
+	}
+	
+	private void loadResources(){
+		/** Setup Resource parameters **/
+		TextureParameter textureParam = new TextureParameter();
+		textureParam.minFilter = TextureFilter.Linear;
+		textureParam.magFilter = TextureFilter.Linear;
+		
+		/** HUD Font Parameters */
+		FreeTypeFontLoaderParameter defaultFont = new FreeTypeFontLoaderParameter();
+		defaultFont.fontFileName = "fonts/times.ttf";
+		defaultFont.fontParameters.size = 12;
+		
+		String hudFontName = "fonts/DJB Almost Perfect.ttf";
+		FreeTypeFontLoaderParameter hud_small = new FreeTypeFontLoaderParameter();
+		hud_small.fontFileName = hudFontName;
+		hud_small.fontParameters.size = 12;
+		FreeTypeFontLoaderParameter hud_medium = new FreeTypeFontLoaderParameter();
+		hud_medium.fontFileName =hudFontName;
+		hud_medium.fontParameters.size = 16;
+		FreeTypeFontLoaderParameter hud_large = new FreeTypeFontLoaderParameter();
+		hud_large.fontFileName = hudFontName;
+		hud_large.fontParameters.size = 32;
+		
+
+		/** Set special loaders for fonts */
+		FileHandleResolver resolver = new InternalFileHandleResolver();
+		assetManager.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
+		assetManager.setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(resolver));
+		
+		//Textures
+		assetManager.load("cannon.png", Texture.class, textureParam);
+		assetManager.load("projectiles/cannon_projectile.png", Texture.class, textureParam);		
+		assetManager.load("wooden_pedestal.png", Texture.class, textureParam);
+		assetManager.load("blocks/block_square_stone_1.png", Texture.class, textureParam);
+		assetManager.load("blocks/block_square_stone_2.png", Texture.class, textureParam);
+		assetManager.load("totem_face_flat.png", Texture.class, textureParam);
+		assetManager.load("totem_face_shaded.png", Texture.class, textureParam);
+		assetManager.load("bg.png", Texture.class, textureParam);
+		//Fonts
+		assetManager.load("default.ttf", BitmapFont.class, defaultFont);
+		assetManager.load("hud_small.ttf", BitmapFont.class, hud_small);
+		assetManager.load("hud_medium.ttf", BitmapFont.class, hud_medium);
+		assetManager.load("hud_large.ttf", BitmapFont.class, hud_large);
 	}
 	
 	/** addEntity registers a spawned entity with the game so it will be rendered and updated.

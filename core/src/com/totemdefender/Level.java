@@ -137,4 +137,20 @@ public class Level {
 		
 		return null;
 	}
+
+	public PedestalEntity getPedestal(Player owner) {
+		if(owner.getID() == 1){
+			return player1Pedestal;
+		}else{
+			return player2Pedestal;
+		}
+	}
+
+	public void addTotem(TotemEntity totem) {
+		if(totem.getOwner().getID() == 1){
+			player1Totem = totem;
+		}else{
+			player2Totem = totem;
+		}
+	}
 }

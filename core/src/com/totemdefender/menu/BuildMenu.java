@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import com.totemdefender.Level;
 import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
+import com.totemdefender.entities.PedestalEntity;
 import com.totemdefender.entities.TotemEntity;
 import com.totemdefender.entities.blocks.BlockEntity;
 import com.totemdefender.entities.blocks.RectangleBlockEntity;
 import com.totemdefender.entities.blocks.SquareBlockEntity;
 import com.totemdefender.input.InputHandler;
+import com.totemdefender.input.KeyboardEvent;
 import com.totemdefender.menu.hud.Grid;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -22,181 +24,83 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 
 public class BuildMenu extends Menu {
-	private Button p1Funding;
-	private Button p2Funding;
-	private Button ready;
-	private Button quit;
-	private int p1Amount = 1000;
-	private int p2Amount = 1000;
-	
-	private Button p1Circle;
-	private Button p1Triangle;
-	private Button p1Square;
-	private Button p1Rect;
-	
-	private Button p2Circle;
-	private Button p2Triangle;
-	private Button p2Square;
-	private Button p2Rect;
-
-	private Grid player1Grid;
-	private Grid player2Grid;
+	private Button triangle;
+	private Button square;
+	private Button rect;
+	private Player owner;
+	private Grid grid;
 	private Level level;
-	private ArrayList<Button> p1ButtonOrder;
-	private ArrayList<Button> p2ButtonOrder;
-	private int p1Index;
-	private int p2Index;
 	private boolean placingTotem = false;
 	
-	public BuildMenu(TotemDefender game, Level level) {
+	public BuildMenu(TotemDefender game, Level level, Player owner) {
+		super(game);
+		
+		this.owner = owner;
 		this.level = level;
-		p1ButtonOrder = new ArrayList<Button>();
-		p2ButtonOrder = new ArrayList<Button>();
 		
-		Vector2 squareButton = new Vector2((TotemDefender.V_HEIGHT/8), (TotemDefender.V_HEIGHT/8));
-		Vector2 buttonSize = new Vector2((TotemDefender.V_WIDTH/4), squareButton.y);
-		float topArea = (TotemDefender.V_HEIGHT - buttonSize.y);
-		float rightSide = (TotemDefender.V_WIDTH - squareButton.x);
-		float screenCenterX = TotemDefender.V_WIDTH/2;	
+		Vector2 buttonSize = new Vector2((TotemDefender.V_HEIGHT/8), (TotemDefender.V_HEIGHT/8));
+		float top = (TotemDefender.V_HEIGHT - buttonSize.y);
+		float right;
+		if(owner.getID() == 1){
+			right = 0;
+		}else{
+			right = (TotemDefender.V_WIDTH - buttonSize.x);
+		}
 		
-		p1Funding = new Button("Player 1", new Vector2((TotemDefender.V_WIDTH/4), 20), 
-				new Vector2(0, 0), new Color(0, 0, 0, 0));
-		ready = new Button("Game Turn", new Vector2((TotemDefender.V_WIDTH/4), 20),
-				new Vector2((TotemDefender.V_WIDTH/4), 0), new Color(0, 0, 0, 0));
-		quit = new Button("QUIT", new Vector2((TotemDefender.V_WIDTH/4), 20), 
-				new Vector2((TotemDefender.V_WIDTH/2), 0), new Color(0, 0, 0, 0));
-		p2Funding = new Button("Player 2", new Vector2((TotemDefender.V_WIDTH/4), 20), 
-				new Vector2((float) (TotemDefender.V_WIDTH * 0.75), 0), new Color(0, 0, 0, 0));
-		
-		p1Funding.setTextPosition(p1Funding.getPosition().x + p1Funding.getSize().x/2, p1Funding.getPosition().y + 12);
-		p2Funding.setTextPosition(p2Funding.getPosition().x + p1Funding.getSize().x/2, p2Funding.getPosition().y + 12);
-		ready.setTextPosition(ready.getPosition().x + p1Funding.getSize().x/2, ready.getPosition().y + 12);
-		quit.setTextPosition(quit.getPosition().x + p1Funding.getSize().x/2, quit.getPosition().y + 12);
-		
-		p1Circle = new Button("Circle", squareButton, new Vector2(0, topArea), Color.BLUE);
-		p1Triangle = new Button("Triangle", squareButton, new Vector2(0, topArea - squareButton.y), Color.GREEN);
-		p1Square = new Button("Square", squareButton, new Vector2(0, topArea - squareButton.y * 2), Color.RED){
+		triangle = new Button(this, "Triangle", buttonSize, new Vector2(right, top - buttonSize.y), Color.GREEN);
+		square = new Button(this, "Square", buttonSize, new Vector2(right, top - buttonSize.y * 2), Color.RED){
 			@Override
-			public boolean onClick(){
-				spawnSquare(TotemDefender.Get().getPlayer1());
+			public boolean onSelect(){
+				spawnSquare();
 				return true;
 			}
 		};
-		p1Rect = new Button("Rectangle", squareButton, new Vector2(0, topArea - squareButton.y * 3), Color.YELLOW){
+		square.getLabel().setColor(Color.BLACK);
+		rect = new Button(this, "Rectangle", buttonSize, new Vector2(right, top - buttonSize.y * 3), Color.YELLOW){
 			@Override
-			public boolean onClick(){
-				spawnRectangle(TotemDefender.Get().getPlayer1());
+			public boolean onSelect(){
+				spawnRectangle();
 				return true;
 			}
 		};
+		rect.getLabel().setColor(Color.BLACK);
 		
-		p2Circle = new Button("Circle", squareButton, new Vector2(rightSide, topArea), Color.BLUE);
-		p2Triangle = new Button("Triangle", squareButton, new Vector2(rightSide, topArea - squareButton.y), Color.GREEN);
-		p2Square = new Button("Square", squareButton, new Vector2(rightSide, topArea - squareButton.y * 2), Color.RED){
-			@Override
-			public boolean onClick(){
-				spawnSquare(TotemDefender.Get().getPlayer2());
-				return true;
-			}
-		};
-		p2Rect = new Button("Rectangle", squareButton, new Vector2(rightSide, topArea - squareButton.y * 3), Color.YELLOW){
-			@Override
-			public boolean onClick(){
-				spawnRectangle(TotemDefender.Get().getPlayer2());
-				return true;
-			}
-		};
-		
-		Vector2 ped1Pos = game.worldToScreen(level.getPlayer1Pedestal().getPosition());	
-		Vector2 ped2Pos = game.worldToScreen(level.getPlayer2Pedestal().getPosition());	
-		
-		player1Grid = new Grid();
-		player1Grid.setPosition(new Vector2(ped1Pos.x - player1Grid.getWidth()/2,
+		PedestalEntity pedestal = level.getPedestal(owner);
+		Vector2 pedPos = game.worldToScreen(pedestal.getPosition());	
+		grid = new Grid(this);
+		grid.setPosition(new Vector2(pedPos.x - grid.getWidth()/2,
 												TotemDefender.PEDESTAL_HEIGHT + TotemDefender.GROUND_HEIGHT));
-		player2Grid = new Grid();
-		player2Grid.setPosition(new Vector2(ped2Pos.x - player2Grid.getWidth()/2, 
-											TotemDefender.PEDESTAL_HEIGHT + TotemDefender.GROUND_HEIGHT));
 
-		//this.addComponent(p1Funding);
-		//this.addComponent(p2Funding);
-		this.addComponent(player1Grid);
-		this.addComponent(player2Grid);
-		//this.addComponent(ready);
-		//this.addComponent(quit);
-		
-		//this.addComponent(p1Circle);
-		//this.addComponent(p1Triangle);
-		this.addComponent(p1Square);
-		this.addComponent(p1Rect);
-		p1ButtonOrder.add(p1Square);
-		p1ButtonOrder.add(p1Rect);
-		p1Index = -1;
-		
-		
-		//this.addComponent(p2Circle);
-		//this.addComponent(p2Triangle);
-		this.addComponent(p2Square);
-		this.addComponent(p2Rect);
-		p2ButtonOrder.add(p2Square);
-		p2ButtonOrder.add(p2Rect);
-		p2Index = -1;
+		this.addComponent(grid);
+		this.addComponent(square);
+		this.addComponent(rect);
+
+		attachListeners();
+		if(owner.getID() == 1){
+			attachPlayer1Listeners();
+		}else{
+			attachPlayer2Listeners();
+		}
 	};
 	
-	public void spawnSquare(Player player){
-		SquareBlockEntity ent = new SquareBlockEntity(player);
+	public void spawnSquare(){
+		SquareBlockEntity ent = new SquareBlockEntity(owner);
 		ent.spawn(TotemDefender.Get());
 		TotemDefender.Get().addEntity(ent);
 		ent.getBody().setActive(false);
-		
-		if(player.getID() == 1){
-			player1Grid.setEntity(ent);
-		}else{
-			player2Grid.setEntity(ent);
-		}
+		grid.setEntity(ent);
 	}
 	
-	public void spawnRectangle(Player player){
-		RectangleBlockEntity ent = new RectangleBlockEntity(player);
+	public void spawnRectangle(){
+		RectangleBlockEntity ent = new RectangleBlockEntity(owner);
 		ent.spawn(TotemDefender.Get());
 		TotemDefender.Get().addEntity(ent);
 		ent.getBody().setActive(false);
-		
-		if(player.getID() == 1){
-			player1Grid.setEntity(ent);
-		}else{
-			player2Grid.setEntity(ent);
-		}
+		grid.setEntity(ent);
 	}
 	
 	public Grid getGrid(){
-		return player1Grid;
-	}
-	
-	public int indexDown(int index){
-		if(index == -1){
-			index = 0;
-			return index;
-		}
-		
-		index--;
-		
-		if(index < 0)
-			index = p1ButtonOrder.size() - 1;
-		return index;
-	}
-	
-	public int indexUp(int index){
-		if(index == -1){
-			index = 0;
-			return index;
-		}
-		
-		index++;
-		
-		if(index == p1ButtonOrder.size())
-			index = 0;
-		
-		return index;
+		return grid;
 	}
 	
 	public void highlightIndex(ArrayList<Button> buttonList, int index){
@@ -211,142 +115,184 @@ public class BuildMenu extends Menu {
 	
 	public boolean clickIndex(ArrayList<Button> buttonList, int index){
 		if(index == -1) return false;
-		return buttonList.get(index).onClick();
+		return buttonList.get(index).onSelect();
 	}
 	
-	@Override
-	public boolean keyUp(int keycode) {
-		/** PLAYER 1 INPUTS */
-		if(keycode == InputHandler.PL_1_SELECT){
-			if(player1Grid.hasEntity()){
-				if(!placingTotem){
-					highlightIndex(p1ButtonOrder, p1Index);
-					level.addPlacedBlock(player1Grid.getEntity());
+	public void attachListeners() {
+		/** Select key listener */
+		addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, owner.getSelectKey()){
+			@Override
+			public boolean callback(){
+				if(grid.hasEntity()){
+					return true;
 				}
-				player1Grid.setEntity(null);
-			}else{
-				dehighlightIndex(p1ButtonOrder, p1Index);
-				return clickIndex(p1ButtonOrder, p1Index);
+				
+				return false;
 			}
-			return true;
-		}
+		});
 		
-		if(keycode == InputHandler.PL_1_U){
-			if(player1Grid.hasEntity()){
-				player1Grid.shiftIndexUp();
-			}else{
-				dehighlightIndex(p1ButtonOrder, p1Index);
-				p1Index = indexDown(p1Index);
-				highlightIndex(p1ButtonOrder, p1Index);
+		addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, owner.getSelectKey()){
+			@Override
+			public boolean callback(){
+				if(grid.hasEntity()){
+					if(!placingTotem){
+						level.addPlacedBlock(grid.getEntity());
+					}
+					grid.setEntity(null);
+					return true;
+				}
+				
+				return false;
 			}
-			return true;
-		}
+		});
 		
-		if(keycode == InputHandler.PL_1_L && player1Grid.hasEntity()){
-			player1Grid.shiftIndexLeft();
-			return true;
-		}
-		
-		if(keycode == InputHandler.PL_1_R && player1Grid.hasEntity()){
-			player1Grid.shiftIndexRight();
-			return true;
-		}
-		
-		if(keycode == InputHandler.PL_1_D){
-			if(player1Grid.hasEntity()){
-				player1Grid.shiftIndexDown();
-			}else{
-				dehighlightIndex(p1ButtonOrder, p1Index);
-				p1Index = indexUp(p1Index);
-				highlightIndex(p1ButtonOrder, p1Index);
+		/** Up key down listener 
+		 *  This overrides the default menu's functionality
+		 * */
+		addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, owner.getUpKey()){
+			@Override
+			public boolean callback(){
+				if(grid.hasEntity()){
+					return true;
+				}
+				return false;
 			}
-			return true;
-		}
+		});
+		/** Up key up listener */
+		addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, owner.getUpKey()){
+			@Override
+			public boolean callback(){
+				if(grid.hasEntity()){
+					grid.shiftIndexUp();
+					return true;
+				}
+				
+				return false;
+			}
+		});
 		
-		if(keycode == InputHandler.PL_1_ROTATE && player1Grid.hasEntity()){
-			player1Grid.rotateEntity();
-			return true;
-		}
+		/** Down key down listener 
+		 *  This overrides the default menu's functionality
+		 * */
+		addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, owner.getDownKey()){
+			@Override
+			public boolean callback(){
+				if(grid.hasEntity()){
+					return true;
+				}
+				return false;
+			}
+		});
+		/** Down key up listener */
+		addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, owner.getDownKey()){
+			@Override
+			public boolean callback(){
+				if(grid.hasEntity()){
+					grid.shiftIndexDown();
+					return true;
+				}
+				
+				return false;
+			}
+		});
+		
+		/** Left key down listener 
+		 *  This overrides the default menu's functionality
+		 * */
+		addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, owner.getLeftKey()){
+			@Override
+			public boolean callback(){
+				if(grid.hasEntity()){
+					return true;
+				}
+				return false;
+			}
+		});
+		/** Left key up listener */
+		addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, owner.getLeftKey()){
+			@Override
+			public boolean callback(){
+				if(grid.hasEntity()){
+					grid.shiftIndexLeft();
+					return true;
+				}
+				
+				return false;
+			}
+		});
 
-		/** PLAYER 2 INPUTS */
-		if(keycode == InputHandler.PL_2_SELECT){
-			if(player2Grid.hasEntity()){
-				if(!placingTotem){
-					highlightIndex(p2ButtonOrder, p2Index);
-					level.addPlacedBlock(player2Grid.getEntity());
+		/** Right key down listener 
+		 *  This overrides the default menu's functionality
+		 * */
+		addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, owner.getRightKey()){
+			@Override
+			public boolean callback(){
+				if(grid.hasEntity()){
+					return true;
 				}
-				player2Grid.setEntity(null);
-			}else{
-				dehighlightIndex(p2ButtonOrder, p2Index);
-				return clickIndex(p2ButtonOrder, p2Index);
+				return false;
 			}
-			return true;
-		}
-		
-		if(keycode == InputHandler.PL_2_U){
-			if(player2Grid.hasEntity()){
-				player2Grid.shiftIndexUp();
-			}else{
-				dehighlightIndex(p2ButtonOrder, p2Index);
-				p2Index = indexDown(p2Index);
-				highlightIndex(p2ButtonOrder, p2Index);
+		});
+		/** Right key up listener */
+		addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, owner.getRightKey()){
+			@Override
+			public boolean callback(){
+				if(grid.hasEntity()){
+					grid.shiftIndexRight();
+					return true;
+				}
+				
+				return false;
 			}
-			return true;
-		}
+		});
 		
-		if(keycode == InputHandler.PL_2_L && player2Grid.hasEntity()){
-			player2Grid.shiftIndexLeft();
-			return true;
-		}
-		
-		if(keycode == InputHandler.PL_2_R && player2Grid.hasEntity()){
-			player2Grid.shiftIndexRight();
-			return true;
-		}
-		
-		if(keycode == InputHandler.PL_2_D){
-			if(player2Grid.hasEntity()){
-				player2Grid.shiftIndexDown();
-			}else{
-				dehighlightIndex(p2ButtonOrder, p2Index);
-				p2Index = indexUp(p2Index);
-				highlightIndex(p2ButtonOrder, p2Index);
+		/** Right key down listener 
+		 *  This overrides the default menu's functionality
+		 * */
+		addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, owner.getRotateKey()){
+			@Override
+			public boolean callback(){
+				if(grid.hasEntity()){
+					return true;
+				}
+				return false;
 			}
-			return true;
-		}
-		
-		if(keycode == InputHandler.PL_2_ROTATE && player2Grid.hasEntity()){
-			player2Grid.rotateEntity();
-			return true;
-		}
+		});
+		/** Right key up listener */
+		addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, owner.getRotateKey()){
+			@Override
+			public boolean callback(){
+				if(grid.hasEntity()){
+					grid.rotateEntity();
+					return true;
+				}
+				
+				return false;
+			}
+		});
 		
 		/** TODO: There should be a menu button for this */
-		if(keycode == Input.Keys.ENTER){
-			if(placingTotem){
-				TotemDefender.Get().setDoneBuilding(true);				
-			}else{
-				placingTotem = true;
+		addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, Input.Keys.ENTER){
+			@Override
+			public boolean callback(){
+				if(placingTotem){
+					TotemDefender.Get().setDoneBuilding(true);				
+				}else{
+					placingTotem = true;
+					
+					TotemDefender game = TotemDefender.Get();
+					TotemEntity totem = new TotemEntity(owner);
+					totem.setName("Player " + owner.getID() + "'s Totem");
+					totem.spawn(game);
+					totem.getBody().setActive(false);
+					grid.setEntity(totem);
+					game.addEntity(totem);
+					level.addTotem(totem);	
+				}
 				
-				TotemDefender game = TotemDefender.Get();
-				TotemEntity p1Totem = new TotemEntity(game.getPlayer1());
-				p1Totem.setName("Player 1's Totem");
-				p1Totem.spawn(game);
-				p1Totem.getBody().setActive(false);
-				player1Grid.setEntity(p1Totem);
-				game.addEntity(p1Totem);
-				level.setPlayer1Totem(p1Totem);
-				
-				TotemEntity p2Totem = new TotemEntity(game.getPlayer2());
-				p2Totem.setName("Player 2's Totem");
-				p2Totem.spawn(game);
-				p2Totem.getBody().setActive(false);
-				player2Grid.setEntity(p2Totem);
-				game.addEntity(p2Totem);
-				level.setPlayer2Totem(p2Totem);		
+				return false;
 			}
-			return true;
-		}
-		return false;
+		});
 	}
 
 }

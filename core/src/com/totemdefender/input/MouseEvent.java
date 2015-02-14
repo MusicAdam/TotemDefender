@@ -10,20 +10,23 @@ public class MouseEvent {
 	
 	public int event;
 	public int button; //Used for up/down event
-	public Vector2 position; //Used for up/down/move event
+	public Vector2 mousePosition; //Used for up/down/move event
 	public int delta; //Used for scroll events
 	
+	public MouseEvent(int event){
+		this.event = event;
+	}
 	public MouseEvent(int event, int button, Vector2 position, int delta){
 		this.event = event;
 		this.button = button;
-		this.position = position;
+		this.mousePosition = position;
 		this.delta = delta;
 	}
 	
 	public MouseEvent(){
 		event = 0;
 		button = -1;
-		position = null;
+		mousePosition = null;
 		delta = 0;
 	}
 	
@@ -36,10 +39,7 @@ public class MouseEvent {
 		MouseEvent evt = (MouseEvent)other;
 		if(evt == null) return false; //Eclipse is complaining this is dead code, thats not true if other is not an instance of MouseEvent
 		
-		return (event == evt.event &&
-				button == evt.button &&
-				position.equals(evt.position) &&
-				delta == evt.delta);
+		return (event == evt.event); //Just want to match the events here
 	}
 	
 }

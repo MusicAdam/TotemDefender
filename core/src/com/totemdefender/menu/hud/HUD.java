@@ -14,45 +14,23 @@ import com.totemdefender.menu.Button;
 import com.totemdefender.states.BattleState;
 
 public class HUD extends Menu{	
-	TotemDefender game;
-	BattleState battleState;
-	Button player1, player2, gameTurn, quit;
-	int p1Score = 0, p2Score = 0, playerTurn = 1;
-	
-	ChargeMeter weapon1ChargeMeter;
-	ChargeMeter weapon2ChargeMeter;
-	Grid grid;
+	private TotemDefender game;
+	private BattleState battleState;	
+	private ChargeMeter weapon1ChargeMeter;
+	private ChargeMeter weapon2ChargeMeter;
+	private Grid grid;
 	
 	public HUD(TotemDefender game, BattleState battleState){
-		float buttonHeight = TotemDefender.V_HEIGHT/10;
-		float topArea = TotemDefender.V_HEIGHT - buttonHeight;
+		super(game, false);
+	
 		this.game = game;
 		this.battleState = battleState;
 		
-		weapon1ChargeMeter = new ChargeMeter(battleState.getLevel().getPlayer1Weapon());
-		weapon2ChargeMeter = new ChargeMeter(battleState.getLevel().getPlayer2Weapon());
-		
-		player1 = new Button("Player 1", new Vector2((TotemDefender.V_WIDTH/4), buttonHeight), 
-				new Vector2(0, topArea), new Color(0, 0, 0, 0));
-		gameTurn = new Button("Game Turn", new Vector2((TotemDefender.V_WIDTH/4), buttonHeight),
-				new Vector2((TotemDefender.V_WIDTH/4), topArea), new Color(0, 0, 0, 0));
-		quit = new Button("QUIT", new Vector2((TotemDefender.V_WIDTH/4), buttonHeight), 
-				new Vector2((TotemDefender.V_WIDTH/2), topArea), new Color(0, 0, 0, 0));
-		player2 = new Button("Player 2", new Vector2((TotemDefender.V_WIDTH/4), buttonHeight), 
-				new Vector2((float) (TotemDefender.V_WIDTH * 0.75), topArea), new Color(0, 0, 0, 0));
-		
-		player1.setTextPosition(player1.getPosition().x + player1.getSize().x/2, player1.getPosition().y + 12);
-		player2.setTextPosition(player2.getPosition().x + player1.getSize().x/2, player2.getPosition().y + 12);
-		gameTurn.setTextPosition(gameTurn.getPosition().x + player1.getSize().x/2, gameTurn.getPosition().y + 12);
-		quit.setTextPosition(quit.getPosition().x + player1.getSize().x/2, quit.getPosition().y + 12);
+		weapon1ChargeMeter = new ChargeMeter(this, battleState.getLevel().getPlayer1Weapon());
+		weapon2ChargeMeter = new ChargeMeter(this, battleState.getLevel().getPlayer2Weapon());
 		
 		addComponent(weapon1ChargeMeter);
 		addComponent(weapon2ChargeMeter);
-		
-		addComponent(player1);
-		addComponent(player2);
-		addComponent(quit);
-		addComponent(gameTurn);
 		
 		this.setShouldRender(true);
 	}

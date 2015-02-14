@@ -79,9 +79,9 @@ public class TestState implements State {
 		
 		Level level = new Level(game);
 		
-		BuildMenu buildMenu = new BuildMenu(game, level);
+		/*BuildMenu buildMenu = new BuildMenu(game, level);
 		game.addMenu(buildMenu);
-		buildMenu.show();
+		buildMenu.show();*/
 		
 	}
 

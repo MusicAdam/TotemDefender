@@ -18,7 +18,7 @@ public class PostGameState implements State {
 
 	@Override
 	public void onEnter(TotemDefender game) {
-		WinnerStatus winner = new WinnerStatus();
+		WinnerStatus winner = new WinnerStatus(hud);
 		hud.addComponent(winner);
 		
 		if(game.getWinner().getID() == 1){
