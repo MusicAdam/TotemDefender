@@ -9,12 +9,15 @@ import com.badlogic.gdx.math.Vector2;
 import com.totemdefender.TotemDefender;
 
 public class Component {
+	public static final Color DEFAULT_HIGHTLIGHT = new Color(.5f, .5f, .5f, 1);
 	
 	protected Vector2 size, position;
 	protected Sprite backgroundSprite;
-	protected Color backgroundColor;
+	protected Color color;
 	protected Menu parent; //Parent menu
 	protected boolean selectable; //Determines whether a component in a menu will recieve "onSelect" events and can be traversed/hovered with mouse
+	private Color highlightColor;
+	private boolean highlighted = false;
 	
 	public Component(Menu parent){
 		position = new Vector2();
@@ -23,33 +26,41 @@ public class Component {
 	}
 	
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer){
+		Color effectiveHighlight = (isHighlighted()) ? highlightColor : Color.BLACK;
+		
 		if(backgroundSprite != null)
 			backgroundSprite.draw(batch);
-		if(backgroundColor != null){
+		if(color != null){
 			shapeRenderer.begin(ShapeType.Filled);
-			shapeRenderer.setColor(backgroundColor);
+			shapeRenderer.setColor(color.cpy().add(effectiveHighlight));
 			shapeRenderer.rect(position.x, position.y, size.x, size.y);
 			shapeRenderer.end();
 		}
 	}
 	public void update(TotemDefender game){}
 	
+	public void onLoseFocus(){}
+	public void onGainFocus(){}
+	
+
+	public boolean onCursorOver(){
+		setHighlighted(true);
+		return false;
+	}
+	
+	public boolean onCursorExit(){
+		setHighlighted(false);
+		return false;
+	}
+	
 	public boolean onSelect()
 	{ return false; }
 
 	public boolean onMouseUp()
 	{ return onSelect(); }
-	public boolean onCursorOver()
-	{ return false; }
-	
-	public boolean onCursorExit()
-	{ return false; }
 	
 	public boolean onMouseDown()
 	{ return false; }
-	
-	public void onLoseFocus(){}
-	public void onGainFocus(){}
 
 	public Vector2 getSize() 
 	{ return size; }
@@ -86,11 +97,11 @@ public class Component {
 		this.backgroundSprite = sprite;
 	}
 	
-	public Color getBackgroundColor() {
-		return backgroundColor;
+	public Color getColor() {
+		return color;
 	}
-	public void setBackgroundColor(Color backgroundColor) {
-		this.backgroundColor = backgroundColor;
+	public void setColor(Color color) {
+		this.color = color;
 	}
 	
 	/** Checks if given point lies within the component */
@@ -107,6 +118,28 @@ public class Component {
 
 	public void setSelectable(boolean selectable) {
 		this.selectable = selectable;
+	}
+
+	public boolean isHighlighted() {
+		return highlighted;
+	}
+
+	public void setHighlighted(boolean highlighted) {
+		this.highlighted = highlighted;
+		
+		if(highlighted){
+			if(highlightColor == null){
+				highlightColor = getColor().cpy().add(DEFAULT_HIGHTLIGHT);
+			}
+		}
+	}
+
+	public Color getHighlightColor() {
+		return highlightColor;
+	}
+
+	public void setHighlightColor(Color highlightColor) {
+		this.highlightColor = highlightColor;
 	}
 	
 }

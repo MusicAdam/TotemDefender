@@ -55,6 +55,7 @@ public class BuildMenu extends Menu {
 				return true;
 			}
 		};
+		square.getLabel().setColor(Color.BLACK);
 		rect = new Button(this, "Rectangle", buttonSize, new Vector2(right, top - buttonSize.y * 3), Color.YELLOW){
 			@Override
 			public boolean onSelect(){
@@ -62,6 +63,7 @@ public class BuildMenu extends Menu {
 				return true;
 			}
 		};
+		rect.getLabel().setColor(Color.BLACK);
 		
 		PedestalEntity pedestal = level.getPedestal(owner);
 		Vector2 pedPos = game.worldToScreen(pedestal.getPosition());	
