@@ -49,8 +49,9 @@ public abstract class Entity {
 			float bodyY = body.getPosition().y * TotemDefender.BOX_TO_WORLD;
 			float spriteHW = (sprite.getWidth() * sprite.getScaleX()) /2;
 			float spriteHH = (sprite.getHeight() * sprite.getScaleY()) /2;
-			sprite.setPosition(bodyX - spriteHW, bodyY - spriteHH);
+			sprite.setPosition(0, 0);
 			sprite.setRotation((float)Math.toDegrees(body.getAngle()));
+			sprite.setPosition(bodyX - spriteHW, bodyY - spriteHH);
 		}
 		
 	}

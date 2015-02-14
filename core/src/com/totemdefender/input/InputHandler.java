@@ -111,12 +111,12 @@ public class InputHandler implements InputProcessor{
 	}
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		MouseEvent cmp = new MouseEvent(MouseEvent.MOUSE_DOWN, button, screenCoordsToGame(new Vector2(screenX, screenY), game.getCamera()), 0);
+		MouseEvent cmp = new MouseEvent(MouseEvent.MOUSE_DOWN, button, screenCoordsToGame(new Vector2(screenX, screenY), game.getEntityCamera()), 0);
 		return dispatchMouseEvent(cmp);
 	}
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		MouseEvent cmp = new MouseEvent(MouseEvent.MOUSE_UP, button, screenCoordsToGame(new Vector2(screenX, screenY), game.getCamera()), 0);
+		MouseEvent cmp = new MouseEvent(MouseEvent.MOUSE_UP, button, screenCoordsToGame(new Vector2(screenX, screenY), game.getEntityCamera()), 0);
 		return dispatchMouseEvent(cmp);
 	}
 	@Override
@@ -126,7 +126,7 @@ public class InputHandler implements InputProcessor{
 	}
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
-		MouseEvent cmp = new MouseEvent(MouseEvent.MOUSE_MOVE, -1, screenCoordsToGame(new Vector2(screenX, screenY), game.getCamera()), 0);
+		MouseEvent cmp = new MouseEvent(MouseEvent.MOUSE_MOVE, -1, screenCoordsToGame(new Vector2(screenX, screenY), game.getEntityCamera()), 0);
 		return dispatchMouseEvent(cmp);
 	}
 	@Override

@@ -18,11 +18,9 @@ import com.totemdefender.TotemDefender;
 import com.totemdefender.states.BattleState;
 
 public class WeaponEntity extends Entity {	
-	
-	public static final boolean DEBUG_RENDER = false; //Renders debug positioning elements for the weapon
 	public static final float CHARGE_RATE = 1/1000f;     //Speed at which the charge meter increases
 	public static final float ROTATION = 1f;  //Degrees the weapon will rotate
-	public static final float VELOCITY = 1000f;
+	public static final float VELOCITY = 1500f;
 	
 	private final float projectileVelocity;
 	private float currentRate = CHARGE_RATE; //Current charge rate as it will change as charge changes.
@@ -46,7 +44,7 @@ public class WeaponEntity extends Entity {
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer){
 		super.render(batch, shapeRenderer);
 		
-		if(DEBUG_RENDER){
+		if(TotemDefender.DEBUG){
 			shapeRenderer.begin(ShapeType.Line);
 			shapeRenderer.setColor(1, 0, 0, 1);
 			shapeRenderer.circle(getPosition().x + getSprite().getOriginX(), getPosition().y + getSprite().getOriginY(), 5);
@@ -124,8 +122,8 @@ public class WeaponEntity extends Entity {
 		
 		float hw = getSprite().getWidth()/2;
 		float hh = getSprite().getHeight()/2;
-		float xPos = (-game.getScreenWidth()/2) * TotemDefender.STACK_LOCATION;
-		float yPos = -game.getScreenHeight()/2 + TotemDefender.GROUND_HEIGHT;
+		float xPos = (-TotemDefender.V_WIDTH/2) * TotemDefender.STACK_LOCATION + 200;
+		float yPos = -TotemDefender.V_HEIGHT/2 + TotemDefender.GROUND_HEIGHT;
 		
 		if(owner.getID() == 2){
 			xPos = -xPos; //Put it on the right side if its player 2

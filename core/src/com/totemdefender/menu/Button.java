@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 
 public class Button extends Component {
+	public static final Color HIGHLIGHT = new Color(.5f, .5f, .5f, 1);
 	private FreeTypeFontGenerator generator;
 	private FreeTypeFontParameter parameter;
 	private BitmapFont bitMapFont;
@@ -20,6 +21,9 @@ public class Button extends Component {
 	private String label;
 	private Color color;
 	private Color textColor = Color.MAGENTA;
+	
+	private boolean highlighted = false;
+	private float padding = 5;
 	
 	Texture texture;
 	
@@ -40,8 +44,12 @@ public class Button extends Component {
 	
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer) {
 		shapeRenderer.begin(ShapeType.Filled);
-		shapeRenderer.setColor(this.getColor());
-		shapeRenderer.rect(this.getPosition().x, this.getPosition().y, this.getSize().x, this.getSize().y);
+		if(highlighted){
+			shapeRenderer.setColor(this.getColor().cpy().add(HIGHLIGHT));
+		}else{
+			shapeRenderer.setColor(this.getColor());
+		}
+		shapeRenderer.rect(this.getPosition().x + padding, this.getPosition().y + padding, this.getSize().x, this.getSize().y);
 		shapeRenderer.end();
 		
 		batch.begin();
@@ -88,5 +96,13 @@ public class Button extends Component {
 
 	public void setTextPosition(float x, float y)
 	{ this.textPosition = new Vector2(x,y); }
+
+	public boolean isHighlighted() {
+		return highlighted;
+	}
+
+	public void setHighlighted(boolean highlighted) {
+		this.highlighted = highlighted;
+	}
 
 }

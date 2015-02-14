@@ -23,7 +23,7 @@ public class GroundEntity extends Entity{
 		TotemDefender game = TotemDefender.Get();
 		shapeRenderer.begin(ShapeType.Filled);
 		shapeRenderer.setColor(Color.GREEN);
-		shapeRenderer.rect(-game.getScreenWidth()/2, -game.getScreenHeight()/2, game.getScreenWidth(), TotemDefender.GROUND_HEIGHT);
+		shapeRenderer.rect(getPosition().x - TotemDefender.V_WIDTH/2, getPosition().y - TotemDefender.GROUND_HEIGHT/2, TotemDefender.V_WIDTH, TotemDefender.GROUND_HEIGHT);
 		shapeRenderer.end();
 	}
 	
@@ -33,7 +33,7 @@ public class GroundEntity extends Entity{
 		float hh = 10;
 		BodyDef groundDef = new BodyDef();
 		groundDef.type = BodyType.StaticBody;
-		groundDef.position.set(0, -Gdx.graphics.getHeight()/2 * TotemDefender.WORLD_TO_BOX + ((hh + 1) * TotemDefender.WORLD_TO_BOX));
+		groundDef.position.set(0, -TotemDefender.V_HEIGHT/2 * TotemDefender.WORLD_TO_BOX + ((hh + 1) * TotemDefender.WORLD_TO_BOX));
 		
 		Body groundBody = game.getWorld().createBody(groundDef);
 		groundBody.setUserData(this);

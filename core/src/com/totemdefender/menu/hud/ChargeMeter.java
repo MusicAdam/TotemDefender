@@ -10,8 +10,8 @@ import com.totemdefender.entities.WeaponEntity;
 import com.totemdefender.menu.Component;
 
 public class ChargeMeter extends Component{
-	private static final Color chargeFG = new Color(.24f, .85f, .01f, 1); 
-	private static final Color chargeBG = new Color(.29f, .5f, .09f, 1); 
+	private static final Color chargeFG = new Color(.34f, 1f, .1f, 1); 
+	private static final Color chargeBG = new Color(.29f, .3f, .09f, 1); 
 	WeaponEntity weapon;
 	
 	public ChargeMeter(WeaponEntity weapon){
@@ -28,7 +28,7 @@ public class ChargeMeter extends Component{
 		float padding = 4;
 		
 		if(weapon.chargeStarted()){
-			Vector2 weaponPos = TotemDefender.Get().screenToWorld(weapon.getPosition());
+			Vector2 weaponPos = TotemDefender.Get().worldToScreen(weapon.getPosition());
 			float xPos = weaponPos.x + (width * xOffset);
 			float yPos = weaponPos.y + spriteHeight +padding/2;
 			

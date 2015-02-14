@@ -1,5 +1,14 @@
 package com.totemdefender.entities.blocks;
 
+import java.util.Random;
+
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -10,21 +19,96 @@ import com.totemdefender.TotemDefender;
 import com.totemdefender.entities.Entity;
 
 public abstract class BlockEntity extends Entity{
+	public enum Material{
+		Wood,
+		Stone,
+		Jade,
+		Totem
+	}
+	
+	public enum Shape{
+		Triangle,
+		Rectangle, 
+		Square,
+		Totem
+	}
+	
 	protected float cost;
 	protected float xScale, yScale; //This is the scale of the block in multiples of TotemDefender.BlockSize in each direction
 	private Fixture fixture;
 	private boolean rotated = false;
 	private boolean rotatable = true;
+	private Material material;
+	private Shape	shape;
 	
-	public BlockEntity(Player owner, float cost, float xScale, float yScale){
+	public BlockEntity(Player owner, Material material, Shape shape){
 		super(owner);
-		this.xScale = xScale;
-		this.yScale = yScale;
-		this.cost = cost;
+		
+		if(shape == Shape.Rectangle){
+			xScale = 2;
+			yScale = 1;
+		}else if(shape == Shape.Totem){
+			xScale = 1;
+			yScale = 2;
+		}else{
+			xScale = 1;
+			yScale = 1;
+		}
+		
+		this.cost = 0;
+		this.material = material;
+		this.shape = shape;
+	}
+	
+	private String getRandomAsset(){
+		String materialId="", shapeId="";
+		
+		switch(this.material){
+			case Wood:
+				materialId = "wood";
+				break;
+			case Stone:
+				materialId = "stone";
+				break;
+			case Jade:
+				materialId = "jade";
+				break;
+			case Totem:
+				materialId = "totem";
+				break;
+		}
+		
+		switch(this.shape){
+			case Square:
+				shapeId = "square";
+				break;
+			case Rectangle:
+				shapeId = "rectangle";
+				break;
+			case Triangle:
+				shapeId = "triangle";
+				break;
+			case Totem:
+				shapeId = "totem";
+				break;
+		}
+		
+		Random rand = new Random();
+		int num = rand.nextInt(2) + 1;
+		
+		return "blocks/block_"+shapeId+"_"+materialId+"_"+num+".png";
 	}
 	
 	@Override
 	public void spawn(TotemDefender game) {
+		if(shape != Shape.Totem){
+			Texture blockTexture = game.getAssetManager().get(getRandomAsset(), Texture.class);
+			blockTexture.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
+			setSprite(new Sprite(blockTexture));
+			getSprite().setSize(TotemDefender.BLOCK_SIZE, TotemDefender.BLOCK_SIZE);
+			getSprite().setOriginCenter();
+		}
+		
 		BodyDef def = new BodyDef();
 		def.type = BodyType.DynamicBody;
 		setBody(game.getWorld().createBody(def));
@@ -45,6 +129,8 @@ public abstract class BlockEntity extends Entity{
 		fixture = getBody().createFixture(fixtureDef);
 
 		shape.dispose();	
+		
+		isSpawned = true;
 	}
 	
 	public void setDensity(float density){

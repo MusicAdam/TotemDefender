@@ -1,5 +1,6 @@
 package com.totemdefender.states;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.totemdefender.Level;
 import com.totemdefender.Player;
@@ -49,6 +50,8 @@ public class BattleState implements State {
 	public void onEnter(TotemDefender game) {
 		hud = new HUD(game, this);
 		game.addMenu(hud);
+
+		game.getStateManager().attachState(new PostGameState(hud));
 		
 		for(BlockEntity ent : level.getPlacedBlocks()){
 			ent.getBody().setActive(true);
@@ -148,7 +151,16 @@ public class BattleState implements State {
 
 	@Override
 	public boolean canExit(TotemDefender game) {
-		return false; //Totem is on ground?
+		if(level.checkTotemStatus() != null){
+			if(level.checkTotemStatus().getID() == 1){
+				game.setWinner(game.getPlayer2());
+			}else{
+				game.setWinner(game.getPlayer1());				
+			}
+			return true;
+		}
+		
+		return false;
 	}
 
 	@Override
@@ -164,7 +176,6 @@ public class BattleState implements State {
 		
 		if(turn.getID() == 1){
 			if(level.getPlayer1Weapon().isCompleted() && level.getPlayer1Weapon().getProjectile() == null){		
-				System.out.println(level.checkActivePlayerEntities(2));
 				if(!level.checkActivePlayerEntities(2)){
 					turn = game.getPlayer2();
 					level.getPlayer1Weapon().resetCharge();

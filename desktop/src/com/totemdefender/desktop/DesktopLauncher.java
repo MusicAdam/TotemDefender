@@ -7,8 +7,10 @@ import com.totemdefender.TotemDefender;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.width = 800;
-		config.height = 600;
+		config.width = TotemDefender.V_WIDTH;
+		config.height = TotemDefender.V_HEIGHT;
+		config.samples = 4;
+		config.resizable = false;
 		config.fullscreen = false;
 		new LwjglApplication(new TotemDefender(), config);
 	}

@@ -59,6 +59,7 @@ public class Grid extends Component {
 	}
 	
 	public void setEntity(BlockEntity entity){
+		index = new Vector2(WIDTH/2, HEIGHT/2);
 		this.entity = entity;
 		snapEntityToGrid();
 	}
@@ -118,7 +119,7 @@ public class Grid extends Component {
 		if(!hasEntity()) return; 
 		
 		TotemDefender game = TotemDefender.Get();
-		Vector2 screenOffset = new Vector2(-game.getScreenWidth()/2, -game.getScreenHeight()/2);
+		Vector2 screenOffset = new Vector2(-TotemDefender.V_WIDTH/2, -TotemDefender.V_HEIGHT/2);
 		Vector2 screenCoordinates = new Vector2(position.x + (index.x * TotemDefender.BLOCK_SIZE), position.y + (index.y * TotemDefender.BLOCK_SIZE));
 		screenCoordinates.sub(-entity.getWidth()/2, -entity.getHeight()/2);
 		screenCoordinates.add(screenOffset);

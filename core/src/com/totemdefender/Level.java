@@ -24,10 +24,10 @@ public class Level {
 	
 	public Level(TotemDefender game){		
 		/** Create the world **/
-		/*background = new BackgroundEntity();
+		background = new BackgroundEntity();
 		background.setName("Background");
 		background.spawn(game);
-		game.addEntity(background);*/
+		game.addEntity(background);
 		
 		ground = new GroundEntity();
 		ground.setName("Ground");
@@ -125,7 +125,16 @@ public class Level {
 			}
 		}
 		
-		System.out.println("TOTEM ACTIVE: " + player2Totem.getBody().isActive());
 		return ((plID == 1) ? player1Totem.getBody().isAwake() : player2Totem.getBody().isAwake());
+	}
+	
+	public Player checkTotemStatus(){
+		if(player1Totem.isOnGround()){
+			return player1Totem.getOwner();
+		}else if(player2Totem.isOnGround()){
+			return player2Totem.getOwner();
+		}
+		
+		return null;
 	}
 }
