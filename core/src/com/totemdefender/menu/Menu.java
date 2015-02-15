@@ -148,13 +148,12 @@ public class Menu extends InputHandler{
 		return focus;
 	}
 
-<<<<<<< HEAD
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		System.out.println("x: " + screenX + " Y: " + screenY);
 		// TODO Auto-generated method stub
 		return false;
-=======
+	}
 	public void setFocus(Component focus, boolean setIndex) {
 		this.focus = focus;
 		
@@ -173,7 +172,6 @@ public class Menu extends InputHandler{
 	public void setFocus(int index){
 		this.index = index;
 		setFocus(components.get(index), false);
->>>>>>> 6d45186b91c8f4379ed2144a6c4bb1235fcad789
 	}
 	
 	public void indexDown(int count){
@@ -433,13 +431,7 @@ public class Menu extends InputHandler{
 		this.position = position;
 	}
 
-<<<<<<< HEAD
-	public void setShouldRender(boolean shouldRender) 
-	{ this.shouldRender = shouldRender; }
-
-=======
 	public Vector2 getSize() {
 		return size;
 	}
->>>>>>> 6d45186b91c8f4379ed2144a6c4bb1235fcad789
 }
