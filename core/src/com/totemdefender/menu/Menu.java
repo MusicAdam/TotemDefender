@@ -424,6 +424,10 @@ public class Menu extends InputHandler{
 	public void setPosition(Vector2 position) {
 		this.position = position;
 	}
+	
+	public void setPosition(float x, float y){
+		setPosition(new Vector2(x, y));
+	}
 
 	public Vector2 getSize() {
 		return size;
