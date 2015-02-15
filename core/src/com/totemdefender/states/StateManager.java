@@ -2,6 +2,7 @@ package com.totemdefender.states;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.totemdefender.TotemDefender;
 
@@ -16,10 +17,14 @@ public class StateManager {
 	}
 	private ArrayList<StateWrapper> attachedStates; //List of states which affect the game
 	private TotemDefender game; //Reference to the main game
+	private ConcurrentLinkedQueue<StateWrapper> callEnterStateQueue; //Used to keep track of which onEnter calls need to be made without violating concurency
+	private ConcurrentLinkedQueue<StateWrapper> callExitStateQueue;  //"                       "   onExit  "                                          "
 	
 	public StateManager(TotemDefender game){
 		this.game = game;
 		attachedStates = new ArrayList<StateWrapper>();
+		callEnterStateQueue = new ConcurrentLinkedQueue<StateWrapper>();
+		callExitStateQueue = new ConcurrentLinkedQueue<StateWrapper>();		
 	}
 	
 	/** Calls active state's updates if entry condition is true, checks active states exit conditions, if the are met the state is updates and exited.
@@ -32,17 +37,25 @@ public class StateManager {
 			
 			if(state.canEnter(game)){
 				if(!stateWrapper.hasEntered){
-					state.onEnter(game);
 					stateWrapper.hasEntered = true;
+					callEnterStateQueue.add(stateWrapper);
 				}else{
 					state.update(game);
 				}
 			}
 			
 			if(state.canExit(game)){
-				state.onExit(game);
+				callExitStateQueue.add(stateWrapper);
 				iterator.remove();
 			}
+		}
+		
+		while(!callEnterStateQueue.isEmpty()){
+			callEnterStateQueue.poll().state.onEnter(game);
+		}
+		
+		while(!callExitStateQueue.isEmpty()){
+			callExitStateQueue.poll().state.onExit(game);
 		}
 	}
 	
@@ -82,5 +95,15 @@ public class StateManager {
 		detachState(state, true);
 	}
 	
-	public ArrayList<State> getActiveStates(){ return null; }
+	public <T> ArrayList<T> getAttachedState(Class<T> t){ 
+		ArrayList<T> states = new ArrayList<T>();
+		
+		for(StateWrapper sw : attachedStates){
+			if(sw.state.getClass().equals(t)){
+				states.add((T) sw.state);
+			}
+		}
+		
+		return states;
+	}
 }
