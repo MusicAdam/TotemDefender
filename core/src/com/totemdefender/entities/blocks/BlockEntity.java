@@ -94,7 +94,7 @@ public abstract class BlockEntity extends Entity{
 		}
 		
 		Random rand = new Random();
-		int num = rand.nextInt(2) + 1;
+		int num = rand.nextInt(3) + 1;
 		
 		return "blocks/block_"+shapeId+"_"+materialId+"_"+num+".png";
 	}
@@ -105,7 +105,7 @@ public abstract class BlockEntity extends Entity{
 			Texture blockTexture = game.getAssetManager().get(getRandomAsset(), Texture.class);
 			blockTexture.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
 			setSprite(new Sprite(blockTexture));
-			getSprite().setSize(TotemDefender.BLOCK_SIZE, TotemDefender.BLOCK_SIZE);
+			getSprite().setSize(TotemDefender.BLOCK_SIZE * xScale, TotemDefender.BLOCK_SIZE * yScale);
 			getSprite().setOriginCenter();
 		}
 		

@@ -157,8 +157,8 @@ public class TotemDefender extends ApplicationAdapter {
 		
 		//Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode()); //Default to fullscreen desktop mode
 		////		DEBUG STUFF	 /////	 
-		//stateManager.attachState(new BuildState());
-		stateManager.attachState(new DepthTestState());
+		stateManager.attachState(new BuildState());
+		//stateManager.attachState(new DepthTestState());
 		//Add an exit function
 		inputHandler.addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, Input.Keys.ESCAPE){
 			@Override
@@ -323,6 +323,10 @@ public class TotemDefender extends ApplicationAdapter {
 		assetManager.load("wooden_pedestal.png", Texture.class, textureParam);
 		assetManager.load("blocks/block_square_stone_1.png", Texture.class, textureParam);
 		assetManager.load("blocks/block_square_stone_2.png", Texture.class, textureParam);
+		assetManager.load("blocks/block_square_stone_3.png", Texture.class, textureParam);
+		assetManager.load("blocks/block_rectangle_stone_1.png", Texture.class, textureParam);
+		assetManager.load("blocks/block_rectangle_stone_2.png", Texture.class, textureParam);
+		assetManager.load("blocks/block_rectangle_stone_3.png", Texture.class, textureParam);
 		assetManager.load("totem_face_flat.png", Texture.class, textureParam);
 		assetManager.load("totem_face_shaded.png", Texture.class, textureParam);
 		assetManager.load("bg.png", Texture.class, textureParam);
