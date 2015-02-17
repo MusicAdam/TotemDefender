@@ -54,7 +54,7 @@ public class Container extends Component{
 				setValid(false);
 			cmp.update(game);
 		}
-		System.out.println(isValid());
+
 		validate();
 	}
 	
@@ -67,7 +67,7 @@ public class Container extends Component{
 
 	@Override
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer) {
-		ScissorStack.pushScissors(getRectangle());
+		boolean shouldPop = ScissorStack.pushScissors(getRectangle());
 		batch.getTransformMatrix().translate(getPosition().x, getPosition().y, 0); //Positon relative to container position
 		shapeRenderer.translate(getPosition().x, getPosition().y, 0);
 		for(Component cmp : components){
@@ -75,7 +75,8 @@ public class Container extends Component{
 		}
 		shapeRenderer.translate(-getPosition().x, -getPosition().y, 0);
 		batch.getTransformMatrix().translate(-getPosition().x, -getPosition().y, 0); 
-		ScissorStack.popScissors();
+		if(shouldPop)
+			ScissorStack.popScissors();
 
 		super.render(batch, shapeRenderer);
 	}
@@ -86,10 +87,14 @@ public class Container extends Component{
 			public boolean callback(){
 				if(pointIsInBounds(mousePosition)){
 					for(Component cmp : components){
-						if(cmp.pointIsInBounds(mousePosition)){
+						if(cmp.pointIsInBounds(worldToLocal(mousePosition))){
 							setFocus(cmp);
 							return cmp.onMouseDown(this);
 						}
+					}
+				}else{
+					if(getFocus() != null){
+						setFocus(null);
 					}
 				}
 				return false;
@@ -100,7 +105,9 @@ public class Container extends Component{
 			@Override
 			public boolean callback(){
 				if(focus != null){
-					return focus.onMouseUp(this);
+					boolean handled = focus.onMouseUp(this);
+					setFocus(null);
+					return handled;
 				}
 				return false;
 			}
@@ -111,10 +118,9 @@ public class Container extends Component{
 			public boolean callback(){
 				if(pointIsInBounds(mousePosition)){
 					for(Component cmp : components){
-						if(cmp.pointIsInBounds(mousePosition)){
+						if(cmp.pointIsInBounds(worldToLocal(mousePosition))){
 							if(!cmp.isMouseOver()){
 								cmp.setMouseOver(true);
-								System.out.println("THIS THO" + cmp.mouseOver );
 								return cmp.onMouseEnter(this);
 							}
 						}
@@ -122,10 +128,8 @@ public class Container extends Component{
 				}
 				
 				for(Component cmp : components){
-					System.out.println("DOIN IT " + cmp.isMouseOver());
 					if(cmp.isMouseOver()){
-						System.out.println("THIS");
-						if(!cmp.pointIsInBounds(mousePosition)){
+						if(!cmp.pointIsInBounds(worldToLocal(mousePosition))){
 							cmp.mouseOver = false;
 							return cmp.onMouseExit(this);
 						}
@@ -154,10 +158,12 @@ public class Container extends Component{
 			focus.onGainFocus();
 	}
 	
+	public Component getFocus(){
+		return focus;
+	}
+	
 	//Calculates size based on attached components
-	//TODO: This is a little buggy, needs further testing. Should be okay for now.
 	public void sizeToContents(){
-		System.out.println("OK");
 		for(Component cmp : components){
 			//Check if x-bounds exeeds our current width
 			if(cmp.getPosition().x + cmp.getWidth() > getSize().x){
@@ -170,5 +176,5 @@ public class Container extends Component{
 			}
 		}
 	}
-
+	
 }

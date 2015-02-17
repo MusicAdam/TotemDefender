@@ -1,10 +1,12 @@
 package com.totemdefender.states;
 
 import com.badlogic.gdx.graphics.Color;
+import com.totemdefender.Level;
 import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.menu.Button;
 import com.totemdefender.menu.Component;
+import com.totemdefender.menu.Container;
 import com.totemdefender.menu.Label;
 import com.totemdefender.menu.NavigableContainer;
 import com.totemdefender.menu.Panel;
@@ -24,7 +26,6 @@ public class MenuTestState implements State{
 		
 		menu = new NavigableContainer(null);
 		menu.attachKeyboardListeners(new Player(1));
-		menu.setPosition(10, 10);
 		//menu.setSize(100, 100);
 		
 		Button testButton = new Button(menu);
@@ -34,7 +35,6 @@ public class MenuTestState implements State{
 
 		Button testButton2 = new Button(menu);
 		testButton2.setSize(100, 100);
-		System.out.println(testButton.getSize());
 		testButton2.setPosition(100, 0);
 		testButton2.setText("Hello World2");
 		menu.addComponent(testButton2);
@@ -54,8 +54,13 @@ public class MenuTestState implements State{
 		menu.addComponent(testButton4);
 		menu.connectComponents(testButton4, testButton3);
 		menu.connectComponents(testButton4, testButton2);
-		
+
+		menu.validate();
+		menu.setPosition(TotemDefender.V_WIDTH/2 - menu.getWidth()/2, TotemDefender.V_HEIGHT/2 - menu.getHeight()/2);
 		menu.create(game);
+		
+		Container test = new Container();
+		test.create(game);
 	}
 
 	@Override

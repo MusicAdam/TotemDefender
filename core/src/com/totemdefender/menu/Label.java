@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.totemdefender.TotemDefender;
 
 /** Label allows a text field to be created and provides utilities for displaying text. */
@@ -13,12 +14,15 @@ public class Label extends Panel{
 	private BitmapFont font;
 	private String text;
 	private Color textColor;
+	private Vector2 textOffset;
+	private TextBounds bounds;
 
 	public Label(Container parent){
 		super(parent);
-		text = "Default";
 		font = TotemDefender.Get().getAssetManager().get("default.ttf", BitmapFont.class);
 		textColor = Color.WHITE;
+		textOffset = new Vector2();
+		setText("Default");
 	}
 	
 	@Override
@@ -26,7 +30,7 @@ public class Label extends Panel{
 		super.render(batch, shapeRenderer);
 		batch.begin();
 		font.setColor(textColor);
-		font.drawWrapped(batch, text, getPosition().x, getPosition().y + getHeight()/2, getWidth());
+		font.drawWrapped(batch, text, getPosition().x + textOffset.x, getPosition().y + textOffset.y + bounds.height, getWidth());
 		batch.end();
 	}
 
@@ -44,10 +48,14 @@ public class Label extends Panel{
 
 	public void setText(String text, boolean scale) {
 		this.text = text;
+		bounds = font.getBounds(text);
 		if(scale){
-			TextBounds bounds = font.getBounds(text);
-			setSize(bounds.width, bounds.height);
+			sizeToBounds();
 		}
+	}
+	
+	public void sizeToBounds(){
+		setSize(bounds.width, bounds.height);
 	}
 	
 	public void setText(String text){
@@ -60,6 +68,22 @@ public class Label extends Panel{
 
 	public void setTextColor(Color textColor) {
 		this.textColor = textColor;
+	}
+	
+	public void setTextOffset(Vector2 offset){
+		textOffset = offset;
+	}
+	
+	public void setTextOffset(float x, float y){
+		setTextOffset(new Vector2(x, y));
+	}
+	
+	public Vector2 getTextOffset(){
+		return textOffset;
+	}
+	
+	public TextBounds getTextBounds(){
+		return bounds;
 	}
 
 }

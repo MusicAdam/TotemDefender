@@ -127,4 +127,13 @@ public abstract class Component {
 	public void setMouseOver(boolean b) {
 		mouseOver = b;
 	}
+	
+	//Gets the local point from a world point
+	public Vector2 worldToLocal(Vector2 worldPoint){
+		if(parent == null){
+			return new Vector2(worldPoint.x - rectangle.x, worldPoint.y - rectangle.y);
+		}else{
+			return worldToLocal(new Vector2(worldPoint.x - rectangle.x, worldPoint.y - rectangle.y));
+		}
+	}
 }
