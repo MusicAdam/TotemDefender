@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.totemdefender.TotemDefender;
 
-public class StartMenu extends Menu {
+public class StartMenu extends Panel {
 	
 	private Button start;
 	private Button leaderboard;
@@ -27,10 +27,10 @@ public class StartMenu extends Menu {
 		instruction = new Button(this, "Instruction", buttonSize, 
 				new Vector2(buttonSize.x ,buttonSize.y), Color.CYAN);
 		
-		this.addComponent(start);
-		this.addComponent(leaderboard);
-		this.addComponent(option);
-		this.addComponent(instruction);
+		this.addPanel(start);
+		this.addPanel(leaderboard);
+		this.addPanel(option);
+		this.addPanel(instruction);
 	}
 
 }

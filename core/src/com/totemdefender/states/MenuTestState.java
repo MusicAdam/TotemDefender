@@ -1,14 +1,16 @@
 package com.totemdefender.states;
 
 import com.badlogic.gdx.graphics.Color;
+import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.menu.Button;
 import com.totemdefender.menu.Component;
 import com.totemdefender.menu.Label;
-import com.totemdefender.menu.Menu;
+import com.totemdefender.menu.NavigableContainer;
+import com.totemdefender.menu.Panel;
 
 public class MenuTestState implements State{
-	Menu menu;
+	NavigableContainer menu;
 	
 	@Override
 	public boolean canEnter(TotemDefender game) {
@@ -19,44 +21,41 @@ public class MenuTestState implements State{
 	@Override
 	public void onEnter(TotemDefender game) {
 		System.out.println("MenuTestState:onEnter");
-		menu = new Menu(game);
-		menu.attachPlayer1Listeners();
-		game.addMenu(menu);
 		
+		menu = new NavigableContainer(null);
+		menu.attachKeyboardListeners(new Player(1));
+		menu.setPosition(10, 10);
+		//menu.setSize(100, 100);
+		
+		Button testButton = new Button(menu);
+		testButton.setSize(100, 100);
+		testButton.setText("Hello World1");
+		menu.addComponent(testButton);
 
-		final Label testLabel = new Label(menu);
-		testLabel.setText("Hello World!");
-		testLabel.setPosition(200, 200);
-		menu.addComponent(testLabel);
+		Button testButton2 = new Button(menu);
+		testButton2.setSize(100, 100);
+		System.out.println(testButton.getSize());
+		testButton2.setPosition(100, 0);
+		testButton2.setText("Hello World2");
+		menu.addComponent(testButton2);
+		menu.connectComponents(testButton, testButton2);
 		
+		Button testButton3 = new Button(menu);
+		testButton3.setSize(100, 100);
+		testButton3.setPosition(0, 100);
+		testButton3.setText("Hello World3");
+		menu.addComponent(testButton3);
+		menu.connectComponents(testButton3, testButton);
 		
-		Button testCmp = new Button(menu){
-			@Override
-			public boolean onSelect(){
-				testLabel.setText("White clicked");
-				return true;
-			}
-		};
-		testCmp.setColor(Color.WHITE);
-		testCmp.setSize(100, 100);
-		testCmp.setSelectable(true);
-		menu.addComponent(testCmp);
+		Button testButton4 = new Button(menu);
+		testButton4.setSize(100, 100);
+		testButton4.setPosition(100, 100);
+		testButton4.setText("Hello World4");
+		menu.addComponent(testButton4);
+		menu.connectComponents(testButton4, testButton3);
+		menu.connectComponents(testButton4, testButton2);
 		
-		Component testCmp2 = new Component(menu);
-		testCmp2.setColor(Color.RED);
-		testCmp2.setSize(100, 100);
-		testCmp2.setPosition(100, 0);
-		menu.addComponent(testCmp2);
-		
-		Component testCmp3 = new Component(menu);
-		testCmp3.setColor(Color.GREEN);
-		testCmp3.setSize(100, 100);
-		testCmp3.setPosition(200, 0);
-		testCmp3.setSelectable(true);
-		menu.addComponent(testCmp3);
-		
-		
-		
+		menu.create(game);
 	}
 
 	@Override

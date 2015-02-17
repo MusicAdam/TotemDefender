@@ -11,59 +11,52 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.totemdefender.TotemDefender;
+import com.totemdefender.input.MouseEvent;
 
-public class Button extends Component {	
-	private Label label;
-	
-	public Button(Menu parent, String labelText, Vector2 newSize, Vector2 newPosition, Color newColor) {
+public class Button extends Label {		
+	public Button(Container parent, String labelText, Vector2 newSize, Vector2 newPosition, Color newColor) {
 		super(parent);
-		label = new Label(parent);
-		label.setText(labelText);
-		
+		setText(labelText);		
 		setSize(newSize); 
 		setPosition(newPosition);
 		setColor(newColor);
-		setSelectable(true);
 	}
 	
-	public Button(Menu parent){
+	public Button(Container parent){
 		super(parent);
-		label = new Label(parent);
-		color = Color.BLACK;
-	}
-	
-	@Override
-	public void update(TotemDefender game){
-		label.update(game);
-	}
-	
-	@Override
-	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer) {
-		super.render(batch, shapeRenderer);
-		label.render(batch, shapeRenderer);
+		setColor(Color.BLACK);
 	}
 	
 	public void dispose() {
 	}
 	
-	public Label getLabel() 
-	{ return label; }
-	
-	public void setLabel(Label label) 
-	{ this.label = label; }
-	
-	public void setText(String text){
-		label.setText(text);
-	}
-	
 	@Override
 	public void setPosition(Vector2 pos){
 		super.setPosition(pos);
-		alignLabelToCenter();
 	}
 	
-	public void alignLabelToCenter(){
-		label.setPosition(getPosition().x + getWidth()/2 - label.getWidth()/2, getPosition().y + getHeight()/2);
+	public void onClick(){}
+	
+	@Override
+	public void onGainFocus(){
+		setColor(Color.LIGHT_GRAY);
 	}
-
+	
+	@Override
+	public void onLoseFocus(){
+		setColor(Color.BLACK);
+	}
+	
+	@Override
+	public boolean onMouseEnter(MouseEvent event){
+		setColor(Color.GRAY);
+		return true;
+	}
+	
+	@Override
+	public boolean onMouseExit(MouseEvent event){
+		setColor(Color.BLACK);
+		return true;
+	}
+	
 }

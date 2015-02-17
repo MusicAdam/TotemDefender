@@ -23,7 +23,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 
-public class BuildMenu extends Menu {
+public class BuildMenu extends Panel {
 	private Button triangle;
 	private Button square;
 	private Button rect;
@@ -71,9 +71,9 @@ public class BuildMenu extends Menu {
 		grid.setPosition(new Vector2(pedPos.x - grid.getWidth()/2,
 												TotemDefender.PEDESTAL_HEIGHT + TotemDefender.GROUND_HEIGHT));
 
-		this.addComponent(grid);
-		this.addComponent(square);
-		this.addComponent(rect);
+		this.addPanel(grid);
+		this.addPanel(square);
+		this.addPanel(rect);
 
 		attachListeners();
 		if(owner.getID() == 1){

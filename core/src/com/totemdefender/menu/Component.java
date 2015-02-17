@@ -1,145 +1,130 @@
 package com.totemdefender.menu;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.totemdefender.TotemDefender;
+import com.totemdefender.input.MouseEvent;
 
-public class Component {
-	public static final Color DEFAULT_HIGHTLIGHT = new Color(.5f, .5f, .5f, 1);
+public abstract class Component {
+	protected Rectangle rectangle; //Mathematical representation of the component
+	protected boolean mouseOver;
+	protected Component parent;
+	private boolean valid; //Set to false after the rectangle changes. used to update containers on "in-need" basis.
 	
-	protected Vector2 size, position;
-	protected Sprite backgroundSprite;
-	protected Color color;
-	protected Menu parent; //Parent menu
-	protected boolean selectable; //Determines whether a component in a menu will recieve "onSelect" events and can be traversed/hovered with mouse
-	private Color highlightColor;
-	private boolean highlighted = false;
-	
-	public Component(Menu parent){
-		position = new Vector2();
-		size = new Vector2();
+	public Component(Component parent){
 		this.parent = parent;
+		rectangle = new Rectangle();
 	}
 	
+	public Component(){
+		this.parent = null;
+		rectangle = new Rectangle();
+	}
+	
+	public void update(TotemDefender game){
+		validate();
+	}
+	
+	public void validate(){
+		setValid(true);
+	}
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer){
-		Color effectiveHighlight = (isHighlighted()) ? highlightColor : Color.BLACK;
-		
-		if(backgroundSprite != null)
-			backgroundSprite.draw(batch);
-		if(color != null){
-			shapeRenderer.begin(ShapeType.Filled);
-			shapeRenderer.setColor(color.cpy().add(effectiveHighlight));
-			shapeRenderer.rect(position.x, position.y, size.x, size.y);
+		if(TotemDefender.DEBUG){
+			shapeRenderer.begin(ShapeType.Line);
+			shapeRenderer.setColor(Color.RED);
+			shapeRenderer.rect(getPosition().x, getPosition().y, getSize().x, getSize().y);
 			shapeRenderer.end();
 		}
+		
 	}
-	public void update(TotemDefender game){}
 	
-	public void onLoseFocus(){}
+	public void create(TotemDefender game){
+		game.addMenu(this);
+	}
+	
+	public void destroy(TotemDefender game){
+		game.removeMenu(this);
+	}
+
+	public boolean onMouseEnter(MouseEvent event){ return false; }
+	public boolean onMouseExit(MouseEvent event){ return false; }
+	public boolean onMouseDown(MouseEvent event){ return false; }
+	public boolean onMouseUp(MouseEvent event){ return false; }
 	public void onGainFocus(){}
+	public void onLoseFocus(){}
 	
-
-	public boolean onCursorOver(){
-		setHighlighted(true);
-		return false;
-	}
-	
-	public boolean onCursorExit(){
-		setHighlighted(false);
-		return false;
-	}
-	
-	public boolean onSelect()
-	{ return false; }
-
-	public boolean onMouseUp()
-	{ return onSelect(); }
-	
-	public boolean onMouseDown()
-	{ return false; }
-
-	public Vector2 getSize() 
-	{ return size; }
-	
-	public float getWidth()
-	{ return size.x; }
-	
-	public float getHeight()
-	{ return size.y;	}
-	
-	public void setSize(float w, float h){
-		setSize(new Vector2(w, h));
+	/** Checks if given point lies within the menu */
+	public boolean pointIsInBounds(Vector2 point){
+		return rectangle.contains(point);
 	}
 
-	public void setSize(Vector2 size) 
-	{ 
-		this.size = size;
-		parent.calculateSize();
+	public Vector2 getPosition() {
+		return rectangle.getPosition(new Vector2());
 	}
 
-	public Vector2 getPosition() 
-	{ return position; }
+	public void setPosition(Vector2 position) {
+		rectangle.setPosition(position);
+		setValid(false);
+	}
 	
 	public void setPosition(float x, float y){
 		setPosition(new Vector2(x, y));
 	}
-	public void setPosition(Vector2 position) 
-	{ this.position = position; }
-	
-	public Sprite getBackgroundSprite() {
-		return backgroundSprite;
-	}
-	public void setBackgroundSprite(Sprite sprite) {
-		this.backgroundSprite = sprite;
+
+	public Vector2 getSize() {
+		return rectangle.getSize(new Vector2());
 	}
 	
-	public Color getColor() {
-		return color;
-	}
-	public void setColor(Color color) {
-		this.color = color;
+	public void setSize(Vector2 size){
+		rectangle.setSize(size.x, size.y);
+		setValid(false);
 	}
 	
-	/** Checks if given point lies within the component */
-	public boolean pointIsInBounds(Vector2 point){
-		return (point.x >= position.x &&
-				point.x <= position.x + size.x &&
-				point.y >= position.y &&
-				point.y <= position.y + size.y);
-	}
-
-	public boolean isSelectable() {
-		return selectable;
-	}
-
-	public void setSelectable(boolean selectable) {
-		this.selectable = selectable;
-	}
-
-	public boolean isHighlighted() {
-		return highlighted;
-	}
-
-	public void setHighlighted(boolean highlighted) {
-		this.highlighted = highlighted;
-		
-		if(highlighted){
-			if(highlightColor == null){
-				highlightColor = getColor().cpy().add(DEFAULT_HIGHTLIGHT);
-			}
-		}
-	}
-
-	public Color getHighlightColor() {
-		return highlightColor;
-	}
-
-	public void setHighlightColor(Color highlightColor) {
-		this.highlightColor = highlightColor;
+	public void setSize(float w, float h){
+		setSize(new Vector2(w, h));
 	}
 	
+	public void setWidth(float w){
+		setSize(w, getHeight());
+	}
+	
+	public void setHeight(float h){
+		setSize(getWidth(), h);
+	}
+	
+	public float getWidth(){
+		return rectangle.getWidth();
+	}
+	
+	public float getHeight(){
+		return rectangle.getHeight();
+	}
+	
+	public Rectangle getRectangle(){ return rectangle; }
+
+	public Component getParent() {
+		return parent;
+	}
+
+	public void setParent(Component parent) {
+		this.parent = parent;
+	}
+	
+	public boolean isMouseOver(){ return mouseOver; }
+
+	public boolean isValid() {
+		return valid;
+	}
+
+	public void setValid(boolean valid) {
+		this.valid = valid;
+	}
+
+	public void setMouseOver(boolean b) {
+		mouseOver = b;
+	}
 }

@@ -9,9 +9,11 @@ import com.totemdefender.entities.Entity;
 import com.totemdefender.entities.TotemEntity;
 import com.totemdefender.input.InputHandler;
 import com.totemdefender.input.KeyboardEvent;
-import com.totemdefender.menu.Menu;
+import com.totemdefender.menu.Component;
+import com.totemdefender.menu.Panel;
 import com.totemdefender.states.BuildState;
 import com.totemdefender.states.DepthTestState;
+import com.totemdefender.states.MenuTestState;
 import com.totemdefender.states.StateManager;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -57,7 +59,7 @@ public class TotemDefender extends ApplicationAdapter {
 	public static final Vector2 GRAVITY				= new Vector2(0, -9.8f); //Gravity for physics simulation
 	public static final int 	POSITION_ITERATIONS = 6; 		//Position iterations for box2d
 	public static final int 	VELOCITY_ITERATIONS = 8; 		//Velocity iterations for box2d
-	public static final boolean DEBUG				= false;		//Debug rendering and output when true 
+	public static final boolean DEBUG				= true;		//Debug rendering and output when true 
 	public static final float	BLOCK_SIZE			= 30f;     //The default size of a block
 	public static final float 	STACK_LOCATION	 	= 3/4f; 	//The "stack" (player's weapon, pedastal, and build area) will be this proportion away from the center of the screen.
 	public static final	float	PEDESTAL_WIDTH		= BLOCK_SIZE * 4;
@@ -78,7 +80,7 @@ public class TotemDefender extends ApplicationAdapter {
 	private static TotemDefender game;
 	private SpriteBatch 		entityBatch;	//Sprite batch for rendering
 	private DepthMap<Entity> 	entities; //List of spawned entities
-	private DepthMap<Menu> 	menus; //List of spawned entities
+	private DepthMap<Component> 	menus; //List of spawned entities
 	private StateManager		stateManager; //Controls game's states.
 	private World				world; //Box2d physics world.
 	private OrthographicCamera  worldCamera; //World camera
@@ -86,8 +88,8 @@ public class TotemDefender extends ApplicationAdapter {
 	private float 				accum = 0;	//Time accumulator to ensure updates are performed at the same rate as step.
 	private AssetManager 		assetManager; //Libgdx utility to asynchronusly load assets.
 	private InputMultiplexer	inputMultiplexer; //Multiplexer for input handling
-	private InputMultiplexer	menuMultiplexer; //Menus will attach to this
-	private InputHandler		inputHandler; //Game controls will add listeners to this
+	private InputHandler		menuInputHandler; //Menus will attach to this
+	private InputHandler		gameInputHandler; //Game controls will add listeners to this
 	private Viewport			worldViewport;	//Keep the game looking good at any aspect ratio
 	private Viewport			menuViewport;	//Can't have two cameras on the same viewport
 	private ShapeRenderer		menuRenderer; //This is for menus and is therefore not not transformed by cam matrix
@@ -99,9 +101,9 @@ public class TotemDefender extends ApplicationAdapter {
 	private Queue<Entity> 		entityDeleteQueue; //Need these queues to avoid concurrent modifications during box2d step and menu/entity iteration
 	private Queue<DepthWrapper<Entity>> 		entityAddQueue;
 	private ConcurrentLinkedQueue<DepthWrapper<Entity>> entityDepthQueue; //Depth change queue
-	private ConcurrentLinkedQueue<DepthWrapper<Menu>> menuDepthQueue; //Depth change queue
-	private Queue<Menu> 		menuDeleteQueue;
-	private Queue<DepthWrapper<Menu>> 		menuAddQueue;
+	private ConcurrentLinkedQueue<DepthWrapper<Component>> menuDepthQueue; //Depth change queue
+	private Queue<Component> 		menuDeleteQueue;
+	private Queue<DepthWrapper<Component>> 		menuAddQueue;
 	
 	/** Control Variables */
 	private boolean isDoneBuilding;
@@ -135,18 +137,18 @@ public class TotemDefender extends ApplicationAdapter {
 		b2dRenderer = new Box2DDebugRenderer();
 		assetManager = new AssetManager();
 		inputMultiplexer = new InputMultiplexer();
-		menuMultiplexer = new InputMultiplexer();
-		inputHandler = new InputHandler(this);
-		menus = new DepthMap<Menu>();
+		menuInputHandler = new InputHandler(this);
+		gameInputHandler = new InputHandler(this);
+		menus = new DepthMap<Component>();
 		entityDeleteQueue = new ConcurrentLinkedQueue<Entity>();
 		entityAddQueue = new ConcurrentLinkedQueue<DepthWrapper<Entity>>();
 		entityDepthQueue = new ConcurrentLinkedQueue<DepthWrapper<Entity>>();
-		menuDepthQueue = new ConcurrentLinkedQueue<DepthWrapper<Menu>>();
-		menuDeleteQueue = new ConcurrentLinkedQueue<Menu>();
-		menuAddQueue = new ConcurrentLinkedQueue<DepthWrapper<Menu>>();
+		menuDepthQueue = new ConcurrentLinkedQueue<DepthWrapper<Component>>();
+		menuDeleteQueue = new ConcurrentLinkedQueue<Component>();
+		menuAddQueue = new ConcurrentLinkedQueue<DepthWrapper<Component>>();
 		
-		inputMultiplexer.addProcessor(menuMultiplexer);
-		inputMultiplexer.addProcessor(inputHandler);
+		inputMultiplexer.addProcessor(menuInputHandler);
+		inputMultiplexer.addProcessor(gameInputHandler);
 		Gdx.input.setInputProcessor(inputMultiplexer);
 		
 		world.setContactListener(new ContactHandler());
@@ -157,10 +159,10 @@ public class TotemDefender extends ApplicationAdapter {
 		
 		//Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode()); //Default to fullscreen desktop mode
 		////		DEBUG STUFF	 /////	 
-		stateManager.attachState(new BuildState());
-		//stateManager.attachState(new DepthTestState());
+		//stateManager.attachState(new BuildState());
+		stateManager.attachState(new MenuTestState());
 		//Add an exit function
-		inputHandler.addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, Input.Keys.ESCAPE){
+		gameInputHandler.addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, Input.Keys.ESCAPE){
 			@Override
 			public boolean callback(){
 				Gdx.app.exit();
@@ -186,9 +188,8 @@ public class TotemDefender extends ApplicationAdapter {
 		}
 		
 		while(!menuAddQueue.isEmpty()){
-			DepthWrapper<Menu> menu = menuAddQueue.poll();
-			menus.insert(menu.depth, menu.object);
-			menuMultiplexer.addProcessor(menu.object);
+			DepthWrapper<Component> cmp = menuAddQueue.poll();
+			menus.insert(cmp.depth, cmp.object);
 		}
 		
 		//Process depth changes
@@ -198,8 +199,8 @@ public class TotemDefender extends ApplicationAdapter {
 		}
 		
 		while(!menuDepthQueue.isEmpty()){
-			DepthWrapper<Menu> menu = menuDepthQueue.poll();
-			menus.move(menu.object, menu.depth);
+			DepthWrapper<Component> cmp = menuDepthQueue.poll();
+			menus.move(cmp.object, cmp.depth);
 		}
 		
 		//Process deletions
@@ -211,9 +212,8 @@ public class TotemDefender extends ApplicationAdapter {
 		}
 		
 		while(!menuDeleteQueue.isEmpty()){
-			Menu menu = menuDeleteQueue.poll();
-			menus.remove(menu);
-			menuMultiplexer.removeProcessor(menu);
+			Component cmp = menuDeleteQueue.poll();
+			menus.remove(cmp);
 		}
 		
 		//Maintain updates at the STEP rate
@@ -225,8 +225,8 @@ public class TotemDefender extends ApplicationAdapter {
 			world.step(STEP, 8, 6);
 			stateManager.update();
 			
-			for(Menu menu : menus.getObjectList()){
-				menu.update(this);
+			for(Component cmp : menus.getObjectList()){
+				cmp.update(this);
 			}
 			
 			//Update entities
@@ -248,8 +248,8 @@ public class TotemDefender extends ApplicationAdapter {
 			ent.render(entityBatch, entityRenderer);
 		}
 		
-		for(Menu menu : menus.getObjectList()){
-			menu.render(menuBatch, menuRenderer);
+		for(Component cmp : menus.getObjectList()){
+			cmp.render(menuBatch, menuRenderer);
 		}
 		
 		//Debug b2d rendering
@@ -423,22 +423,26 @@ public class TotemDefender extends ApplicationAdapter {
 	 * 
 	 * @return inputHandler instance
 	 */
-	public InputHandler getInputHandler(){
-		return inputHandler;
+	public InputHandler getGameInputHandler(){
+		return gameInputHandler;
 	}
 	
-	public void addMenu(Menu menu){
+	public InputHandler getMenuInputHandler(){
+		return menuInputHandler;
+	}
+	
+	public void addMenu(Component menu){
 		addMenu(menu, 0);
 	}
 	
-	public void addMenu(Menu menu, int depth){
-		DepthWrapper<Menu> wrapper = new DepthWrapper<Menu>();
+	public void addMenu(Component menu, int depth){
+		DepthWrapper<Component> wrapper = new DepthWrapper<Component>();
 		wrapper.depth = depth;
 		wrapper.object = menu;
 		menuAddQueue.add(wrapper);
 	}
 	
-	public void removeMenu(Menu menu){
+	public void removeMenu(Component menu){
 		menuDeleteQueue.add(menu);
 	}
 	
@@ -519,7 +523,7 @@ public class TotemDefender extends ApplicationAdapter {
 		return entities.getDepth(ent);
 	}
 	
-	public int getDepth(Menu menu) {
+	public int getDepth(Panel menu) {
 		return menus.getDepth(menu);
 	}
 
@@ -530,8 +534,8 @@ public class TotemDefender extends ApplicationAdapter {
 		entityDepthQueue.add(wrapper);
 	}
 	
-	public void setDepth(Menu menu, int newDepth) {
-		DepthWrapper<Menu> wrapper = new DepthWrapper<Menu>();
+	public void setDepth(Component menu, int newDepth) {
+		DepthWrapper<Component> wrapper = new DepthWrapper<Component>();
 		wrapper.object = menu;
 		wrapper.depth = newDepth;
 		menuDepthQueue.add(wrapper);

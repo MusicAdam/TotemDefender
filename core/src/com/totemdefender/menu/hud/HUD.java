@@ -9,11 +9,11 @@ import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.entities.WeaponEntity;
 import com.totemdefender.entities.blocks.SquareBlockEntity;
-import com.totemdefender.menu.Menu;
+import com.totemdefender.menu.Panel;
 import com.totemdefender.menu.Button;
 import com.totemdefender.states.BattleState;
 
-public class HUD extends Menu{	
+public class HUD extends Panel{	
 	private TotemDefender game;
 	private BattleState battleState;	
 	private ChargeMeter weapon1ChargeMeter;
@@ -29,8 +29,8 @@ public class HUD extends Menu{
 		weapon1ChargeMeter = new ChargeMeter(this, battleState.getLevel().getPlayer1Weapon());
 		weapon2ChargeMeter = new ChargeMeter(this, battleState.getLevel().getPlayer2Weapon());
 		
-		addComponent(weapon1ChargeMeter);
-		addComponent(weapon2ChargeMeter);
+		addPanel(weapon1ChargeMeter);
+		addPanel(weapon2ChargeMeter);
 		
 		this.setShouldRender(true);
 	}
