@@ -23,7 +23,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 
-public class BuildMenu extends Panel {
+public class BuildMenu extends NavigableContainer {
 	private Button triangle;
 	private Button square;
 	private Button rect;
@@ -33,7 +33,7 @@ public class BuildMenu extends Panel {
 	private boolean placingTotem = false;
 	
 	public BuildMenu(TotemDefender game, Level level, Player owner) {
-		super(game);
+		super(null);
 		
 		this.owner = owner;
 		this.level = level;
@@ -50,20 +50,16 @@ public class BuildMenu extends Panel {
 		triangle = new Button(this, "Triangle", buttonSize, new Vector2(right, top - buttonSize.y), Color.GREEN);
 		square = new Button(this, "Square", buttonSize, new Vector2(right, top - buttonSize.y * 2), Color.RED){
 			@Override
-			public boolean onSelect(){
+			public void onGainFocus(){
 				spawnSquare();
-				return true;
 			}
 		};
-		square.getLabel().setColor(Color.BLACK);
 		rect = new Button(this, "Rectangle", buttonSize, new Vector2(right, top - buttonSize.y * 3), Color.YELLOW){
 			@Override
-			public boolean onSelect(){
+			public void onGainFocus(){
 				spawnRectangle();
-				return true;
 			}
 		};
-		rect.getLabel().setColor(Color.BLACK);
 		
 		PedestalEntity pedestal = level.getPedestal(owner);
 		Vector2 pedPos = game.worldToScreen(pedestal.getPosition());	
@@ -71,16 +67,12 @@ public class BuildMenu extends Panel {
 		grid.setPosition(new Vector2(pedPos.x - grid.getWidth()/2,
 												TotemDefender.PEDESTAL_HEIGHT + TotemDefender.GROUND_HEIGHT));
 
-		this.addPanel(grid);
-		this.addPanel(square);
-		this.addPanel(rect);
+		this.addComponent(grid);
+		this.addComponent(square);
+		this.addComponent(rect);
+		this.connectComponents(square, rect);
 
-		attachListeners();
-		if(owner.getID() == 1){
-			attachPlayer1Listeners();
-		}else{
-			attachPlayer2Listeners();
-		}
+		attachKeyboardListeners(owner);
 	};
 	
 	public void spawnSquare(){
@@ -103,6 +95,7 @@ public class BuildMenu extends Panel {
 		return grid;
 	}
 	
+	/*
 	public void highlightIndex(ArrayList<Button> buttonList, int index){
 		if(index == -1) return;
 		buttonList.get(index).setHighlighted(true);
@@ -119,7 +112,7 @@ public class BuildMenu extends Panel {
 	}
 	
 	public void attachListeners() {
-		/** Select key listener */
+		//** Select key listener 
 		addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, owner.getSelectKey()){
 			@Override
 			public boolean callback(){
@@ -146,9 +139,9 @@ public class BuildMenu extends Panel {
 			}
 		});
 		
-		/** Up key down listener 
-		 *  This overrides the default menu's functionality
-		 * */
+		//** Up key down listener 
+		 //*  This overrides the default menu's functionality
+		 //*
 		addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, owner.getUpKey()){
 			@Override
 			public boolean callback(){
@@ -158,7 +151,7 @@ public class BuildMenu extends Panel {
 				return false;
 			}
 		});
-		/** Up key up listener */
+		//** Up key up listener
 		addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, owner.getUpKey()){
 			@Override
 			public boolean callback(){
@@ -171,9 +164,9 @@ public class BuildMenu extends Panel {
 			}
 		});
 		
-		/** Down key down listener 
+		//** Down key down listener 
 		 *  This overrides the default menu's functionality
-		 * */
+		 *
 		addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, owner.getDownKey()){
 			@Override
 			public boolean callback(){
@@ -183,7 +176,7 @@ public class BuildMenu extends Panel {
 				return false;
 			}
 		});
-		/** Down key up listener */
+		//** Down key up listener 
 		addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, owner.getDownKey()){
 			@Override
 			public boolean callback(){
@@ -196,9 +189,9 @@ public class BuildMenu extends Panel {
 			}
 		});
 		
-		/** Left key down listener 
-		 *  This overrides the default menu's functionality
-		 * */
+		//** Left key down listener 
+		 //*  This overrides the default menu's functionality
+		// * 
 		addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, owner.getLeftKey()){
 			@Override
 			public boolean callback(){
@@ -208,7 +201,7 @@ public class BuildMenu extends Panel {
 				return false;
 			}
 		});
-		/** Left key up listener */
+		//** Left key up listener 
 		addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, owner.getLeftKey()){
 			@Override
 			public boolean callback(){
@@ -221,9 +214,9 @@ public class BuildMenu extends Panel {
 			}
 		});
 
-		/** Right key down listener 
-		 *  This overrides the default menu's functionality
-		 * */
+		//* Right key down listener 
+		//*  This overrides the default menu's functionality
+		// * 
 		addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, owner.getRightKey()){
 			@Override
 			public boolean callback(){
@@ -233,7 +226,7 @@ public class BuildMenu extends Panel {
 				return false;
 			}
 		});
-		/** Right key up listener */
+		///** Right key up listener 
 		addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, owner.getRightKey()){
 			@Override
 			public boolean callback(){
@@ -246,9 +239,9 @@ public class BuildMenu extends Panel {
 			}
 		});
 		
-		/** Right key down listener 
-		 *  This overrides the default menu's functionality
-		 * */
+		//** Right key down listener 
+		 //*  This overrides the default menu's functionality
+		 //* 
 		addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, owner.getRotateKey()){
 			@Override
 			public boolean callback(){
@@ -258,7 +251,7 @@ public class BuildMenu extends Panel {
 				return false;
 			}
 		});
-		/** Right key up listener */
+		//** Right key up listener 
 		addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, owner.getRotateKey()){
 			@Override
 			public boolean callback(){
@@ -271,7 +264,7 @@ public class BuildMenu extends Panel {
 			}
 		});
 		
-		/** TODO: There should be a menu button for this */
+		//** TODO: There should be a menu button for this 
 		addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, Input.Keys.ENTER){
 			@Override
 			public boolean callback(){
@@ -294,5 +287,5 @@ public class BuildMenu extends Panel {
 			}
 		});
 	}
-
+	*/
 }

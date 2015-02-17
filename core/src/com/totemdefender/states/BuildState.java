@@ -32,11 +32,9 @@ public class BuildState implements State {
 		level = new Level(game);
 		
 		p1BuildMenu=new BuildMenu(game, level, game.getPlayer1());
-		p1BuildMenu.setShouldRender(true);
 		game.addMenu(p1BuildMenu);
 		
 		p2BuildMenu=new BuildMenu(game, level, game.getPlayer2());
-		p2BuildMenu.setShouldRender(true);
 		game.addMenu(p2BuildMenu);
 		
 		

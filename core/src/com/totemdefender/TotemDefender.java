@@ -159,8 +159,8 @@ public class TotemDefender extends ApplicationAdapter {
 		
 		//Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode()); //Default to fullscreen desktop mode
 		////		DEBUG STUFF	 /////	 
-		//stateManager.attachState(new BuildState());
-		stateManager.attachState(new MenuTestState());
+		stateManager.attachState(new BuildState());
+		//stateManager.attachState(new MenuTestState());
 		//Add an exit function
 		gameInputHandler.addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, Input.Keys.ESCAPE){
 			@Override

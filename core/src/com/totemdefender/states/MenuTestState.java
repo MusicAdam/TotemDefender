@@ -25,7 +25,7 @@ public class MenuTestState implements State{
 		System.out.println("MenuTestState:onEnter");
 		
 		menu = new NavigableContainer(null);
-		menu.attachKeyboardListeners(new Player(1));
+		menu.attachKeyboardListeners(new Player(2));
 		//menu.setSize(100, 100);
 		
 		Button testButton = new Button(menu);
