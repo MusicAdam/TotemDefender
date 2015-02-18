@@ -47,7 +47,6 @@ public class BuildMenu extends Container {
 		squareSelector = new BlockSelector(this, BlockEntity.Shape.Square);
 		squareSelector.setBlockMaterial(game, BlockEntity.Material.Stone);
 		squareSelector.create(game);
-		this.addComponent(squareSelector);
 		
 		/*
 		Vector2 buttonSize = new Vector2((TotemDefender.V_HEIGHT/8), (TotemDefender.V_HEIGHT/8));

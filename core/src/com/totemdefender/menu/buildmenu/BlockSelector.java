@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.entities.blocks.BlockEntity;
@@ -21,8 +22,10 @@ public class BlockSelector extends Container{
 	private Texture blockHighlightHover;
 	private Texture bar;
 	private Texture shadow;
-	private Texture arrowRight;
-	private Texture arrowLeft;
+	private ArrowButton arrowRight;
+	private ArrowButton arrowLeft;
+	
+	private Vector2 blockPosition;
 	
 	public BlockSelector(Container parent, BlockEntity.Shape shape){
 		super(parent);
@@ -37,15 +40,28 @@ public class BlockSelector extends Container{
 		blockHighlightHover = game.getAssetManager().get("ui/"+ shapeString + "_highlight_hover.png", Texture.class);
 		bar 				= game.getAssetManager().get("ui/bar.png", Texture.class);
 		shadow				= game.getAssetManager().get("ui/shadow.png", Texture.class);
-		//TODO: These should be buttons
-		//arrowRight			= game.getAssetManager().get("ui/arrow_right.png", Texture.class);
-		//arrowLeft			= game.getAssetManager().get("ui/arrow_left.png", Texture.class);
+		
+		//Cost label
 		cost = new Label(this);
 		cost.setFont("hud_small.ttf");
 		cost.setText("$100", true);
 		cost.setTextColor(new Color(0.011765f, 0.541176f, 0.239215f, 1));
 		cost.setPosition(getWidth()/2 - cost.getWidth()/2, 20 - bar.getHeight()/2);
 		addComponent(cost);
+		
+		float yPos = getHeight() - TotemDefender.BLOCK_SIZE/2;
+		//Arrow button left
+		arrowLeft = new ArrowButton(this);
+		arrowLeft.setPosition(0, yPos - arrowLeft.getHeight()/2);//getHeight()-TotemDefender.BLOCK_SIZE - arrowLeft.getHeight()/2);
+		arrowLeft.create(game);
+		
+		//Arrow button right
+		arrowRight = new ArrowButton(this);
+		arrowRight.setPosition(getWidth() - arrowRight.getWidth(), yPos - arrowRight.getHeight()/2);//getHeight()-TotemDefender.BLOCK_SIZE/2 - arrowLeft.getHeight()/2);
+		arrowRight.flip();
+		arrowRight.create(game);
+		
+		super.create(game);
 	}
 	
 	@Override
@@ -56,7 +72,6 @@ public class BlockSelector extends Container{
 	@Override
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer){
 		float centerX = getWidth()/2;
-		float centerY = getHeight()/2;
 		
 		TotemDefender.EnableBlend();
 		

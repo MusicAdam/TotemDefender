@@ -38,7 +38,7 @@ public class Container extends Component{
 	public void create(TotemDefender game){
 		super.create(game);
 		
-		if(parent == null)
+		if(getParent() == null)
 			attachMouseListeners(game.getMenuInputHandler());
 	}
 	
@@ -46,7 +46,7 @@ public class Container extends Component{
 	public void destroy(TotemDefender game){
 		super.destroy(game);
 		
-		if(parent == null){
+		if(getParent() == null){
 			game.getMenuInputHandler().removeListener(mouseUpListener);
 			game.getMenuInputHandler().removeListener(mouseDownListener);
 			game.getMenuInputHandler().removeListener(mouseMoveListener);
@@ -90,7 +90,7 @@ public class Container extends Component{
 	
 	@Override
 	public boolean onMouseDown(MouseEvent event){
-		if(pointIsInBounds(event.mousePosition)){
+		if(pointIsInBounds(worldToLocal(event.mousePosition))){
 			for(Component cmp : components){
 				if(cmp.pointIsInBounds(worldToLocal(event.mousePosition))){
 					setFocus(cmp);
@@ -122,7 +122,8 @@ public class Container extends Component{
 		if(!isMouseOver()) return false;
 
 		for(Component cmp : components){
-			if(cmp.pointIsInBounds(worldToLocal(event.mousePosition))){
+			System.out.println(cmp.worldToLocal(event.mousePosition) + ", " + cmp.pointIsInBounds(event.mousePosition));
+			if(cmp.pointIsInBounds(event.mousePosition)){
 				if(!cmp.isMouseOver()){
 					cmp.setMouseOver(true);
 					return cmp.onMouseEnter(event);
@@ -147,7 +148,7 @@ public class Container extends Component{
 		setMouseOver(false);
 		for(Component cmp : components){
 			if(cmp.isMouseOver()){
-				if(!cmp.pointIsInBounds(worldToLocal(event.mousePosition))){
+				if(!cmp.pointIsInBounds(event.mousePosition)){
 					cmp.mouseOver = false;
 					return cmp.onMouseExit(event);
 				}

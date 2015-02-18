@@ -20,7 +20,6 @@ import com.totemdefender.input.MouseEvent;
 
 public class Panel extends Component{
 	private InputHandler inputHandler; 
-	private Container parent;
 	private boolean shouldRender;
 	private MouseEvent mouseUpListener;
 	private MouseEvent mouseDownListener;
@@ -32,26 +31,23 @@ public class Panel extends Component{
 	
 	/** Creates a default menu with mouseListeners attached */
 	public Panel(Container parent) {
-		this.parent = parent;
+		super(parent);
+		
+		if(parent == null) throw new NullPointerException("Parent may not be null");
 		shouldRender = true;
 	}
 	
 	@Override
 	public void create(TotemDefender game){
 		super.create(game);
-		if(parent == null){
+		/*if(parent == null){
 			attachMouseListeners(game.getMenuInputHandler());
-		}		
+		}*/		
 	}
 
 	@Override
 	public void destroy(TotemDefender game){
-		super.destroy(game);
-		if(parent == null){
-			game.getMenuInputHandler().removeListener(mouseUpListener);
-			game.getMenuInputHandler().removeListener(mouseDownListener);
-			game.getMenuInputHandler().removeListener(mouseMoveListener);
-		}		
+		super.destroy(game);		
 	}
 	
 	@Override
@@ -90,6 +86,7 @@ public class Panel extends Component{
 	public void setShouldRender(boolean shouldRender) 
 	{ this.shouldRender = shouldRender; }
 	
+	/*
 	public void attachMouseListeners(InputHandler inputHandler){
 		mouseUpListener = inputHandler.addListener(new MouseEvent(MouseEvent.MOUSE_DOWN){
 			@Override
@@ -124,7 +121,7 @@ public class Panel extends Component{
 			}
 		});
 	}
-	
+	*/
 	public boolean isMouseOver(){
 		return mouseOver;
 	}

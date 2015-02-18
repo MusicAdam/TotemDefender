@@ -12,7 +12,7 @@ import com.totemdefender.menu.NavigableContainer;
 import com.totemdefender.menu.Panel;
 
 public class MenuTestState implements State{
-	NavigableContainer menu;
+	Container menu;
 	
 	@Override
 	public boolean canEnter(TotemDefender game) {
@@ -24,43 +24,46 @@ public class MenuTestState implements State{
 	public void onEnter(TotemDefender game) {
 		System.out.println("MenuTestState:onEnter");
 		
-		menu = new NavigableContainer(null);
-		menu.attachKeyboardListeners(new Player(2));
+		menu = new Container();
+		NavigableContainer test = new NavigableContainer(menu);
+		test.attachKeyboardListeners(new Player(2));
+		test.create(game);
 		//menu.setSize(100, 100);
 		
-		Button testButton = new Button(menu);
+		Button testButton = new Button(test);
 		testButton.setSize(100, 100);
 		testButton.setText("Hello World1");
-		menu.addComponent(testButton);
+		testButton.create(game);
 
-		Button testButton2 = new Button(menu);
+		Button testButton2 = new Button(test);
 		testButton2.setSize(100, 100);
 		testButton2.setPosition(100, 0);
 		testButton2.setText("Hello World2");
-		menu.addComponent(testButton2);
-		menu.connectComponents(testButton, testButton2);
+		testButton2.create(game);
+		test.connectComponents(testButton, testButton2);
 		
-		Button testButton3 = new Button(menu);
+		Button testButton3 = new Button(test);
 		testButton3.setSize(100, 100);
 		testButton3.setPosition(0, 100);
 		testButton3.setText("Hello World3");
-		menu.addComponent(testButton3);
-		menu.connectComponents(testButton3, testButton);
+		testButton3.create(game);
+		test.connectComponents(testButton3, testButton);
 		
-		Button testButton4 = new Button(menu);
+		Button testButton4 = new Button(test);
 		testButton4.setSize(100, 100);
 		testButton4.setPosition(100, 100);
 		testButton4.setText("Hello World4");
-		menu.addComponent(testButton4);
-		menu.connectComponents(testButton4, testButton3);
-		menu.connectComponents(testButton4, testButton2);
-
+		testButton4.create(game);
+		test.connectComponents(testButton4, testButton3);
+		test.connectComponents(testButton4, testButton2);
+		
+		test.setPosition(100, 100);
 		menu.validate();
 		menu.setPosition(TotemDefender.V_WIDTH/2 - menu.getWidth()/2, TotemDefender.V_HEIGHT/2 - menu.getHeight()/2);
 		menu.create(game);
 		
-		Container test = new Container();
-		test.create(game);
+		//Container test = new Container();
+		//test.create(game);
 	}
 
 	@Override

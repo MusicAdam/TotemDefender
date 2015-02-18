@@ -8,11 +8,12 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.input.MouseEvent;
+import com.totemdefender.menu.buildmenu.ArrowButton;
 
 public abstract class Component {
 	protected Rectangle rectangle; //Mathematical representation of the component
 	protected boolean mouseOver;
-	protected Container parent;
+	private Container parent;
 	private boolean valid; //Set to false after the rectangle changes. used to update containers on "in-need" basis.
 	
 	public Component(Container parent){
@@ -45,11 +46,19 @@ public abstract class Component {
 	}
 	
 	public void create(TotemDefender game){
-		game.addMenu(this);
+		if(this instanceof Container && parent == null){
+			game.addMenu((Container)this);
+		}else if(parent != null){
+			parent.addComponent(this);
+		}
 	}
 	
 	public void destroy(TotemDefender game){
-		game.removeMenu(this);
+		if(this instanceof Container && parent == null){
+			game.removeMenu((Container)this);
+		}else if(parent != null){
+			parent.removeComponent(this);
+		}
 	}
 
 	public boolean onMouseEnter(MouseEvent event){ return false; }
@@ -63,7 +72,7 @@ public abstract class Component {
 	
 	/** Checks if given point lies within the menu */
 	public boolean pointIsInBounds(Vector2 point){
-		return rectangle.contains(point);
+		return rectangle.contains(worldToLocal(point));
 	}
 
 	public Vector2 getPosition() {
@@ -134,10 +143,14 @@ public abstract class Component {
 	
 	//Gets the local point from a world point
 	public Vector2 worldToLocal(Vector2 worldPoint){
+		if(this instanceof Button){
+			System.out.println("Parent: " + parent);
+		}
 		if(parent == null){
-			return new Vector2(worldPoint.x - rectangle.x, worldPoint.y - rectangle.y);
+			//return new Vector2(worldPoint.x - rectangle.x, worldPoint.y - rectangle.y);
+			return worldPoint.cpy();
 		}else{
-			return parent.worldToLocal(new Vector2(worldPoint.x - rectangle.x, worldPoint.y - rectangle.y));
+			return parent.worldToLocal(new Vector2(worldPoint.x - parent.rectangle.x, worldPoint.y - parent.rectangle.y));
 		}
 	}
 }
