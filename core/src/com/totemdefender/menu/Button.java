@@ -13,10 +13,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.input.MouseEvent;
 
-public class Button extends Label {		
+public class Button extends Label {	
 	public Button(Container parent, String labelText, Vector2 newSize, Vector2 newPosition, Color newColor) {
 		super(parent);
-		setText(labelText);		
+		setText(labelText, false);		
 		setSize(newSize); 
 		setPosition(newPosition);
 		setColor(newColor);
@@ -26,12 +26,14 @@ public class Button extends Label {
 	public Button(Container parent){
 		super(parent);
 		setColor(Color.BLACK);
+		setHighlightColor(Color.WHITE);
 		setValid(false);
 	}
 	
-	public void dispose() {
+	@Override
+	public void setColor(Color color){
+		super.setColor(color);
 	}
-	
 	@Override
 	public void validate(){
 		setTextOffset(getWidth()/2 - getTextBounds().width/2, getHeight()/2 - getTextBounds().height/2);
@@ -39,31 +41,39 @@ public class Button extends Label {
 	}
 	
 	@Override
+	public void setText(String text){
+		super.setText(text, false);
+	}
+	
+	@Override
 	public void setPosition(Vector2 pos){
 		super.setPosition(pos);
 	}
 	
-	public void onClick(){}
+	@Override
+	public boolean onClick(){
+		return false;
+	}
 	
 	@Override
 	public void onGainFocus(){
-		setColor(Color.LIGHT_GRAY);
+		setHighlighted(true);
 	}
 	
 	@Override
 	public void onLoseFocus(){
-		setColor(Color.BLACK);
+		setHighlighted(false);
 	}
 	
 	@Override
 	public boolean onMouseEnter(MouseEvent event){
-		setColor(Color.GRAY);
+		setHighlighted(true);
 		return true;
 	}
 	
 	@Override
 	public boolean onMouseExit(MouseEvent event){
-		setColor(Color.BLACK);
+		setHighlighted(false);
 		return true;
 	}
 	

@@ -20,6 +20,7 @@ public class Label extends Panel{
 	public Label(Container parent){
 		super(parent);
 		font = TotemDefender.Get().getAssetManager().get("default.ttf", BitmapFont.class);
+		bounds = new TextBounds();
 		textColor = Color.WHITE;
 		textOffset = new Vector2();
 		setText("Default");
@@ -33,13 +34,27 @@ public class Label extends Panel{
 		font.drawWrapped(batch, text, getPosition().x + textOffset.x, getPosition().y + textOffset.y + bounds.height, getWidth());
 		batch.end();
 	}
-
+	
+	@Override
+	public void validate(){
+		if(!isValid()){
+			updateBounds();
+			setValid(true);
+		}
+	}
+	
+	
+	public void updateBounds(){
+		font.getBounds(text, bounds);
+	}
+	
 	public BitmapFont getFont() {
 		return font;
 	}
 
 	public void setFont(String fontName) {
-		this.font = TotemDefender.Get().getAssetManager().get(fontName, BitmapFont.class);;
+		this.font = TotemDefender.Get().getAssetManager().get(fontName, BitmapFont.class);
+		updateBounds();
 	}
 
 	public String getText() {
@@ -48,7 +63,7 @@ public class Label extends Panel{
 
 	public void setText(String text, boolean scale) {
 		this.text = text;
-		bounds = font.getBounds(text);
+		updateBounds();
 		if(scale){
 			sizeToBounds();
 		}
@@ -59,7 +74,7 @@ public class Label extends Panel{
 	}
 	
 	public void setText(String text){
-		setText(text, false);
+		setText(text, true);
 	}
 
 	public Color getTextColor() {

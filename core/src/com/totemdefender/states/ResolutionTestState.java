@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.totemdefender.TotemDefender;
-import com.totemdefender.menu.BuildMenu;
+import com.totemdefender.menu.buildmenu.BuildMenu;
 
 public class ResolutionTestState implements State {
 	ShapeRenderer shapeRenderer;

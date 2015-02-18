@@ -60,10 +60,10 @@ public abstract class BlockEntity extends Entity{
 		this.shape = shape;
 	}
 	
-	private String getRandomAsset(){
+	public static String GetRandomAsset(Material material, Shape shape){
 		String materialId="", shapeId="";
 		
-		switch(this.material){
+		switch(material){
 			case Wood:
 				materialId = "wood";
 				break;
@@ -78,7 +78,7 @@ public abstract class BlockEntity extends Entity{
 				break;
 		}
 		
-		switch(this.shape){
+		switch(shape){
 			case Square:
 				shapeId = "square";
 				break;
@@ -102,7 +102,7 @@ public abstract class BlockEntity extends Entity{
 	@Override
 	public void spawn(TotemDefender game) {
 		if(shape != Shape.Totem){
-			Texture blockTexture = game.getAssetManager().get(getRandomAsset(), Texture.class);
+			Texture blockTexture = game.getAssetManager().get(GetRandomAsset(material, shape), Texture.class);
 			blockTexture.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
 			setSprite(new Sprite(blockTexture));
 			getSprite().setSize(TotemDefender.BLOCK_SIZE * xScale, TotemDefender.BLOCK_SIZE * yScale);

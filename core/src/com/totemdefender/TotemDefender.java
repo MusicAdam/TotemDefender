@@ -59,7 +59,7 @@ public class TotemDefender extends ApplicationAdapter {
 	public static final Vector2 GRAVITY				= new Vector2(0, -9.8f); //Gravity for physics simulation
 	public static final int 	POSITION_ITERATIONS = 6; 		//Position iterations for box2d
 	public static final int 	VELOCITY_ITERATIONS = 8; 		//Velocity iterations for box2d
-	public static final boolean DEBUG				= true;		//Debug rendering and output when true 
+	public static final boolean DEBUG				= false;		//Debug rendering and output when true 
 	public static final float	BLOCK_SIZE			= 30f;     //The default size of a block
 	public static final float 	STACK_LOCATION	 	= 3/4f; 	//The "stack" (player's weapon, pedastal, and build area) will be this proportion away from the center of the screen.
 	public static final	float	PEDESTAL_WIDTH		= BLOCK_SIZE * 4;
@@ -300,10 +300,10 @@ public class TotemDefender extends ApplicationAdapter {
 		defaultFont.fontFileName = "fonts/times.ttf";
 		defaultFont.fontParameters.size = 12;
 		
-		String hudFontName = "fonts/DJB Almost Perfect.ttf";
+		String hudFontName = "fonts/Think Thick.ttf";
 		FreeTypeFontLoaderParameter hud_small = new FreeTypeFontLoaderParameter();
 		hud_small.fontFileName = hudFontName;
-		hud_small.fontParameters.size = 12;
+		hud_small.fontParameters.size = 14;
 		FreeTypeFontLoaderParameter hud_medium = new FreeTypeFontLoaderParameter();
 		hud_medium.fontFileName =hudFontName;
 		hud_medium.fontParameters.size = 16;
@@ -317,7 +317,7 @@ public class TotemDefender extends ApplicationAdapter {
 		assetManager.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
 		assetManager.setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(resolver));
 		
-		//Textures
+		//Game Textures
 		assetManager.load("cannon.png", Texture.class, textureParam);
 		assetManager.load("projectiles/cannon_projectile.png", Texture.class, textureParam);		
 		assetManager.load("wooden_pedestal.png", Texture.class, textureParam);
@@ -330,6 +330,15 @@ public class TotemDefender extends ApplicationAdapter {
 		assetManager.load("totem_face_flat.png", Texture.class, textureParam);
 		assetManager.load("totem_face_shaded.png", Texture.class, textureParam);
 		assetManager.load("bg.png", Texture.class, textureParam);
+		//UI Textures
+		assetManager.load("ui/square_highlight.png", Texture.class, textureParam);	
+		assetManager.load("ui/rectangle_highlight.png", Texture.class, textureParam);	
+		assetManager.load("ui/square_highlight_hover.png", Texture.class, textureParam);	
+		assetManager.load("ui/rectangle_highlight_hover.png", Texture.class, textureParam);		
+		assetManager.load("ui/bar.png", Texture.class, textureParam);		
+		assetManager.load("ui/shadow.png", Texture.class, textureParam);	
+		assetManager.load("ui/arrow_left.png", Texture.class, textureParam);	
+		assetManager.load("ui/arrow_right.png", Texture.class, textureParam);						
 		//Fonts
 		assetManager.load("default.ttf", BitmapFont.class, defaultFont);
 		assetManager.load("hud_small.ttf", BitmapFont.class, hud_small);

@@ -1,4 +1,4 @@
-package com.totemdefender.menu;
+package com.totemdefender.menu.buildmenu;
 import java.util.ArrayList;
 
 import com.totemdefender.Level;
@@ -11,6 +11,9 @@ import com.totemdefender.entities.blocks.RectangleBlockEntity;
 import com.totemdefender.entities.blocks.SquareBlockEntity;
 import com.totemdefender.input.InputHandler;
 import com.totemdefender.input.KeyboardEvent;
+import com.totemdefender.menu.Button;
+import com.totemdefender.menu.Container;
+import com.totemdefender.menu.NavigableContainer;
 import com.totemdefender.menu.hud.Grid;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -23,13 +26,16 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 
-public class BuildMenu extends NavigableContainer {
+public class BuildMenu extends Container {
+	private NavigableContainer buttonContainer;
 	private Button triangle;
 	private Button square;
 	private Button rect;
 	private Player owner;
 	private Grid grid;
 	private Level level;
+	
+	private BlockSelector squareSelector;
 	private boolean placingTotem = false;
 	
 	public BuildMenu(TotemDefender game, Level level, Player owner) {
@@ -38,6 +44,12 @@ public class BuildMenu extends NavigableContainer {
 		this.owner = owner;
 		this.level = level;
 		
+		squareSelector = new BlockSelector(this, BlockEntity.Shape.Square);
+		squareSelector.setBlockMaterial(game, BlockEntity.Material.Stone);
+		squareSelector.create(game);
+		this.addComponent(squareSelector);
+		
+		/*
 		Vector2 buttonSize = new Vector2((TotemDefender.V_HEIGHT/8), (TotemDefender.V_HEIGHT/8));
 		float top = (TotemDefender.V_HEIGHT - buttonSize.y);
 		float right;
@@ -47,32 +59,39 @@ public class BuildMenu extends NavigableContainer {
 			right = (TotemDefender.V_WIDTH - buttonSize.x);
 		}
 		
-		triangle = new Button(this, "Triangle", buttonSize, new Vector2(right, top - buttonSize.y), Color.GREEN);
-		square = new Button(this, "Square", buttonSize, new Vector2(right, top - buttonSize.y * 2), Color.RED){
+		//triangle = new Button(this, "Triangle", buttonSize, new Vector2(right, top - buttonSize.y), Color.GREEN);
+		square = new Button(this, "Square", buttonSize, new Vector2(right,  buttonSize.y), Color.RED){
 			@Override
-			public void onGainFocus(){
+			public boolean onClick(){
 				spawnSquare();
+				return true;
 			}
 		};
-		rect = new Button(this, "Rectangle", buttonSize, new Vector2(right, top - buttonSize.y * 3), Color.YELLOW){
+		square.setHighlightColor(Color.RED.cpy().add(.5f, .5f, .5f, 1));
+		rect = new Button(this, "Rectangle", buttonSize, new Vector2(right, 0), Color.YELLOW){
 			@Override
-			public void onGainFocus(){
+			public boolean onClick(){
 				spawnRectangle();
+				return true;
 			}
 		};
+		rect.setHighlightColor(Color.YELLOW.cpy().add(.5f, .5f, .5f, 1));
 		
 		PedestalEntity pedestal = level.getPedestal(owner);
 		Vector2 pedPos = game.worldToScreen(pedestal.getPosition());	
 		grid = new Grid(this);
 		grid.setPosition(new Vector2(pedPos.x - grid.getWidth()/2,
 												TotemDefender.PEDESTAL_HEIGHT + TotemDefender.GROUND_HEIGHT));
-
+		buttonContainer = new NavigableContainer(this);
+		this.addComponent(buttonContainer);
 		this.addComponent(grid);
 		this.addComponent(square);
 		this.addComponent(rect);
-		this.connectComponents(square, rect);
-
-		attachKeyboardListeners(owner);
+		buttonContainer.addComponent(square);
+		buttonContainer.addComponent(rect);
+		buttonContainer.connectComponents(square, rect);
+		buttonContainer.attachKeyboardListeners(owner);
+		*/
 	};
 	
 	public void spawnSquare(){

@@ -27,6 +27,8 @@ public class Panel extends Component{
 	private MouseEvent mouseMoveListener;
 	private Color color;
 	private Sprite sprite;
+	private Color highlightColor; 
+	private boolean highlighted;
 	
 	/** Creates a default menu with mouseListeners attached */
 	public Panel(Container parent) {
@@ -58,7 +60,11 @@ public class Panel extends Component{
 
 		if(color != null){
 			shapeRenderer.begin(ShapeType.Filled);
-			shapeRenderer.setColor(color);
+			if(!isHighlighted()){
+				shapeRenderer.setColor(color);				
+			}else{
+				shapeRenderer.setColor(getHighlightColor());
+			}
 			shapeRenderer.rect(getPosition().x, getPosition().y, getSize().x, getSize().y);
 			shapeRenderer.end();
 		}
@@ -137,5 +143,21 @@ public class Panel extends Component{
 
 	public void setSprite(Sprite sprite) {
 		this.sprite = sprite;
+	}
+	
+	public Color getHighlightColor() {
+		return highlightColor;
+	}
+
+	public void setHighlightColor(Color highlightColor) {
+		this.highlightColor = highlightColor;
+	}
+
+	public boolean isHighlighted() {
+		return highlighted;
+	}
+
+	public void setHighlighted(boolean highlighted) {
+		this.highlighted = highlighted;
 	}
 }

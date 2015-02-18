@@ -12,17 +12,19 @@ import com.totemdefender.input.MouseEvent;
 public abstract class Component {
 	protected Rectangle rectangle; //Mathematical representation of the component
 	protected boolean mouseOver;
-	protected Component parent;
+	protected Container parent;
 	private boolean valid; //Set to false after the rectangle changes. used to update containers on "in-need" basis.
 	
-	public Component(Component parent){
+	public Component(Container parent){
 		this.parent = parent;
 		rectangle = new Rectangle();
+		setValid(false);
 	}
 	
 	public Component(){
 		this.parent = null;
 		rectangle = new Rectangle();
+		setValid(false);
 	}
 	
 	public void update(TotemDefender game){
@@ -52,8 +54,10 @@ public abstract class Component {
 
 	public boolean onMouseEnter(MouseEvent event){ return false; }
 	public boolean onMouseExit(MouseEvent event){ return false; }
+	public boolean onMouseMove(MouseEvent event){ return false; }
 	public boolean onMouseDown(MouseEvent event){ return false; }
 	public boolean onMouseUp(MouseEvent event){ return false; }
+	public boolean onClick(){return false;} //Called when selected with keyboard or mouse up falls on the component
 	public void onGainFocus(){}
 	public void onLoseFocus(){}
 	
@@ -106,11 +110,11 @@ public abstract class Component {
 	
 	public Rectangle getRectangle(){ return rectangle; }
 
-	public Component getParent() {
+	public Container getParent() {
 		return parent;
 	}
 
-	public void setParent(Component parent) {
+	public void setParent(Container parent) {
 		this.parent = parent;
 	}
 	
@@ -133,7 +137,7 @@ public abstract class Component {
 		if(parent == null){
 			return new Vector2(worldPoint.x - rectangle.x, worldPoint.y - rectangle.y);
 		}else{
-			return worldToLocal(new Vector2(worldPoint.x - rectangle.x, worldPoint.y - rectangle.y));
+			return parent.worldToLocal(new Vector2(worldPoint.x - rectangle.x, worldPoint.y - rectangle.y));
 		}
 	}
 }

@@ -46,6 +46,7 @@ public class NavigableContainer extends Container{
 	private KeyboardEvent 	leftKeyUpListener;
 	private KeyboardEvent 	rightKeyDownListener;
 	private KeyboardEvent 	rightKeyUpListener;
+	private KeyboardEvent 	selectKeyUpListener;
 	private boolean traverseDown;
 	private boolean traverseUp;
 	private boolean traverseLeft;
@@ -131,6 +132,7 @@ public class NavigableContainer extends Container{
 		game.getMenuInputHandler().removeListener(leftKeyUpListener);
 		game.getMenuInputHandler().removeListener(rightKeyDownListener);
 		game.getMenuInputHandler().removeListener(rightKeyUpListener);
+		game.getMenuInputHandler().removeListener(selectKeyUpListener);
 	}
 	
 	@Override
@@ -174,7 +176,9 @@ public class NavigableContainer extends Container{
 			if(!components.isEmpty())
 				setFocus(components.get(0));
 		}else{
-			setFocus(findClosestNode(focus, 0, -1));
+			Node found = findClosestNode(focus, 0, -1);
+			if(found != null)
+				setFocus(found);
 		}
 		
 		lastTraversalTime = System.currentTimeMillis();
@@ -185,7 +189,9 @@ public class NavigableContainer extends Container{
 			if(!components.isEmpty())
 				setFocus(components.get(0));
 		}else{
-			setFocus(findClosestNode(focus, -1, 0));
+			Node found = findClosestNode(focus, -1, 0);
+			if(found != null)
+				setFocus(found);
 		}
 		
 		lastTraversalTime = System.currentTimeMillis();
@@ -196,7 +202,9 @@ public class NavigableContainer extends Container{
 			if(!components.isEmpty())
 				setFocus(components.get(0));
 		}else{
-			setFocus(findClosestNode(focus, 1, 0));
+			Node found = findClosestNode(focus, 1, 0);
+			if(found != null)
+				setFocus(found);
 		}
 		
 		lastTraversalTime = System.currentTimeMillis();
@@ -207,7 +215,9 @@ public class NavigableContainer extends Container{
 			if(!components.isEmpty())
 				setFocus(components.get(0));
 		}else{
-			setFocus(findClosestNode(focus, 0, 1));
+			Node found = findClosestNode(focus, 0, 1);
+			if(found != null)
+				setFocus(found);
 		}
 		
 		lastTraversalTime = System.currentTimeMillis();
@@ -280,6 +290,14 @@ public class NavigableContainer extends Container{
 			@Override
 			public boolean callback(){
 				traverseRight = false;
+				return true;
+			}
+		});
+		
+		selectKeyUpListener = inputHandler.addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, player.getSelectKey()){
+			@Override
+			public boolean callback(){
+				getFocus().onClick();
 				return true;
 			}
 		});

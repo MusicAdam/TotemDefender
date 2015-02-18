@@ -7,7 +7,7 @@ import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.input.InputHandler;
 import com.totemdefender.input.KeyboardEvent;
-import com.totemdefender.menu.BuildMenu;
+import com.totemdefender.menu.buildmenu.BuildMenu;
 import com.totemdefender.menu.hud.HUD;
 
 
@@ -32,10 +32,12 @@ public class BuildState implements State {
 		level = new Level(game);
 		
 		p1BuildMenu=new BuildMenu(game, level, game.getPlayer1());
-		game.addMenu(p1BuildMenu);
+		p1BuildMenu.setPosition(200, 200);
+		//p1BuildMenu.setPosition(200, 200);
+		p1BuildMenu.create(game);
 		
 		p2BuildMenu=new BuildMenu(game, level, game.getPlayer2());
-		game.addMenu(p2BuildMenu);
+		p2BuildMenu.create(game);
 		
 		
 		/* Disabling this for now
@@ -51,8 +53,8 @@ public class BuildState implements State {
 	}
 	@Override
 	public void onExit(TotemDefender game) {
-		game.removeMenu(p1BuildMenu);
-		game.removeMenu(p2BuildMenu);
+		p1BuildMenu.destroy(game);
+		p2BuildMenu.destroy(game);
 		game.getStateManager().attachState(new BattleState(level));
 		
 	}
