@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.totemdefender.Level;
 import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
+import com.totemdefender.input.MouseEvent;
 import com.totemdefender.menu.Button;
 import com.totemdefender.menu.Component;
 import com.totemdefender.menu.Container;
@@ -57,8 +58,8 @@ public class MenuTestState implements State{
 		test.connectComponents(testButton4, testButton3);
 		test.connectComponents(testButton4, testButton2);
 		
-		test.setPosition(50, 50);
-		test.setSize(50, 50);
+		test.setPosition(10, 10);
+		//test.setSize(50, 50);
 		menu.validate();
 		menu.setPosition(TotemDefender.V_WIDTH/2 - menu.getWidth()/2, TotemDefender.V_HEIGHT/2 - menu.getHeight()/2);
 		//menu.setPosition(300, 300);

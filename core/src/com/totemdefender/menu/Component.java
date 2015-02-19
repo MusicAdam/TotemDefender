@@ -61,8 +61,12 @@ public abstract class Component {
 		}
 	}
 
-	public boolean onMouseEnter(MouseEvent event){ return false; }
-	public boolean onMouseExit(MouseEvent event){ return false; }
+	public void onMouseEnter(MouseEvent event){ 
+		setMouseOver(true);
+	}
+	public void onMouseExit(MouseEvent event){ 
+		setMouseOver(false);
+	}
 	public boolean onMouseMove(MouseEvent event){ return false; }
 	public boolean onMouseDown(MouseEvent event){ return false; }
 	public boolean onMouseUp(MouseEvent event){ return false; }
@@ -72,21 +76,22 @@ public abstract class Component {
 	
 	/** Checks if given point lies within the menu */
 	public boolean pointIsInBounds(Vector2 point){
-		/*
+		boolean bounds = rectangle.contains(point);
+		
 		if(this instanceof Button){
-			System.out.println("Button: " + point);			
+			System.out.println("Button: " + point + ", " + bounds + ", " + rectangle);	
 		}
-		*/
+		
 		/*
 		if(this instanceof Container && !(this instanceof NavigableContainer)){
-			System.out.println("Container: " + point);			
+			System.out.println("Container: " + point + ", " + bounds + ", " + rectangle);	
 		}
-		*/
+		
 		
 		if(this instanceof NavigableContainer){
-			//System.out.println("NavigableContainer: " + point);			
+			System.out.println("NavigableContainer: " + point + ", " + bounds + ", " + rectangle);			
 		}
-		
+		*/
 		return rectangle.contains(point);
 	}
 

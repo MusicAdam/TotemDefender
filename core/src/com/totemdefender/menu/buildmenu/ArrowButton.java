@@ -51,6 +51,5 @@ public class ArrowButton extends Button{
 	
 	public void flip(){
 		flip = !flip;
-	}
-	
+	}	
 }

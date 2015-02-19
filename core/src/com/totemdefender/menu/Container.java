@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.input.InputHandler;
@@ -38,8 +39,9 @@ public class Container extends Component{
 	public void create(TotemDefender game){
 		super.create(game);
 		
-		if(getParent() == null)
+		if(getParent() == null){
 			attachMouseListeners(game.getMenuInputHandler());
+		}
 	}
 	
 	@Override
@@ -120,42 +122,69 @@ public class Container extends Component{
 	}
 	
 	@Override
+	/** Muse move delegates onMouseEnter/Exit events for this container and child components
+	 *  It also sets onMouseOver for this container.
+	 */
 	public boolean onMouseMove(MouseEvent event){
-		if(!isMouseOver()) return false;
+		Vector2 mousePos;
+		if(getParent() == null){
+			mousePos = event.mousePosition;
+		}else{
+			mousePos = getParent().worldToLocal(event.mousePosition);
+		}
 		
-		for(Component cmp : components){	
-			if(cmp.pointIsInBounds(worldToLocal(event.mousePosition))){
-				if(!cmp.isMouseOver()){
-					cmp.setMouseOver(true);
-					return cmp.onMouseEnter(event);
-				}
-				cmp.onMouseMove(event);			
-				
-			}else if(cmp.isMouseOver()){
-				cmp.setMouseOver(false);
-				return cmp.onMouseExit(event);
+		if(pointIsInBounds(mousePos)){
+			System.out.println("ATTACHED");
+			//Handled onMouseEnter
+			if(!isMouseOver()){
+				onMouseEnter(event);
 			}
+			
+			for(Component cmp : components){
+				if(cmp.onMouseMove(event)){
+					return true;
+				}
+			}
+			return true;
+		}else if(isMouseOver()){
+			onMouseExit(event);
+			return true;
 		}
 		return false;
 	}
 	
 	@Override
-	public boolean onMouseEnter(MouseEvent event){
-		setMouseOver(true);			
-		return true;
+	public void onMouseEnter(MouseEvent event){
+		if(this instanceof Container && !(this instanceof NavigableContainer)){
+			System.out.println("Container enter");	
+		}
+		
+		
+		if(this instanceof NavigableContainer){
+			System.out.println("NavigableContainer enter");			
+		}
+		super.onMouseEnter(event);
 	}
 	
 	@Override
-	public boolean onMouseExit(MouseEvent event){
-		setMouseOver(false);
+	public void onMouseExit(MouseEvent event){
+		if(this instanceof Container && !(this instanceof NavigableContainer)){
+			System.out.println("Container exit");	
+		}
+		
+		
+		if(this instanceof NavigableContainer){
+			System.out.println("NavigableContainer exit");			
+		}
+		
+		
 		for(Component cmp : components){
 			if(cmp.isMouseOver()){
-				cmp.mouseOver = false;
-				return cmp.onMouseExit(event);
+				cmp.onMouseExit(event);
 			}
 		}
 		
-		return true;
+		super.onMouseExit(event);
 	}
 	
 	/** Pass onClick to components */
@@ -186,14 +215,7 @@ public class Container extends Component{
 		mouseMoveListener = inputHandler.addListener(new MouseEvent(MouseEvent.MOUSE_MOVE){
 			@Override
 			public boolean callback(){
-				boolean handled = false;
-				if(pointIsInBounds(mousePosition) && !isMouseOver()){
-					handled = handled || onMouseEnter(this);
-				}else if(!pointIsInBounds(mousePosition) && isMouseOver()){
-					handled = handled || onMouseExit(this);
-				}
-				
-				return handled || onMouseMove(this);
+				return onMouseMove(this);
 			}
 		});
 	}

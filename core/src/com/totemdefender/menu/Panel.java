@@ -83,42 +83,17 @@ public class Panel extends Component{
 	public void setShouldRender(boolean shouldRender) 
 	{ this.shouldRender = shouldRender; }
 	
-	/*
-	public void attachMouseListeners(InputHandler inputHandler){
-		mouseUpListener = inputHandler.addListener(new MouseEvent(MouseEvent.MOUSE_DOWN){
-			@Override
-			public boolean callback(){
-				if(pointIsInBounds(mousePosition)){
-					return onMouseDown(this);
-				}
-				return false;
+	@Override
+	public boolean onMouseMove(MouseEvent event){
+		if(pointIsInBounds(getParent().worldToLocal(event.mousePosition))){
+			if(!isMouseOver()){
+				onMouseEnter(event);
 			}
-		});
-		
-		mouseDownListener = inputHandler.addListener(new MouseEvent(MouseEvent.MOUSE_UP){
-			@Override
-			public boolean callback(){
-				if(pointIsInBounds(mousePosition)){
-					return onMouseUp(this);
-				}
-				return false;
-			}
-		});
-		
-		mouseMoveListener = inputHandler.addListener(new MouseEvent(MouseEvent.MOUSE_MOVE){
-			@Override
-			public boolean callback(){
-				if(pointIsInBounds(mousePosition)){
-					if(!mouseOver){
-						mouseOver = true;
-						return onMouseEnter(this);
-					}
-				}
-				return false;
-			}
-		});
+		}else if(isMouseOver()){
+			onMouseExit(event);
+		}
+		return false;
 	}
-	*/
 	public boolean isMouseOver(){
 		return mouseOver;
 	}

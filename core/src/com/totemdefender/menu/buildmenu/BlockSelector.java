@@ -33,6 +33,9 @@ public class BlockSelector extends Container{
 	private ArrowButton arrowLeft;
 	private float blockWidth, blockHeight;	
 	private boolean hovered = false;
+	private BlockEntity mouseSpawned = null;
+	private Vector2 mouseLocation = null;
+	private MouseEvent mouseMoveListener;
 	
 	public BlockSelector(Container parent, Player owner, BlockEntity.Shape shape){
 		super(parent);
@@ -79,12 +82,33 @@ public class BlockSelector extends Container{
 		arrowRight.flip();
 		arrowRight.create(game);
 		
+		final TotemDefender gameRef = game;
+		/*mouseMoveListener = game.getMenuInputHandler().addListener(new MouseEvent(MouseEvent.MOUSE_MOVE){
+			@Override
+			public boolean callback(){
+				mouseLocation = gameRef.screenToWorld(mousePosition);
+				System.out.println("MouseLocation: " + mouseLocation);
+				return false;
+			}
+		});*/
+		
 		super.create(game);
+	}
+	
+	@Override
+	public void destroy(TotemDefender game){
+		game.getMenuInputHandler().removeListener(mouseMoveListener);
+		arrowLeft.destroy(game);
+		arrowRight.destroy(game);
 	}
 	
 	@Override
 	public void update(TotemDefender game){
 		super.update(game);
+
+		if(mouseSpawned != null){
+			mouseSpawned.setPosition(mouseLocation.x, mouseLocation.y);
+		}
 	}
 	
 	@Override
@@ -135,25 +159,45 @@ public class BlockSelector extends Container{
 	}
 	
 	@Override
-	public boolean onMouseEnter(MouseEvent event){
+	public void onMouseEnter(MouseEvent event){
 		hovered = true;
-		return false;
+		super.onMouseEnter(event);
 	}
 	
 	@Override
-	public boolean onMouseExit(MouseEvent event){
+	public void onMouseExit(MouseEvent event){
 		if(!hasFocus())
 			hovered = false;
-		return false;
+		super.onMouseExit(event);
+	}
+	
+	@Override
+	public boolean onMouseDown(MouseEvent event){
+		mouseSpawned = spawnBlock(TotemDefender.Get());
+		return super.onMouseDown(event);
+	}
+	
+	@Override
+	public boolean onMouseUp(MouseEvent event){
+		mouseSpawned = null;
+		return super.onMouseUp(event);
 	}
 	
 	@Override
 	public boolean onClick(){
+		if(mouseSpawned != null) return false;
+		//TODO: Since the arrow buttons are children of this container, events should get passed to them,
+		//		however that is not happening, so this is a temporary fix.
+		if(arrowLeft.isMouseOver()){
+			return arrowLeft.onClick();
+		}else if(arrowRight.isMouseOver()){
+			return arrowRight.onClick();
+		}
 		spawnBlock(TotemDefender.Get());
 		return true;
 	}
 	
-	public void spawnBlock(TotemDefender game){
+	public BlockEntity spawnBlock(TotemDefender game){
 		BlockEntity blockEntity = null;
 		if(shape == Shape.Square){
 			blockEntity = new SquareBlockEntity(owner);
@@ -164,7 +208,9 @@ public class BlockSelector extends Container{
 		if(blockEntity != null){
 			blockEntity.spawn(game);
 			game.addEntity(blockEntity);
-			//blockEntity.getBody().setActive(false);
+			blockEntity.getBody().setActive(false);
 		}
+		
+		return blockEntity;
 	}
 }
