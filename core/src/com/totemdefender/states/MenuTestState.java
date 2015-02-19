@@ -34,7 +34,7 @@ public class MenuTestState implements State{
 		testButton.setSize(100, 100);
 		testButton.setText("Hello World1");
 		testButton.create(game);
-
+		
 		Button testButton2 = new Button(test);
 		testButton2.setSize(100, 100);
 		testButton2.setPosition(100, 0);
@@ -57,9 +57,11 @@ public class MenuTestState implements State{
 		test.connectComponents(testButton4, testButton3);
 		test.connectComponents(testButton4, testButton2);
 		
-		test.setPosition(100, 100);
+		test.setPosition(50, 50);
+		test.setSize(50, 50);
 		menu.validate();
 		menu.setPosition(TotemDefender.V_WIDTH/2 - menu.getWidth()/2, TotemDefender.V_HEIGHT/2 - menu.getHeight()/2);
+		//menu.setPosition(300, 300);
 		menu.create(game);
 		
 		//Container test = new Container();

@@ -13,9 +13,9 @@ public class StartMenu extends Panel {
 	private Button option;
 	private Button instruction;
 	
-	public StartMenu(TotemDefender game){
-		super(game);
-		
+	public StartMenu(TotemDefender game){		
+		super(null);
+		/*
 		Vector2 buttonSize = new Vector2(new Vector2((TotemDefender.V_WIDTH/3),TotemDefender.V_HEIGHT/6));
 		
 		start = new Button(this, "Start Game", buttonSize, 
@@ -31,6 +31,7 @@ public class StartMenu extends Panel {
 		this.addPanel(leaderboard);
 		this.addPanel(option);
 		this.addPanel(instruction);
+		*/
 	}
 
 }

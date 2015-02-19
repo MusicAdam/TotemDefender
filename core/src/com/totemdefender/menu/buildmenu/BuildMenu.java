@@ -26,16 +26,12 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 
-public class BuildMenu extends Container {
-	private NavigableContainer buttonContainer;
-	private Button triangle;
-	private Button square;
-	private Button rect;
+public class BuildMenu extends NavigableContainer {
 	private Player owner;
-	private Grid grid;
 	private Level level;
 	
 	private BlockSelector squareSelector;
+	private BlockSelector rectangleSelector;
 	private boolean placingTotem = false;
 	
 	public BuildMenu(TotemDefender game, Level level, Player owner) {
@@ -44,266 +40,17 @@ public class BuildMenu extends Container {
 		this.owner = owner;
 		this.level = level;
 		
-		squareSelector = new BlockSelector(this, BlockEntity.Shape.Square);
+		squareSelector = new BlockSelector(this, owner, BlockEntity.Shape.Square);
 		squareSelector.setBlockMaterial(game, BlockEntity.Material.Stone);
+		squareSelector.setPosition(0, squareSelector.getHeight() + 20);
 		squareSelector.create(game);
 		
-		/*
-		Vector2 buttonSize = new Vector2((TotemDefender.V_HEIGHT/8), (TotemDefender.V_HEIGHT/8));
-		float top = (TotemDefender.V_HEIGHT - buttonSize.y);
-		float right;
-		if(owner.getID() == 1){
-			right = 0;
-		}else{
-			right = (TotemDefender.V_WIDTH - buttonSize.x);
-		}
 		
-		//triangle = new Button(this, "Triangle", buttonSize, new Vector2(right, top - buttonSize.y), Color.GREEN);
-		square = new Button(this, "Square", buttonSize, new Vector2(right,  buttonSize.y), Color.RED){
-			@Override
-			public boolean onClick(){
-				spawnSquare();
-				return true;
-			}
-		};
-		square.setHighlightColor(Color.RED.cpy().add(.5f, .5f, .5f, 1));
-		rect = new Button(this, "Rectangle", buttonSize, new Vector2(right, 0), Color.YELLOW){
-			@Override
-			public boolean onClick(){
-				spawnRectangle();
-				return true;
-			}
-		};
-		rect.setHighlightColor(Color.YELLOW.cpy().add(.5f, .5f, .5f, 1));
+		rectangleSelector = new BlockSelector(this, owner, BlockEntity.Shape.Rectangle);
+		rectangleSelector.setBlockMaterial(game, BlockEntity.Material.Stone);
+		rectangleSelector.create(game);
+		connectComponents(squareSelector, rectangleSelector);
 		
-		PedestalEntity pedestal = level.getPedestal(owner);
-		Vector2 pedPos = game.worldToScreen(pedestal.getPosition());	
-		grid = new Grid(this);
-		grid.setPosition(new Vector2(pedPos.x - grid.getWidth()/2,
-												TotemDefender.PEDESTAL_HEIGHT + TotemDefender.GROUND_HEIGHT));
-		buttonContainer = new NavigableContainer(this);
-		this.addComponent(buttonContainer);
-		this.addComponent(grid);
-		this.addComponent(square);
-		this.addComponent(rect);
-		buttonContainer.addComponent(square);
-		buttonContainer.addComponent(rect);
-		buttonContainer.connectComponents(square, rect);
-		buttonContainer.attachKeyboardListeners(owner);
-		*/
+		attachKeyboardListeners(owner);
 	};
-	
-	public void spawnSquare(){
-		SquareBlockEntity ent = new SquareBlockEntity(owner);
-		ent.spawn(TotemDefender.Get());
-		TotemDefender.Get().addEntity(ent, TotemDefender.BLOCK_DEPTH);
-		ent.getBody().setActive(false);
-		grid.setEntity(ent);
-	}
-	
-	public void spawnRectangle(){
-		RectangleBlockEntity ent = new RectangleBlockEntity(owner);
-		ent.spawn(TotemDefender.Get());
-		TotemDefender.Get().addEntity(ent, TotemDefender.BLOCK_DEPTH);
-		ent.getBody().setActive(false);
-		grid.setEntity(ent);
-	}
-	
-	public Grid getGrid(){
-		return grid;
-	}
-	
-	/*
-	public void highlightIndex(ArrayList<Button> buttonList, int index){
-		if(index == -1) return;
-		buttonList.get(index).setHighlighted(true);
-	}
-	
-	public void dehighlightIndex(ArrayList<Button> buttonList, int index){
-		if(index == -1) return;
-		buttonList.get(index).setHighlighted(false);		
-	}
-	
-	public boolean clickIndex(ArrayList<Button> buttonList, int index){
-		if(index == -1) return false;
-		return buttonList.get(index).onSelect();
-	}
-	
-	public void attachListeners() {
-		//** Select key listener 
-		addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, owner.getSelectKey()){
-			@Override
-			public boolean callback(){
-				if(grid.hasEntity()){
-					return true;
-				}
-				
-				return false;
-			}
-		});
-		
-		addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, owner.getSelectKey()){
-			@Override
-			public boolean callback(){
-				if(grid.hasEntity()){
-					if(!placingTotem){
-						level.addPlacedBlock(grid.getEntity());
-					}
-					grid.setEntity(null);
-					return true;
-				}
-				
-				return false;
-			}
-		});
-		
-		//** Up key down listener 
-		 //*  This overrides the default menu's functionality
-		 //*
-		addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, owner.getUpKey()){
-			@Override
-			public boolean callback(){
-				if(grid.hasEntity()){
-					return true;
-				}
-				return false;
-			}
-		});
-		//** Up key up listener
-		addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, owner.getUpKey()){
-			@Override
-			public boolean callback(){
-				if(grid.hasEntity()){
-					grid.shiftIndexUp();
-					return true;
-				}
-				
-				return false;
-			}
-		});
-		
-		//** Down key down listener 
-		 *  This overrides the default menu's functionality
-		 *
-		addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, owner.getDownKey()){
-			@Override
-			public boolean callback(){
-				if(grid.hasEntity()){
-					return true;
-				}
-				return false;
-			}
-		});
-		//** Down key up listener 
-		addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, owner.getDownKey()){
-			@Override
-			public boolean callback(){
-				if(grid.hasEntity()){
-					grid.shiftIndexDown();
-					return true;
-				}
-				
-				return false;
-			}
-		});
-		
-		//** Left key down listener 
-		 //*  This overrides the default menu's functionality
-		// * 
-		addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, owner.getLeftKey()){
-			@Override
-			public boolean callback(){
-				if(grid.hasEntity()){
-					return true;
-				}
-				return false;
-			}
-		});
-		//** Left key up listener 
-		addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, owner.getLeftKey()){
-			@Override
-			public boolean callback(){
-				if(grid.hasEntity()){
-					grid.shiftIndexLeft();
-					return true;
-				}
-				
-				return false;
-			}
-		});
-
-		//* Right key down listener 
-		//*  This overrides the default menu's functionality
-		// * 
-		addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, owner.getRightKey()){
-			@Override
-			public boolean callback(){
-				if(grid.hasEntity()){
-					return true;
-				}
-				return false;
-			}
-		});
-		///** Right key up listener 
-		addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, owner.getRightKey()){
-			@Override
-			public boolean callback(){
-				if(grid.hasEntity()){
-					grid.shiftIndexRight();
-					return true;
-				}
-				
-				return false;
-			}
-		});
-		
-		//** Right key down listener 
-		 //*  This overrides the default menu's functionality
-		 //* 
-		addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, owner.getRotateKey()){
-			@Override
-			public boolean callback(){
-				if(grid.hasEntity()){
-					return true;
-				}
-				return false;
-			}
-		});
-		//** Right key up listener 
-		addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, owner.getRotateKey()){
-			@Override
-			public boolean callback(){
-				if(grid.hasEntity()){
-					grid.rotateEntity();
-					return true;
-				}
-				
-				return false;
-			}
-		});
-		
-		//** TODO: There should be a menu button for this 
-		addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, Input.Keys.ENTER){
-			@Override
-			public boolean callback(){
-				if(placingTotem){
-					TotemDefender.Get().setDoneBuilding(true);				
-				}else{
-					placingTotem = true;
-					
-					TotemDefender game = TotemDefender.Get();
-					TotemEntity totem = new TotemEntity(owner);
-					totem.setName("Player " + owner.getID() + "'s Totem");
-					totem.spawn(game);
-					totem.getBody().setActive(false);
-					grid.setEntity(totem);
-					game.addEntity(totem);
-					level.addTotem(totem);	
-				}
-				
-				return false;
-			}
-		});
-	}
-	*/
 }

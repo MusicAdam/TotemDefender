@@ -19,6 +19,12 @@ import com.totemdefender.TotemDefender;
 import com.totemdefender.entities.Entity;
 
 public abstract class BlockEntity extends Entity{
+	public static final int RECTANGLE_XSCALE 	= 2;
+	public static final int RECTANGLE_YSCALE 	= 1;
+	public static final int SQUARE_XSCALE 		= 1;
+	public static final int SQUARE_YSCALE 		= 1;
+	public static final int TOTEM_XSCALE 		= 1;
+	public static final int TOTEM_YSCALE 		= 2;
 	public enum Material{
 		Wood,
 		Stone,
@@ -45,14 +51,14 @@ public abstract class BlockEntity extends Entity{
 		super(owner);
 		
 		if(shape == Shape.Rectangle){
-			xScale = 2;
-			yScale = 1;
+			xScale = RECTANGLE_XSCALE;
+			yScale = RECTANGLE_YSCALE;
 		}else if(shape == Shape.Totem){
-			xScale = 1;
-			yScale = 2;
+			xScale = TOTEM_XSCALE;
+			yScale = TOTEM_YSCALE;
 		}else{
-			xScale = 1;
-			yScale = 1;
+			xScale = SQUARE_XSCALE;
+			yScale = SQUARE_YSCALE;
 		}
 		
 		this.cost = 0;

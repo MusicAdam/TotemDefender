@@ -6,6 +6,7 @@ import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.input.InputHandler;
 import com.totemdefender.input.KeyboardEvent;
+import com.totemdefender.input.MouseEvent;
 
 public class NavigableContainer extends Container{
 	public class Edge{

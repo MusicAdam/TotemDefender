@@ -90,7 +90,7 @@ public class Container extends Component{
 	
 	@Override
 	public boolean onMouseDown(MouseEvent event){
-		if(pointIsInBounds(worldToLocal(event.mousePosition))){
+		if(pointIsInBounds(event.mousePosition)){
 			for(Component cmp : components){
 				if(cmp.pointIsInBounds(worldToLocal(event.mousePosition))){
 					setFocus(cmp);
@@ -109,9 +109,11 @@ public class Container extends Component{
 	public boolean onMouseUp(MouseEvent event){
 		if(focus != null){
 			boolean handled = focus.onMouseUp(event);
-			if(focus.pointIsInBounds(worldToLocal(event.mousePosition)))
+			if(focus.pointIsInBounds(worldToLocal(event.mousePosition))){
 				handled = handled || focus.onClick();
-			setFocus(null);
+			}else{
+				setFocus(null);
+			}
 			return handled;
 		}
 		return false;
@@ -120,14 +122,15 @@ public class Container extends Component{
 	@Override
 	public boolean onMouseMove(MouseEvent event){
 		if(!isMouseOver()) return false;
-
-		for(Component cmp : components){
-			System.out.println(cmp.worldToLocal(event.mousePosition) + ", " + cmp.pointIsInBounds(event.mousePosition));
-			if(cmp.pointIsInBounds(event.mousePosition)){
+		
+		for(Component cmp : components){	
+			if(cmp.pointIsInBounds(worldToLocal(event.mousePosition))){
 				if(!cmp.isMouseOver()){
 					cmp.setMouseOver(true);
 					return cmp.onMouseEnter(event);
 				}
+				cmp.onMouseMove(event);			
+				
 			}else if(cmp.isMouseOver()){
 				cmp.setMouseOver(false);
 				return cmp.onMouseExit(event);
@@ -138,8 +141,7 @@ public class Container extends Component{
 	
 	@Override
 	public boolean onMouseEnter(MouseEvent event){
-		setMouseOver(true);
-		
+		setMouseOver(true);			
 		return true;
 	}
 	
@@ -148,10 +150,8 @@ public class Container extends Component{
 		setMouseOver(false);
 		for(Component cmp : components){
 			if(cmp.isMouseOver()){
-				if(!cmp.pointIsInBounds(event.mousePosition)){
-					cmp.mouseOver = false;
-					return cmp.onMouseExit(event);
-				}
+				cmp.mouseOver = false;
+				return cmp.onMouseExit(event);
 			}
 		}
 		
@@ -169,14 +169,14 @@ public class Container extends Component{
 	}
 	
 	public void attachMouseListeners(InputHandler inputHandler){
-		mouseUpListener = inputHandler.addListener(new MouseEvent(MouseEvent.MOUSE_DOWN){
+		mouseDownListener = inputHandler.addListener(new MouseEvent(MouseEvent.MOUSE_DOWN){
 			@Override
 			public boolean callback(){
 				return onMouseDown(this);
 			}
 		});
 		
-		mouseDownListener = inputHandler.addListener(new MouseEvent(MouseEvent.MOUSE_UP){
+		mouseUpListener = inputHandler.addListener(new MouseEvent(MouseEvent.MOUSE_UP){
 			@Override
 			public boolean callback(){
 				return onMouseUp(this);
@@ -186,13 +186,14 @@ public class Container extends Component{
 		mouseMoveListener = inputHandler.addListener(new MouseEvent(MouseEvent.MOUSE_MOVE){
 			@Override
 			public boolean callback(){
+				boolean handled = false;
 				if(pointIsInBounds(mousePosition) && !isMouseOver()){
-					return onMouseEnter(this) || onMouseMove(this);
+					handled = handled || onMouseEnter(this);
 				}else if(!pointIsInBounds(mousePosition) && isMouseOver()){
-					return onMouseExit(this) || onMouseMove(this);
+					handled = handled || onMouseExit(this);
 				}
 				
-				return onMouseMove(this);
+				return handled || onMouseMove(this);
 			}
 		});
 	}
@@ -208,11 +209,15 @@ public class Container extends Component{
 	}
 	
 	public void setFocus(Component cmp){
-		if(focus != null)
+		if(focus != null){
+			focus.setHasFocus(false);
 			focus.onLoseFocus();
+		}
 		focus = cmp;
-		if(focus != null)
+		if(focus != null){
+			focus.setHasFocus(true);
 			focus.onGainFocus();
+		}
 	}
 	
 	public Component getFocus(){

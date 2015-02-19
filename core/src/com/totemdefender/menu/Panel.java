@@ -40,9 +40,6 @@ public class Panel extends Component{
 	@Override
 	public void create(TotemDefender game){
 		super.create(game);
-		/*if(parent == null){
-			attachMouseListeners(game.getMenuInputHandler());
-		}*/		
 	}
 
 	@Override

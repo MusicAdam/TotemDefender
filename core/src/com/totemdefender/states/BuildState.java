@@ -36,8 +36,8 @@ public class BuildState implements State {
 		//p1BuildMenu.setPosition(200, 200);
 		p1BuildMenu.create(game);
 		
-		p2BuildMenu=new BuildMenu(game, level, game.getPlayer2());
-		p2BuildMenu.create(game);
+		//p2BuildMenu=new BuildMenu(game, level, game.getPlayer2());
+		//p2BuildMenu.create(game);
 		
 		
 		/* Disabling this for now
