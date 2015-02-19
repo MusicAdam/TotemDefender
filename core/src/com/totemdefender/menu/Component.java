@@ -1,6 +1,8 @@
 package com.totemdefender.menu;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -15,10 +17,11 @@ public class Component {
 	protected Sprite backgroundSprite;
 	protected Color color;
 	protected Menu parent; //Parent menu
-	protected boolean selectable; //Determines whether a component in a menu will recieve "onSelect" events and can be traversed/hovered with mouse
+	protected boolean selectable; //Determines whether a component in a menu will receive "onSelect" events and can be traversed/hovered with mouse
 	private Color highlightColor;
 	private boolean highlighted = false;
-	
+	protected Texture tex;
+
 	public Component(Menu parent){
 		position = new Vector2();
 		size = new Vector2();
@@ -29,13 +32,18 @@ public class Component {
 		Color effectiveHighlight = (isHighlighted()) ? highlightColor : Color.BLACK;
 		
 		if(backgroundSprite != null)
-			backgroundSprite.draw(batch);
+			batch.begin();
+				tex.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
+
+			batch.end();
 		if(color != null){
 			shapeRenderer.begin(ShapeType.Filled);
 			shapeRenderer.setColor(color.cpy().add(effectiveHighlight));
 			shapeRenderer.rect(position.x, position.y, size.x, size.y);
 			shapeRenderer.end();
 		}
+
+		
 	}
 	public void update(TotemDefender game){}
 	

@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.totemdefender.TotemDefender;
 
 /** Label allows a text field to be created and provides utilities for displaying text. */
@@ -22,7 +23,8 @@ public class Label extends Component{
 	@Override
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer) {
 		batch.begin();
-		font.setColor(getColor());
+		//font.setColor(getColor());
+		font.setColor(Color.BLACK);
 		font.drawWrapped(batch, text, getPosition().x, getPosition().y + getHeight()/2, getWidth());
 		batch.end();
 	}

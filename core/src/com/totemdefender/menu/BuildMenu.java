@@ -24,9 +24,17 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 
 public class BuildMenu extends Menu {
+	private Button funding;
+	private int amount = 1000;
+	
+	private Button circle;
 	private Button triangle;
 	private Button square;
 	private Button rect;
+	private Sprite cir = new Sprite(game.getAssetManager().get("circle blue.png", Texture.class));
+	private Sprite tri = new Sprite(game.getAssetManager().get("triangle.png", Texture.class));
+	private Sprite squ = new Sprite(game.getAssetManager().get("Square red.png", Texture.class));
+
 	private Player owner;
 	private Grid grid;
 	private Level level;
@@ -39,16 +47,27 @@ public class BuildMenu extends Menu {
 		this.level = level;
 		
 		Vector2 buttonSize = new Vector2((TotemDefender.V_HEIGHT/8), (TotemDefender.V_HEIGHT/8));
+		
 		float top = (TotemDefender.V_HEIGHT - buttonSize.y);
 		float right;
+		
 		if(owner.getID() == 1){
 			right = 0;
+			funding = new Button(this, "Player 1 Funding: \n " + amount, new Vector2 (TotemDefender.V_WIDTH/2, buttonSize.y), 
+					new Vector2(right, top), Color.CYAN);
 		}else{
 			right = (TotemDefender.V_WIDTH - buttonSize.x);
+			funding = new Button(this, "Player 2 Funding: \n " + amount, new Vector2 (TotemDefender.V_WIDTH/2, buttonSize.y), 
+					new Vector2(right, top), Color.ORANGE);
 		}
 		
-		triangle = new Button(this, "Triangle", buttonSize, new Vector2(right, top - buttonSize.y), Color.GREEN);
-		square = new Button(this, "Square", buttonSize, new Vector2(right, top - buttonSize.y * 2), Color.RED){
+		circle = new Button(this, "Circle", buttonSize, new Vector2(right, top), Color.BLUE);
+		circle.getLabel().setColor(Color.BLACK);
+		
+		triangle = new Button(this, "Triangle", buttonSize, new Vector2(right, top - buttonSize.y * 2), Color.GREEN);
+		triangle.getLabel().setColor(Color.BLACK);
+		
+		square = new Button(this, "Square", buttonSize,  new Vector2(right, top - buttonSize.y * 3), Color.RED){
 			@Override
 			public boolean onSelect(){
 				spawnSquare();
@@ -56,7 +75,8 @@ public class BuildMenu extends Menu {
 			}
 		};
 		square.getLabel().setColor(Color.BLACK);
-		rect = new Button(this, "Rectangle", buttonSize, new Vector2(right, top - buttonSize.y * 3), Color.YELLOW){
+		
+		rect = new Button(this, "Rectangle", buttonSize, new Vector2(right, top - buttonSize.y * 4), Color.YELLOW){
 			@Override
 			public boolean onSelect(){
 				spawnRectangle();
@@ -72,9 +92,11 @@ public class BuildMenu extends Menu {
 												TotemDefender.PEDESTAL_HEIGHT + TotemDefender.GROUND_HEIGHT));
 
 		this.addComponent(grid);
+		this.addComponent(funding);
+		this.addComponent(circle);
+		this.addComponent(triangle);
 		this.addComponent(square);
-		this.addComponent(rect);
-
+	
 		attachListeners();
 		if(owner.getID() == 1){
 			attachPlayer1Listeners();
@@ -82,6 +104,24 @@ public class BuildMenu extends Menu {
 			attachPlayer2Listeners();
 		}
 	};
+	
+	/*
+	public void spawnCircle(){
+		SquareBlockEntity ent = new SquareBlockEntity(owner);
+		ent.spawn(TotemDefender.Get());
+		TotemDefender.Get().addEntity(ent);
+		ent.getBody().setActive(false);
+		grid.setEntity(ent);
+	}
+	
+	public void spawnTriangle(){
+		RectangleBlockEntity ent = new RectangleBlockEntity(owner);
+		ent.spawn(TotemDefender.Get());
+		TotemDefender.Get().addEntity(ent);
+		ent.getBody().setActive(false);
+		grid.setEntity(ent);
+	}
+	*/
 	
 	public void spawnSquare(){
 		SquareBlockEntity ent = new SquareBlockEntity(owner);
