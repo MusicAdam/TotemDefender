@@ -6,12 +6,12 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.totemdefender.entities.Entity;
+import com.totemdefender.entities.TotemEntity;
 import com.totemdefender.input.InputHandler;
 import com.totemdefender.input.KeyboardEvent;
 import com.totemdefender.menu.Menu;
 import com.totemdefender.states.BuildState;
-import com.totemdefender.states.MenuTestState;
-import com.totemdefender.states.ResolutionTestState;
+import com.totemdefender.states.DepthTestState;
 import com.totemdefender.states.StateManager;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -25,7 +25,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -33,12 +32,9 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.FillViewport;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader.FreeTypeFontLoaderParameter;
 
@@ -68,12 +64,21 @@ public class TotemDefender extends ApplicationAdapter {
 	public static final	float	PEDESTAL_HEIGHT		= 100;
 	public static final float 	GROUND_HEIGHT		= 20;
 	
+	/** Pre defined depths for entities (0 is bottom) */
+	public static final int BACKGROUND_DEPTH = -1;
+	public static final int GROUND_DEPTH = 0;
+	public static final int PEDESTAL_DEPTH = 1;
+	public static final int BLOCK_DEPTH = 2;
+	public static final int WEAPON_DEPTH = 3;
+	public static final int PROJECTILE_DEPTH = 4;
+	
+	
 
 	/** Instance variables */
 	private static TotemDefender game;
 	private SpriteBatch 		entityBatch;	//Sprite batch for rendering
-	private ArrayList<Entity> 	entities; //List of spawned entities
-	private ArrayList<Menu> 	menus; //List of spawned entities
+	private DepthMap<Entity> 	entities; //List of spawned entities
+	private DepthMap<Menu> 	menus; //List of spawned entities
 	private StateManager		stateManager; //Controls game's states.
 	private World				world; //Box2d physics world.
 	private OrthographicCamera  worldCamera; //World camera
@@ -92,9 +97,11 @@ public class TotemDefender extends ApplicationAdapter {
 	private Player				player2;
 	private Player				winner; //The winner of the last game
 	private Queue<Entity> 		entityDeleteQueue; //Need these queues to avoid concurrent modifications during box2d step and menu/entity iteration
-	private Queue<Entity> 		entityAddQueue;
+	private Queue<DepthWrapper<Entity>> 		entityAddQueue;
+	private ConcurrentLinkedQueue<DepthWrapper<Entity>> entityDepthQueue; //Depth change queue
+	private ConcurrentLinkedQueue<DepthWrapper<Menu>> menuDepthQueue; //Depth change queue
 	private Queue<Menu> 		menuDeleteQueue;
-	private Queue<Menu> 		menuAddQueue;
+	private Queue<DepthWrapper<Menu>> 		menuAddQueue;
 	
 	/** Control Variables */
 	private boolean isDoneBuilding;
@@ -124,17 +131,19 @@ public class TotemDefender extends ApplicationAdapter {
 		
 		world  = new World(GRAVITY, true);	
 		stateManager= new StateManager(this); 
-		entities 	= new ArrayList<Entity>(); 	
+		entities 	= new DepthMap<Entity>(); 	
 		b2dRenderer = new Box2DDebugRenderer();
 		assetManager = new AssetManager();
 		inputMultiplexer = new InputMultiplexer();
 		menuMultiplexer = new InputMultiplexer();
 		inputHandler = new InputHandler(this);
-		menus = new ArrayList<Menu>();
+		menus = new DepthMap<Menu>();
 		entityDeleteQueue = new ConcurrentLinkedQueue<Entity>();
-		entityAddQueue = new ConcurrentLinkedQueue<Entity>();
+		entityAddQueue = new ConcurrentLinkedQueue<DepthWrapper<Entity>>();
+		entityDepthQueue = new ConcurrentLinkedQueue<DepthWrapper<Entity>>();
+		menuDepthQueue = new ConcurrentLinkedQueue<DepthWrapper<Menu>>();
 		menuDeleteQueue = new ConcurrentLinkedQueue<Menu>();
-		menuAddQueue = new ConcurrentLinkedQueue<Menu>();
+		menuAddQueue = new ConcurrentLinkedQueue<DepthWrapper<Menu>>();
 		
 		inputMultiplexer.addProcessor(menuMultiplexer);
 		inputMultiplexer.addProcessor(inputHandler);
@@ -148,10 +157,8 @@ public class TotemDefender extends ApplicationAdapter {
 		
 		//Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode()); //Default to fullscreen desktop mode
 		////		DEBUG STUFF	 /////	 
-		//stateManager.attachState(new ResolutionTestState());	
-		//stateManager.attachState(new TestState());		
-		stateManager.attachState(new BuildState());
-		//stateManager.attachState(new MenuTestState());
+		//stateManager.attachState(new BuildState());
+		stateManager.attachState(new DepthTestState());
 		//Add an exit function
 		inputHandler.addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, Input.Keys.ESCAPE){
 			@Override
@@ -174,14 +181,25 @@ public class TotemDefender extends ApplicationAdapter {
 		/** QUEUES **/
 		//Process additions
 		while(!entityAddQueue.isEmpty()){
-			Entity ent = entityAddQueue.poll();
-			entities.add(ent);
+			DepthWrapper<Entity> ent = entityAddQueue.poll();
+			entities.insert(ent.depth, ent.object);
 		}
 		
 		while(!menuAddQueue.isEmpty()){
-			Menu menu = menuAddQueue.poll();
-			menus.add(menu);
-			menuMultiplexer.addProcessor(menu);
+			DepthWrapper<Menu> menu = menuAddQueue.poll();
+			menus.insert(menu.depth, menu.object);
+			menuMultiplexer.addProcessor(menu.object);
+		}
+		
+		//Process depth changes
+		while(!entityDepthQueue.isEmpty()){
+			DepthWrapper<Entity> ent = entityDepthQueue.poll();
+			entities.move(ent.object, ent.depth);
+		}
+		
+		while(!menuDepthQueue.isEmpty()){
+			DepthWrapper<Menu> menu = menuDepthQueue.poll();
+			menus.move(menu.object, menu.depth);
 		}
 		
 		//Process deletions
@@ -207,12 +225,12 @@ public class TotemDefender extends ApplicationAdapter {
 			world.step(STEP, 8, 6);
 			stateManager.update();
 			
-			for(Menu menu : menus){
+			for(Menu menu : menus.getObjectList()){
 				menu.update(this);
 			}
 			
 			//Update entities
-			for(Entity ent : entities){
+			for(Entity ent : entities.getObjectList()){
 				ent.update(this);
 			}
 		}
@@ -226,11 +244,11 @@ public class TotemDefender extends ApplicationAdapter {
 		menuBatch.enableBlending();
 		
 		//Render entities
-		for(Entity ent : entities){
+		for(Entity ent : entities.getObjectList()){
 			ent.render(entityBatch, entityRenderer);
 		}
 		
-		for(Menu menu : menus){
+		for(Menu menu : menus.getObjectList()){
 			menu.render(menuBatch, menuRenderer);
 		}
 		
@@ -321,10 +339,20 @@ public class TotemDefender extends ApplicationAdapter {
 	
 	/** addEntity registers a spawned entity with the game so it will be rendered and updated.
 	 * @return true if the entity is spawned and was added, false otherwise	 */
-	public boolean addEntity(Entity ent){
+	public boolean addEntity(Entity ent){		
+		return addEntity(ent, 0);
+	}
+	
+	/** addEntity registers a spawned entity at a specified depth with the game so it will be rendered and updated.
+	 * @return true if the entity is spawned and was added, false otherwise	 */
+	public boolean addEntity(Entity ent, int depth){
 		if(!ent.isSpawned()) return false;
-
-		return entityAddQueue.add(ent);
+		
+		DepthWrapper<Entity> wrapper = new DepthWrapper<Entity>();
+		wrapper.depth = depth;
+		wrapper.object = ent;
+		
+		return entityAddQueue.add(wrapper);
 	}
 	
 	/** destroyEntity removes a spawned entity from the entities list and also removes it from the box2d world if it has a body 
@@ -341,7 +369,7 @@ public class TotemDefender extends ApplicationAdapter {
 	public ArrayList<Entity> findEntitiesByName(String name){
 		ArrayList<Entity> found = new ArrayList<Entity>();
 		
-		for(Entity ent : entities){
+		for(Entity ent : entities.getObjectList()){
 			if(ent.getName().equals(name))
 				found.add(ent);
 		}
@@ -353,7 +381,7 @@ public class TotemDefender extends ApplicationAdapter {
 	 * @return all spawned entities in the world
 	 */
 	public ArrayList<Entity> getAllEntities(){
-		return entities;
+		return entities.getObjectList();
 	}
 	
 	/**
@@ -400,7 +428,14 @@ public class TotemDefender extends ApplicationAdapter {
 	}
 	
 	public void addMenu(Menu menu){
-		menuAddQueue.add(menu);
+		addMenu(menu, 0);
+	}
+	
+	public void addMenu(Menu menu, int depth){
+		DepthWrapper<Menu> wrapper = new DepthWrapper<Menu>();
+		wrapper.depth = depth;
+		wrapper.object = menu;
+		menuAddQueue.add(wrapper);
 	}
 	
 	public void removeMenu(Menu menu){
@@ -478,5 +513,27 @@ public class TotemDefender extends ApplicationAdapter {
 
 	public void setWinner(Player winner) {
 		this.winner = winner;
+	}
+
+	public int getDepth(Entity ent) {
+		return entities.getDepth(ent);
+	}
+	
+	public int getDepth(Menu menu) {
+		return menus.getDepth(menu);
+	}
+
+	public void setDepth(Entity ent, int newDepth) {
+		DepthWrapper<Entity> wrapper = new DepthWrapper<Entity>();
+		wrapper.object = ent;
+		wrapper.depth = newDepth;
+		entityDepthQueue.add(wrapper);
+	}
+	
+	public void setDepth(Menu menu, int newDepth) {
+		DepthWrapper<Menu> wrapper = new DepthWrapper<Menu>();
+		wrapper.object = menu;
+		wrapper.depth = newDepth;
+		menuDepthQueue.add(wrapper);
 	}
 }

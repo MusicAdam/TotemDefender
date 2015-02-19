@@ -126,7 +126,7 @@ public class BuildMenu extends Menu {
 	public void spawnSquare(){
 		SquareBlockEntity ent = new SquareBlockEntity(owner);
 		ent.spawn(TotemDefender.Get());
-		TotemDefender.Get().addEntity(ent);
+		TotemDefender.Get().addEntity(ent, TotemDefender.BLOCK_DEPTH);
 		ent.getBody().setActive(false);
 		grid.setEntity(ent);
 	}
@@ -134,7 +134,7 @@ public class BuildMenu extends Menu {
 	public void spawnRectangle(){
 		RectangleBlockEntity ent = new RectangleBlockEntity(owner);
 		ent.spawn(TotemDefender.Get());
-		TotemDefender.Get().addEntity(ent);
+		TotemDefender.Get().addEntity(ent, TotemDefender.BLOCK_DEPTH);
 		ent.getBody().setActive(false);
 		grid.setEntity(ent);
 	}

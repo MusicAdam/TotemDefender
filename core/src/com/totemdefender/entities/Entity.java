@@ -88,6 +88,10 @@ public abstract class Entity {
 		}
 	}
 	
+	public void setPosition(float x, float y){
+		setPosition(new Vector2(x, y));
+	}
+	
 	public Body getBody(){
 		return body;
 	}

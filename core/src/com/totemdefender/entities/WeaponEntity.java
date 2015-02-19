@@ -172,7 +172,7 @@ public class WeaponEntity extends Entity {
 		float vel = projectileVelocity * charge;
 		projectile = new ProjectileEntity(owner, getPosition().add(barrelPos));
 		projectile.spawn(game);
-		game.addEntity(projectile);
+		game.addEntity(projectile, TotemDefender.PROJECTILE_DEPTH);
 		
 		projectile.getBody().applyForce(fireDirection.cpy().scl(vel), projectile.getBody().getWorldCenter(), true);
 	}

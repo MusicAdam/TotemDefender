@@ -27,32 +27,32 @@ public class Level {
 		background = new BackgroundEntity();
 		background.setName("Background");
 		background.spawn(game);
-		game.addEntity(background);
+		game.addEntity(background, TotemDefender.BACKGROUND_DEPTH);
 		
 		ground = new GroundEntity();
 		ground.setName("Ground");
 		ground.spawn(game);
-		game.addEntity(ground);
+		game.addEntity(ground, TotemDefender.GROUND_DEPTH);
 		
 		player1Weapon = new WeaponEntity(game.getPlayer1());
 		player1Weapon.setName("Weapon 1");
 		player1Weapon.spawn(game);
-		game.addEntity(player1Weapon);
+		game.addEntity(player1Weapon, TotemDefender.WEAPON_DEPTH);
 		
 		player2Weapon = new WeaponEntity(game.getPlayer2());
 		player2Weapon.setName("Weapon 2");
 		player2Weapon.spawn(game);
-		game.addEntity(player2Weapon);
+		game.addEntity(player2Weapon, TotemDefender.WEAPON_DEPTH);
 		
 		player1Pedestal = new PedestalEntity(game.getPlayer1());
 		player1Pedestal.setName("Player 1 Pedestal");
 		player1Pedestal.spawn(game);
-		game.addEntity(player1Pedestal);
+		game.addEntity(player1Pedestal, TotemDefender.PEDESTAL_DEPTH);
 		
 		player2Pedestal = new PedestalEntity(game.getPlayer2());
 		player2Pedestal.setName("Player 2 Pedestal");
 		player2Pedestal.spawn(game);
-		game.addEntity(player2Pedestal);
+		game.addEntity(player2Pedestal, TotemDefender.PEDESTAL_DEPTH);
 	}
 
 	public GroundEntity getGround() {
