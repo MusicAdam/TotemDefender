@@ -82,8 +82,8 @@ public class BlockSelector extends Container{
 		arrowRight.flip();
 		arrowRight.create(game);
 		
-		final TotemDefender gameRef = game;
-		/*mouseMoveListener = game.getMenuInputHandler().addListener(new MouseEvent(MouseEvent.MOUSE_MOVE){
+		/*final TotemDefender gameRef = game;
+		 mouseMoveListener = game.getMenuInputHandler().addListener(new MouseEvent(MouseEvent.MOUSE_MOVE){
 			@Override
 			public boolean callback(){
 				mouseLocation = gameRef.screenToWorld(mousePosition);
@@ -149,6 +149,12 @@ public class BlockSelector extends Container{
 	}
 	
 	@Override
+	public boolean onMouseMove(MouseEvent event){
+		System.out.println("Mouse move");
+		return super.onMouseMove(event);
+	}
+	
+	@Override
 	public void onGainFocus(){
 		hovered = true;
 	}
@@ -173,7 +179,7 @@ public class BlockSelector extends Container{
 	
 	@Override
 	public boolean onMouseDown(MouseEvent event){
-		mouseSpawned = spawnBlock(TotemDefender.Get());
+		//mouseSpawned = spawnBlock(TotemDefender.Get());
 		return super.onMouseDown(event);
 	}
 	

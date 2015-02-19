@@ -134,7 +134,6 @@ public class Container extends Component{
 		}
 		
 		if(pointIsInBounds(mousePos)){
-			System.out.println("ATTACHED");
 			//Handled onMouseEnter
 			if(!isMouseOver()){
 				onMouseEnter(event);
