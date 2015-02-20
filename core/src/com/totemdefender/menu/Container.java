@@ -216,6 +216,7 @@ public class Container extends Component{
 		}
 		focus = cmp;
 		if(focus != null){
+			System.out.println("HERE");
 			focus.setHasFocus(true);
 			focus.onGainFocus();
 		}

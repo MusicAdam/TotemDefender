@@ -68,6 +68,7 @@ public class NavigableContainer extends Container{
 		}
 		
 		if(traverseDown && shouldTraverse()){
+			System.out.println("HERE");
 			moveFocusDown();
 		}else if(traverseUp && shouldTraverse()){
 			moveFocusUp();			
@@ -146,6 +147,7 @@ public class NavigableContainer extends Container{
 		super.setFocus(cmp);
 		
 		focus = findNode(cmp);
+		System.out.println("Set focus: " + focus);
 	}
 	
 	public void setFocus(Node node){
@@ -178,7 +180,10 @@ public class NavigableContainer extends Container{
 	}
 	
 	public void moveFocusDown(){
+
+		System.out.println("Focus: " + focus);
 		if(focus == null){
+			System.out.println("Using 0 cmp");
 			if(!components.isEmpty())
 				setFocus(components.get(0));
 		}else{
@@ -286,7 +291,6 @@ public class NavigableContainer extends Container{
 		rightKeyDownListener = inputHandler.addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, player.getRightKey()){
 			@Override
 			public boolean callback(){
-				System.out.println("HJERE");
 				moveFocusRight();
 				traverseRight = true;
 				return true;
