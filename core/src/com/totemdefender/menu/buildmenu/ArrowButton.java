@@ -52,4 +52,10 @@ public class ArrowButton extends Button{
 	public void flip(){
 		flip = !flip;
 	}	
+	
+	@Override
+	public boolean onClick(){
+		System.out.println("Arrow click");
+		return super.onClick();
+	}
 }

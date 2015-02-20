@@ -13,28 +13,24 @@ public abstract class Component {
 	protected Rectangle rectangle; //Mathematical representation of the component
 	protected boolean mouseOver;
 	private Container parent;
-	private boolean valid; //Set to false after the rectangle changes. used to update containers on "in-need" basis.
 	private boolean hasFocus;
 	
 	public Component(Container parent){
 		this.parent = parent;
 		rectangle = new Rectangle();
-		setValid(false);
+		if(parent != null)
+			parent.invalidate();
 	}
 	
 	public Component(){
 		this.parent = null;
 		rectangle = new Rectangle();
-		setValid(false);
+		if(parent != null)
+			parent.invalidate();
 	}
 	
-	public void update(TotemDefender game){
-		validate();
-	}
+	public void update(TotemDefender game){}
 	
-	public void validate(){
-		setValid(true);
-	}
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer){
 		if(TotemDefender.DEBUG){
 			shapeRenderer.begin(ShapeType.Line);
@@ -85,7 +81,8 @@ public abstract class Component {
 
 	public void setPosition(Vector2 position) {
 		rectangle.setPosition(position);
-		setValid(false);
+		if(parent != null)
+			parent.invalidate();
 	}
 	
 	public void setPosition(float x, float y){
@@ -98,7 +95,8 @@ public abstract class Component {
 	
 	public void setSize(Vector2 size){
 		rectangle.setSize(size.x, size.y);
-		setValid(false);
+		if(parent != null)
+			parent.invalidate();
 	}
 	
 	public void setSize(float w, float h){
@@ -132,14 +130,6 @@ public abstract class Component {
 	}
 	
 	public boolean isMouseOver(){ return mouseOver; }
-
-	public boolean isValid() {
-		return valid;
-	}
-
-	public void setValid(boolean valid) {
-		this.valid = valid;
-	}
 
 	public void setMouseOver(boolean b) {
 		mouseOver = b;

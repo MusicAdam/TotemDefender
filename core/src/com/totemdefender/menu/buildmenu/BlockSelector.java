@@ -124,11 +124,9 @@ public class BlockSelector extends Container{
 		
 		TotemDefender.EnableBlend();
 		
-		//Rectangle rect = ScissorStack.popScissors(); //Pop the parent scissors as we don't want to clip the blockHighlight
 		batch.begin();
 		batch.draw(blockHighlightActive, x + centerX - blockHighlight.getWidth()/2, y + getHeight() - blockHighlight.getHeight()/2 - 15, blockHighlight.getWidth()-1, blockHighlight.getHeight()-1);
 		batch.end();
-		//ScissorStack.pushScissors(rect); //Return to previous state
 		
 		batch.begin();
 		batch.draw(block, x + centerX - blockWidth/2, y + getHeight() - blockHeight, blockWidth, blockHeight);
@@ -174,14 +172,16 @@ public class BlockSelector extends Container{
 	
 	@Override
 	public boolean onMouseDown(MouseEvent event){
-		if(!arrowLeft.isMouseOver() && !arrowLeft.isMouseOver())
+		if(!arrowLeft.isMouseOver() && !arrowRight.isMouseOver()){
 			mouseSpawned = spawnBlock(TotemDefender.Get());
+		}
 		return super.onMouseDown(event);
 	}
 	
 	@Override
 	public boolean onMouseUp(MouseEvent event){
 		super.onMouseUp(event);
+		getParent().destroySpawnedBlock(TotemDefender.Get());
 		mouseSpawned = null;
 		return false;
 	}

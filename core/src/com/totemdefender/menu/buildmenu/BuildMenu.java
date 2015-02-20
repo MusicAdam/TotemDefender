@@ -11,10 +11,10 @@ import com.totemdefender.entities.blocks.RectangleBlockEntity;
 import com.totemdefender.entities.blocks.SquareBlockEntity;
 import com.totemdefender.input.InputHandler;
 import com.totemdefender.input.KeyboardEvent;
+import com.totemdefender.input.MouseEvent;
 import com.totemdefender.menu.Button;
 import com.totemdefender.menu.Container;
 import com.totemdefender.menu.NavigableContainer;
-import com.totemdefender.menu.hud.Grid;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -34,6 +34,7 @@ public class BuildMenu extends NavigableContainer {
 	private BlockSelector rectangleSelector;
 	private BlockEntity spawnedBlock;
 	private Grid grid;
+	private Vector2 buttonPosition;
 	private boolean placingTotem = false;
 	
 	public BuildMenu(TotemDefender game, Level level, Player owner) {
@@ -41,23 +42,18 @@ public class BuildMenu extends NavigableContainer {
 		
 		this.owner = owner;
 		this.level = level;
+		buttonPosition = new Vector2();
 		
-		PedestalEntity pedestal = level.getPedestal(owner);
-		Vector2 pedPos = game.worldToScreen(level.getPedestal(owner).getPosition());
 		grid = new Grid(this);
-		pedPos.add(-grid.getWidth()/2, pedestal.getSprite().getHeight()/2);
-		grid.setPosition(pedPos);
 		grid.create(game);
 		
 		squareSelector = new BlockSelector(this, owner, BlockEntity.Shape.Square);
 		squareSelector.setBlockMaterial(game, BlockEntity.Material.Stone);
-		squareSelector.setPosition(0, squareSelector.getHeight() + 20 + TotemDefender.V_HEIGHT/2);
 		squareSelector.create(game);
 		
 		
 		rectangleSelector = new BlockSelector(this, owner, BlockEntity.Shape.Rectangle);
 		rectangleSelector.setBlockMaterial(game, BlockEntity.Material.Stone);
-		rectangleSelector.setPosition(0, TotemDefender.V_HEIGHT/2);
 		rectangleSelector.create(game);
 		connectComponents(squareSelector, rectangleSelector);
 		
@@ -65,11 +61,29 @@ public class BuildMenu extends NavigableContainer {
 	};
 	
 	@Override
+	public void validate(){
+		if(!isValid()){
+			squareSelector.setPosition(buttonPosition);
+			rectangleSelector.setPosition(buttonPosition.x, buttonPosition.y - squareSelector.getHeight());
+		}
+		super.validate();
+	}
+	
+	@Override
 	public void update(TotemDefender game){
 		if(isMouseMode() && getSpawnedBlock() != null && !grid.hasEntity()){
 			getSpawnedBlock().setPosition(squareSelector.getMouseLocation().x, squareSelector.getMouseLocation().y);
 		}
 		super.update(game);
+	}
+	
+	@Override
+	public boolean onMouseUp(MouseEvent event){
+		if(isMouseMode() && getSpawnedBlock() != null && !grid.hasEntity()){
+			destroySpawnedBlock(TotemDefender.Get());
+		}
+		
+		return super.onMouseUp(event);
 	}
 	
 	public boolean isMouseMode(){
@@ -90,5 +104,32 @@ public class BuildMenu extends NavigableContainer {
 		if(block == getSpawnedBlock()){
 			setSpawnedBlock(null);
 		}
+	}
+	
+	public BlockSelector getSquareBlockSelector(){
+		return squareSelector;
+	}
+	
+	public Grid getGrid(){
+		return grid;
+	}
+
+	public Vector2 getButtonPosition() {
+		return buttonPosition;
+	}
+	
+	public void destroySpawnedBlock(TotemDefender game){
+		if(getSpawnedBlock() == null) return;
+		game.destroyEntity(getSpawnedBlock());
+		setSpawnedBlock(null);
+	}
+
+	public void setButtonPosition(Vector2 buttonPosition) {
+		this.buttonPosition = buttonPosition;
+		invalidate();
+	}
+	
+	public void setButtonPosition(float x, float y){
+		setButtonPosition(new Vector2(x, y));
 	}
 }

@@ -64,10 +64,6 @@ public class NavigableContainer extends Container{
 	@Override
 	public void update(TotemDefender game){
 		for(Component cmp : components){
-			if(!cmp.isValid()){
-				findNode(cmp).updateEdges();
-				setValid(false);
-			}
 			cmp.update(game);
 		}
 		
@@ -83,6 +79,15 @@ public class NavigableContainer extends Container{
 		
 		
 		validate();
+	}
+	
+	@Override
+	public void validate(){
+		if(!isValid()){
+			for(Node node : graph)
+				node.updateEdges();
+		}
+		super.validate();
 	}
 	
 	@Override

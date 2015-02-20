@@ -35,15 +35,6 @@ public class Label extends Panel{
 		batch.end();
 	}
 	
-	@Override
-	public void validate(){
-		if(!isValid()){
-			updateBounds();
-			setValid(true);
-		}
-	}
-	
-	
 	public void updateBounds(){
 		font.getBounds(text, bounds);
 	}

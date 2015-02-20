@@ -34,17 +34,27 @@ public class BuildState implements State {
 		
 		float menuPadding = 10; //Distance from the size of the screen to the menu
 		
-		Vector2 p1PedPos = game.worldToScreen(level.getPlayer1Pedestal().getPosition());
-		
 		p1BuildMenu=new BuildMenu(game, level, game.getPlayer1());
 		p1BuildMenu.setPosition(menuPadding, 0);
+		p1BuildMenu.setButtonPosition(0, (p1BuildMenu.getSquareBlockSelector().getHeight() * 2) + TotemDefender.V_HEIGHT/2);
 		p1BuildMenu.create(game);
-		/*
+		
+		//Position the grid
+		Vector2 p1PedPos = game.worldToScreen(level.getPlayer1Pedestal().getPosition());
+		p1PedPos.add(-p1BuildMenu.getGrid().getWidth()/2 - TotemDefender.PEDESTAL_WIDTH/2, TotemDefender.PEDESTAL_HEIGHT/2);
+		p1BuildMenu.getGrid().setPosition(p1PedPos);
+		
+		Vector2 p2PedPos = game.worldToScreen(level.getPlayer2Pedestal().getPosition());
+		
 		p2BuildMenu=new BuildMenu(game, level, game.getPlayer2());
+		p2BuildMenu.setPosition(p2PedPos.x - p2BuildMenu.getGrid().getWidth()/2, 0);
+		p2BuildMenu.setButtonPosition(	p2BuildMenu.getGrid().getWidth()/2, 
+										(p2BuildMenu.getSquareBlockSelector().getHeight() * 2) + TotemDefender.V_HEIGHT/2);
 		p2BuildMenu.create(game);
-		p2BuildMenu.validate();
-		p2BuildMenu.setPosition(TotemDefender.V_WIDTH - p2BuildMenu.getWidth() - menuPadding, 0);
-		*/
+		
+		p2BuildMenu.getGrid().setPosition(0, TotemDefender.PEDESTAL_HEIGHT/2 + p2PedPos.y);
+
+		
 		
 		/* Disabling this for now
 		  timer.scheduleTask(new Task(){

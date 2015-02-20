@@ -21,6 +21,7 @@ public class Container extends Component{
 	private MouseEvent mouseUpListener;
 	private MouseEvent mouseDownListener;
 	private MouseEvent mouseMoveListener;
+	private boolean valid;
 	
 	public Container(Container parent){
 		super(parent);
@@ -55,8 +56,6 @@ public class Container extends Component{
 	@Override
 	public void update(TotemDefender game) {
 		for(Component cmp : components){
-			if(!cmp.isValid())
-				setValid(false);
 			cmp.update(game);
 		}
 
@@ -67,7 +66,7 @@ public class Container extends Component{
 		if(!isValid()){
 			sizeToContents();
 		}
-		setValid(true);
+		valid = true;
 	}
 
 	@Override
@@ -104,9 +103,9 @@ public class Container extends Component{
 	@Override
 	public boolean onMouseUp(MouseEvent event){
 		if(focus != null){
-			boolean handled = focus.onMouseUp(event);
+			boolean handled = false;
 			if(focus.pointIsInBounds(worldToLocal(event.mousePosition))){
-				handled = handled || focus.onClick();
+				handled = handled || focus.onClick() || focus.onMouseUp(event);
 			}else{
 				for(Component cmp : components){
 					if(cmp.pointIsInBounds(worldToLocal(event.mousePosition))){
@@ -202,12 +201,12 @@ public class Container extends Component{
 	
 	public void addComponent(Component cmp){
 		components.add(cmp);
-		setValid(false);
+		invalidate();
 	}
 	
 	public void removeComponent(Component cmp){
 		components.remove(cmp);
-		setValid(false);
+		invalidate();
 	}
 	
 	public void setFocus(Component cmp){
@@ -240,5 +239,16 @@ public class Container extends Component{
 			}
 		}
 	}
+	
+	public boolean isValid(){
+		return valid;
+	}
+	
+	public void invalidate(){
+		valid = false;
+		if(getParent() != null)
+			getParent().invalidate();
+	}
+	
 	
 }
