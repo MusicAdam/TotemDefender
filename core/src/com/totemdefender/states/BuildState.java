@@ -1,5 +1,6 @@
 package com.totemdefender.states;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.totemdefender.Level;
@@ -31,12 +32,17 @@ public class BuildState implements State {
 		
 		level = new Level(game);
 		
+		float menuPadding = 10; //Distance from the size of the screen to the menu
+		
+		Vector2 p1PedPos = game.worldToScreen(level.getPlayer1Pedestal().getPosition());
+		
 		p1BuildMenu=new BuildMenu(game, level, game.getPlayer1());
-		p1BuildMenu.setPosition(200, 200);
-		//p1BuildMenu.setPosition(200, 200);
+		p1BuildMenu.setPosition(menuPadding, 0);
 		p1BuildMenu.create(game);
 		
-		//p2BuildMenu=new BuildMenu(game, level, game.getPlayer2());
+		p2BuildMenu=new BuildMenu(game, level, game.getPlayer2());
+		p2BuildMenu.validate();
+		p2BuildMenu.setPosition(TotemDefender.V_WIDTH - p2BuildMenu.getWidth() - menuPadding, 0);
 		//p2BuildMenu.create(game);
 		
 		
@@ -64,7 +70,12 @@ public class BuildState implements State {
 	}
 	@Override
 	public void update(TotemDefender game) {
-		
-		
-	}//end of update function
+	}
+
+	public BuildMenu getP1BuildMenu() {
+		return p1BuildMenu;
+	}
+	public BuildMenu getP2BuildMenu() {
+		return p2BuildMenu;
+	}
 }//end of class

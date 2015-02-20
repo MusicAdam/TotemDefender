@@ -32,6 +32,8 @@ public class BuildMenu extends NavigableContainer {
 	
 	private BlockSelector squareSelector;
 	private BlockSelector rectangleSelector;
+	private BlockEntity spawnedBlock;
+	private Grid grid;
 	private boolean placingTotem = false;
 	
 	public BuildMenu(TotemDefender game, Level level, Player owner) {
@@ -40,17 +42,53 @@ public class BuildMenu extends NavigableContainer {
 		this.owner = owner;
 		this.level = level;
 		
+		PedestalEntity pedestal = level.getPedestal(owner);
+		Vector2 pedPos = game.worldToScreen(level.getPedestal(owner).getPosition());
+		grid = new Grid(this);
+		pedPos.add(-grid.getWidth()/2, pedestal.getSprite().getHeight()/2);
+		grid.setPosition(pedPos);
+		grid.create(game);
+		
 		squareSelector = new BlockSelector(this, owner, BlockEntity.Shape.Square);
 		squareSelector.setBlockMaterial(game, BlockEntity.Material.Stone);
-		squareSelector.setPosition(0, squareSelector.getHeight() + 20);
+		squareSelector.setPosition(0, squareSelector.getHeight() + 20 + TotemDefender.V_HEIGHT/2);
 		squareSelector.create(game);
 		
 		
 		rectangleSelector = new BlockSelector(this, owner, BlockEntity.Shape.Rectangle);
 		rectangleSelector.setBlockMaterial(game, BlockEntity.Material.Stone);
+		rectangleSelector.setPosition(0, TotemDefender.V_HEIGHT/2);
 		rectangleSelector.create(game);
 		connectComponents(squareSelector, rectangleSelector);
 		
 		attachKeyboardListeners(owner);
 	};
+	
+	@Override
+	public void update(TotemDefender game){
+		if(isMouseMode() && getSpawnedBlock() != null && !grid.hasEntity()){
+			getSpawnedBlock().setPosition(squareSelector.getMouseLocation().x, squareSelector.getMouseLocation().y);
+		}
+		super.update(game);
+	}
+	
+	public boolean isMouseMode(){
+		return squareSelector.isMouseMode() || rectangleSelector.isMouseMode();
+	}
+	
+	public BlockEntity getSpawnedBlock(){
+		return spawnedBlock;
+	}
+
+	public void setSpawnedBlock(BlockEntity blockEntity) {
+		spawnedBlock = blockEntity;
+	}
+	
+	public void addPlacedBlock(BlockEntity block){
+		level.addPlacedBlock(block);
+		
+		if(block == getSpawnedBlock()){
+			setSpawnedBlock(null);
+		}
+	}
 }

@@ -60,13 +60,13 @@ public class StateManager {
 		while(!callEnterStateQueue.isEmpty()){
 			State state = callEnterStateQueue.poll().state;
 			state.onEnter(game);
-			invokeListener(game, state.getClass(), Event.Enter);
+			invokeListener(game, state, state.getClass(), Event.Enter);
 		}
 		
 		while(!callExitStateQueue.isEmpty()){
 			State state = callEnterStateQueue.poll().state;
 			state.onExit(game);
-			invokeListener(game, state.getClass(), Event.Exit);
+			invokeListener(game, state, state.getClass(), Event.Exit);
 		}
 	}
 	
@@ -126,10 +126,10 @@ public class StateManager {
 		listeners.remove(l);
 	}
 	
-	private <T> void invokeListener(TotemDefender game, Class<T> klass, Event event){
+	private <T> void invokeListener(TotemDefender game, State state, Class<T> klass, Event event){
 		for(StateListener l : listeners){
 			if(l.klass.equals(klass) && l.event == event){
-				l.callback(game);
+				l.callback(game, state);
 			}
 		}
 	}

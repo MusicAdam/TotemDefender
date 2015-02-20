@@ -8,20 +8,29 @@ import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.entities.blocks.BlockEntity;
 import com.totemdefender.entities.blocks.SquareBlockEntity;
+import com.totemdefender.input.MouseEvent;
 import com.totemdefender.menu.Component;
 import com.totemdefender.menu.Container;
 import com.totemdefender.menu.Panel;
+import com.totemdefender.menu.buildmenu.BuildMenu;
 
 public class Grid extends Panel {
+	public enum PlacementMode{
+		Mouse,
+		Keyboard
+	}
 	public static final int WIDTH = 6;
 	public static final int HEIGHT = 10; //The build area.
 	
 	private BlockEntity entity; 	//The entity being positioned.
 	private Vector2 index; 			//The current position in the grid.
+	private PlacementMode mode;
+	private Vector2 mousePosition;
 	
-	public Grid(Container parent){
+	public Grid(BuildMenu parent){
 		super(parent);
 		index = new Vector2(WIDTH/2, HEIGHT/2);
+		setSize(WIDTH * TotemDefender.BLOCK_SIZE, HEIGHT * TotemDefender.BLOCK_SIZE);
 	}
 	
 	@Override
@@ -120,17 +129,91 @@ public class Grid extends Panel {
 	public void snapEntityToGrid(){
 		if(!hasEntity()) return; 
 		
+		if(mode == PlacementMode.Keyboard){
+			snapToIndex();
+		}else{
+			index = getIndexFromPosition(mousePosition);
+			snapToIndex();
+		}
+	}
+	
+	public void snapToIndex(){
 		TotemDefender game = TotemDefender.Get();
-		Vector2 screenOffset = new Vector2(-TotemDefender.V_WIDTH/2, -TotemDefender.V_HEIGHT/2);
-		Vector2 screenCoordinates = new Vector2(getPosition().x + (index.x * TotemDefender.BLOCK_SIZE), getPosition().y + (index.y * TotemDefender.BLOCK_SIZE));
-		screenCoordinates.sub(-entity.getWidth()/2, -entity.getHeight()/2);
-		screenCoordinates.add(screenOffset);
-		entity.setPosition(screenCoordinates);	
+
+		Vector2 indexWorldPos = game.screenToWorld(getIndexPosition());
+		indexWorldPos.add(getWorldPosition());
+		indexWorldPos.add(entity.getWidth()/2, entity.getHeight()/2);
+		entity.setPosition(indexWorldPos);
 	}
 	
 	public Vector2 getIndexPosition(){
 		return new Vector2(	getPosition().x + index.x * TotemDefender.BLOCK_SIZE,
 							getPosition().y + index.y * TotemDefender.BLOCK_SIZE);
+	}
+	
+	public Vector2 getIndexFromPosition(Vector2 position){
+		return new Vector2(	(float)Math.floor((position.x - getPosition().x) / TotemDefender.BLOCK_SIZE),
+							(float)Math.floor((position.y - getPosition().y) / TotemDefender.BLOCK_SIZE));
+	}
+	
+	@Override
+	public boolean onMouseMove(MouseEvent event){
+		if(getParent().getSpawnedBlock() == null) return false;
+		mousePosition = worldToLocal(event.mousePosition);
+		System.out.println(mousePosition + ", " + getRectangle());
+		if(pointIsInBounds(event.mousePosition)){
+			if(getParent().isMouseMode()){
+				if(getEntity() == null){
+					setEntity(getParent().getSpawnedBlock());
+					setPlacementMode(PlacementMode.Mouse);
+				}
+				snapEntityToGrid();
+			}
+		}
+		
+		return super.onMouseMove(event);
+	}
+	
+	@Override
+	public void onMouseEnter(MouseEvent event){
+		if(getParent().isMouseMode()){
+			if(getEntity() == null){
+				setEntity(getParent().getSpawnedBlock());
+				setPlacementMode(PlacementMode.Mouse);
+			}			
+		}
+		super.onMouseEnter(event);
+	}
+	
+	@Override
+	public boolean onMouseUp(MouseEvent event){
+		if(mode == PlacementMode.Mouse && hasEntity()){
+			getParent().addPlacedBlock(getEntity());
+			setEntity(null);
+		}
+		return false;
+	}
+	
+	@Override
+	public void onMouseExit(MouseEvent event){
+		if(getParent().isMouseMode()){
+			setEntity(null);
+			setPlacementMode(null);
+		}
+		super.onMouseExit(event);
+	}
+	
+	public void setPlacementMode(PlacementMode mode){
+		this.mode = mode;
+	}
+	
+	public PlacementMode getPlacementMode(){
+		return mode;
+	}
+
+	@Override
+	public BuildMenu getParent(){
+		return (BuildMenu)super.getParent();
 	}
 
 }

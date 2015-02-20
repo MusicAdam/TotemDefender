@@ -21,18 +21,15 @@ public class Container extends Component{
 	private MouseEvent mouseUpListener;
 	private MouseEvent mouseDownListener;
 	private MouseEvent mouseMoveListener;
-	private Rectangle scissors;
 	
 	public Container(Container parent){
 		super(parent);
 		components = new ArrayList<Component>();
-		scissors = new Rectangle();
 	}
 	
 	public Container(){
 		super();
 		components = new ArrayList<Component>();
-		scissors = new Rectangle();
 	}
 	
 	@Override
@@ -69,14 +66,12 @@ public class Container extends Component{
 	public void validate(){
 		if(!isValid()){
 			sizeToContents();
-			ScissorStack.calculateScissors(TotemDefender.Get().getMenuCamera(), new Matrix4(), new Rectangle(getRectangle()), scissors);
 		}
 		setValid(true);
 	}
 
 	@Override
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer) {
-		boolean shouldPop = ScissorStack.pushScissors(new Rectangle(scissors));
 		batch.getTransformMatrix().translate(getPosition().x, getPosition().y, 0); //Positon relative to container position
 		shapeRenderer.translate(getPosition().x, getPosition().y, 0);
 		for(Component cmp : components){
@@ -84,9 +79,8 @@ public class Container extends Component{
 		}
 		shapeRenderer.translate(-getPosition().x, -getPosition().y, 0);
 		batch.getTransformMatrix().translate(-getPosition().x, -getPosition().y, 0); 
-		if(shouldPop)
-			ScissorStack.popScissors();
-
+		shapeRenderer.end();
+		
 		super.render(batch, shapeRenderer);
 	}
 	
@@ -114,6 +108,11 @@ public class Container extends Component{
 			if(focus.pointIsInBounds(worldToLocal(event.mousePosition))){
 				handled = handled || focus.onClick();
 			}else{
+				for(Component cmp : components){
+					if(cmp.pointIsInBounds(worldToLocal(event.mousePosition))){
+						cmp.onMouseUp(event);
+					}
+				}
 				setFocus(null);
 			}
 			return handled;
@@ -154,29 +153,11 @@ public class Container extends Component{
 	
 	@Override
 	public void onMouseEnter(MouseEvent event){
-		if(this instanceof Container && !(this instanceof NavigableContainer)){
-			System.out.println("Container enter");	
-		}
-		
-		
-		if(this instanceof NavigableContainer){
-			System.out.println("NavigableContainer enter");			
-		}
 		super.onMouseEnter(event);
 	}
 	
 	@Override
-	public void onMouseExit(MouseEvent event){
-		if(this instanceof Container && !(this instanceof NavigableContainer)){
-			System.out.println("Container exit");	
-		}
-		
-		
-		if(this instanceof NavigableContainer){
-			System.out.println("NavigableContainer exit");			
-		}
-		
-		
+	public void onMouseExit(MouseEvent event){		
 		for(Component cmp : components){
 			if(cmp.isMouseOver()){
 				cmp.onMouseExit(event);

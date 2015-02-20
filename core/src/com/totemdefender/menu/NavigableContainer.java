@@ -281,6 +281,7 @@ public class NavigableContainer extends Container{
 		rightKeyDownListener = inputHandler.addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, player.getRightKey()){
 			@Override
 			public boolean callback(){
+				System.out.println("HJERE");
 				moveFocusRight();
 				traverseRight = true;
 				return true;

@@ -14,6 +14,7 @@ import com.totemdefender.menu.Panel;
 import com.totemdefender.menu.Button;
 import com.totemdefender.states.BattleState;
 import com.totemdefender.states.BuildState;
+import com.totemdefender.states.State;
 import com.totemdefender.states.StateManager;
 import com.totemdefender.states.StateListener;
 
@@ -32,28 +33,21 @@ public class HUD extends Container{
 
 		game.getStateManager().addListener(new StateListener(BuildState.class, StateManager.Event.Enter){
 			@Override
-			public void callback(TotemDefender game){
-				onBuildStateEnter(game);
+			public void callback(TotemDefender game, State state){
+				onBuildStateEnter(game, (BuildState)state);
 			}
 		});
 		
 		game.getStateManager().addListener(new StateListener(BuildState.class, StateManager.Event.Exit){
 			@Override
-			public void callback(TotemDefender game){
-				onBuildStateExit(game);
+			public void callback(TotemDefender game, State state){
+				onBuildStateExit(game, (BuildState)state);
 			}
 		});
 	}
-	public void onBuildStateEnter(TotemDefender game){
-		player1Grid = new Grid(this);
-		player1Grid.create(game);
-
-		player2Grid = new Grid(this);
-		player2Grid.create(game);
+	public void onBuildStateEnter(TotemDefender game, BuildState state){
 	}
 	
-	public void onBuildStateExit(TotemDefender game){
-		player1Grid.destroy(game);
-		player2Grid.destroy(game);
+	public void onBuildStateExit(TotemDefender game, BuildState state){
 	}
 }

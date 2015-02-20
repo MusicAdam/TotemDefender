@@ -67,12 +67,14 @@ public class Button extends Label {
 	
 	@Override
 	public void onMouseEnter(MouseEvent event){
+		setMouseOver(true);
 		setHighlighted(true);
 		super.onMouseEnter(event);
 	}
 	
 	@Override
 	public void onMouseExit(MouseEvent event){
+		setMouseOver(false);
 		setHighlighted(false);
 		super.onMouseExit(event);
 	}

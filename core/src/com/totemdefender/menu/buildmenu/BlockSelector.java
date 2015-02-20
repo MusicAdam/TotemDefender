@@ -37,7 +37,7 @@ public class BlockSelector extends Container{
 	private Vector2 mouseLocation = null;
 	private MouseEvent mouseMoveListener;
 	
-	public BlockSelector(Container parent, Player owner, BlockEntity.Shape shape){
+	public BlockSelector(BuildMenu parent, Player owner, BlockEntity.Shape shape){
 		super(parent);
 		setSize(135, 73);
 		this.shape = shape;
@@ -82,15 +82,15 @@ public class BlockSelector extends Container{
 		arrowRight.flip();
 		arrowRight.create(game);
 		
-		/*final TotemDefender gameRef = game;
+		//We need to add out own handler because we need to detect the mouse movement even when the mouse moves outside of the container.
+		final TotemDefender gameRef = game;
 		 mouseMoveListener = game.getMenuInputHandler().addListener(new MouseEvent(MouseEvent.MOUSE_MOVE){
 			@Override
 			public boolean callback(){
 				mouseLocation = gameRef.screenToWorld(mousePosition);
-				System.out.println("MouseLocation: " + mouseLocation);
 				return false;
 			}
-		});*/
+		});
 		
 		super.create(game);
 	}
@@ -105,10 +105,6 @@ public class BlockSelector extends Container{
 	@Override
 	public void update(TotemDefender game){
 		super.update(game);
-
-		if(mouseSpawned != null){
-			mouseSpawned.setPosition(mouseLocation.x, mouseLocation.y);
-		}
 	}
 	
 	@Override
@@ -128,11 +124,11 @@ public class BlockSelector extends Container{
 		
 		TotemDefender.EnableBlend();
 		
-		Rectangle rect = ScissorStack.popScissors(); //Pop the parent scissors as we don't want to clip the blockHighlight
+		//Rectangle rect = ScissorStack.popScissors(); //Pop the parent scissors as we don't want to clip the blockHighlight
 		batch.begin();
 		batch.draw(blockHighlightActive, x + centerX - blockHighlight.getWidth()/2, y + getHeight() - blockHighlight.getHeight()/2 - 15, blockHighlight.getWidth()-1, blockHighlight.getHeight()-1);
 		batch.end();
-		ScissorStack.pushScissors(rect); //Return to previous state
+		//ScissorStack.pushScissors(rect); //Return to previous state
 		
 		batch.begin();
 		batch.draw(block, x + centerX - blockWidth/2, y + getHeight() - blockHeight, blockWidth, blockHeight);
@@ -150,7 +146,6 @@ public class BlockSelector extends Container{
 	
 	@Override
 	public boolean onMouseMove(MouseEvent event){
-		System.out.println("Mouse move");
 		return super.onMouseMove(event);
 	}
 	
@@ -179,26 +174,28 @@ public class BlockSelector extends Container{
 	
 	@Override
 	public boolean onMouseDown(MouseEvent event){
-		//mouseSpawned = spawnBlock(TotemDefender.Get());
+		if(!arrowLeft.isMouseOver() && !arrowLeft.isMouseOver())
+			mouseSpawned = spawnBlock(TotemDefender.Get());
 		return super.onMouseDown(event);
 	}
 	
 	@Override
 	public boolean onMouseUp(MouseEvent event){
+		super.onMouseUp(event);
 		mouseSpawned = null;
-		return super.onMouseUp(event);
+		return false;
 	}
 	
 	@Override
 	public boolean onClick(){
 		if(mouseSpawned != null) return false;
-		//TODO: Since the arrow buttons are children of this container, events should get passed to them,
-		//		however that is not happening, so this is a temporary fix.
+		
 		if(arrowLeft.isMouseOver()){
 			return arrowLeft.onClick();
 		}else if(arrowRight.isMouseOver()){
 			return arrowRight.onClick();
 		}
+		
 		spawnBlock(TotemDefender.Get());
 		return true;
 	}
@@ -217,6 +214,21 @@ public class BlockSelector extends Container{
 			blockEntity.getBody().setActive(false);
 		}
 		
+		getParent().setSpawnedBlock(blockEntity);
 		return blockEntity;
 	}
+	
+	public boolean isMouseMode(){
+		return mouseSpawned != null;
+	}
+	
+	@Override
+	public BuildMenu getParent(){
+		return (BuildMenu)super.getParent();
+	}
+
+	public Vector2 getMouseLocation() {
+		return mouseLocation;
+	}
+	
 }

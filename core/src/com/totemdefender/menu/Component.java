@@ -76,22 +76,6 @@ public abstract class Component {
 	
 	/** Checks if given point lies within the menu */
 	public boolean pointIsInBounds(Vector2 point){
-		boolean bounds = rectangle.contains(point);
-		
-		if(this instanceof Button){
-			System.out.println("Button: " + point + ", " + bounds + ", " + rectangle);	
-		}
-		
-		/*
-		if(this instanceof Container && !(this instanceof NavigableContainer)){
-			System.out.println("Container: " + point + ", " + bounds + ", " + rectangle);	
-		}
-		
-		
-		if(this instanceof NavigableContainer){
-			System.out.println("NavigableContainer: " + point + ", " + bounds + ", " + rectangle);			
-		}
-		*/
 		return rectangle.contains(point);
 	}
 
@@ -169,6 +153,16 @@ public abstract class Component {
 			float x = worldPoint.x - (parent.getPosition().x + getPosition().x);
 			float y = worldPoint.y - (parent.getPosition().y + getPosition().y);
 			return new Vector2(x, y);
+		}
+	}
+	
+
+	
+	public Vector2 getWorldPosition(){
+		if(parent == null){
+			return getPosition();
+		}else{
+			return getPosition().add(parent.getWorldPosition());
 		}
 	}
 
