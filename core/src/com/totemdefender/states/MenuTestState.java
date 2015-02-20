@@ -61,10 +61,12 @@ public class MenuTestState implements State{
 		test.setPosition(10, 10);
 		//test.setSize(50, 50);
 		menu.validate();
-		menu.setPosition(TotemDefender.V_WIDTH/2 - menu.getWidth()/2, TotemDefender.V_HEIGHT/2 - menu.getHeight()/2);
+		//menu.setPosition(TotemDefender.V_WIDTH/2 - menu.getWidth()/2, TotemDefender.V_HEIGHT/2 - menu.getHeight()/2);
+		menu.setPosition(10, 10);
 		//menu.setPosition(300, 300);
 		menu.create(game);
-		
+
+		System.out.println(test.getWorldPosition());
 		//Container test = new Container();
 		//test.create(game);
 	}

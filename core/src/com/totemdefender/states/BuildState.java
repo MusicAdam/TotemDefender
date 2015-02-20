@@ -39,12 +39,12 @@ public class BuildState implements State {
 		p1BuildMenu=new BuildMenu(game, level, game.getPlayer1());
 		p1BuildMenu.setPosition(menuPadding, 0);
 		p1BuildMenu.create(game);
-		
+		/*
 		p2BuildMenu=new BuildMenu(game, level, game.getPlayer2());
+		p2BuildMenu.create(game);
 		p2BuildMenu.validate();
 		p2BuildMenu.setPosition(TotemDefender.V_WIDTH - p2BuildMenu.getWidth() - menuPadding, 0);
-		//p2BuildMenu.create(game);
-		
+		*/
 		
 		/* Disabling this for now
 		  timer.scheduleTask(new Task(){

@@ -35,6 +35,7 @@ public class Grid extends Panel {
 	
 	@Override
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer) {
+		super.render(batch, shapeRenderer);
 		if(!hasEntity()) return; 
 		
 		TotemDefender.EnableBlend();
@@ -59,6 +60,7 @@ public class Grid extends Panel {
 		}
 		shapeRenderer.end();
 		TotemDefender.DisableBlend();
+		
 	}
 	
 	public float getWidth(){
@@ -140,8 +142,7 @@ public class Grid extends Panel {
 	public void snapToIndex(){
 		TotemDefender game = TotemDefender.Get();
 
-		Vector2 indexWorldPos = game.screenToWorld(getIndexPosition());
-		indexWorldPos.add(getWorldPosition());
+		Vector2 indexWorldPos = game.screenToWorld(getIndexPosition().add(getWorldPosition()));
 		indexWorldPos.add(entity.getWidth()/2, entity.getHeight()/2);
 		entity.setPosition(indexWorldPos);
 	}
@@ -160,7 +161,7 @@ public class Grid extends Panel {
 	public boolean onMouseMove(MouseEvent event){
 		if(getParent().getSpawnedBlock() == null) return false;
 		mousePosition = worldToLocal(event.mousePosition);
-		System.out.println(mousePosition + ", " + getRectangle());
+
 		if(pointIsInBounds(event.mousePosition)){
 			if(getParent().isMouseMode()){
 				if(getEntity() == null){
