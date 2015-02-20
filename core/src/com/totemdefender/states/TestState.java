@@ -17,7 +17,7 @@ import com.totemdefender.TotemDefender;
 import com.totemdefender.entities.TestEntity;
 import com.totemdefender.entities.WeaponEntity;
 import com.totemdefender.input.KeyboardEvent;
-import com.totemdefender.menu.BuildMenu;
+import com.totemdefender.menu.buildmenu.BuildMenu;
 
 public class TestState implements State {
 	int count = 0;

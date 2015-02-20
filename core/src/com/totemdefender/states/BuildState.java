@@ -1,5 +1,6 @@
 package com.totemdefender.states;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.totemdefender.Level;
@@ -7,7 +8,7 @@ import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.input.InputHandler;
 import com.totemdefender.input.KeyboardEvent;
-import com.totemdefender.menu.BuildMenu;
+import com.totemdefender.menu.buildmenu.BuildMenu;
 import com.totemdefender.menu.hud.HUD;
 
 
@@ -31,13 +32,28 @@ public class BuildState implements State {
 		
 		level = new Level(game);
 		
+		float menuPadding = 10; //Distance from the size of the screen to the menu
+		
 		p1BuildMenu=new BuildMenu(game, level, game.getPlayer1());
-		p1BuildMenu.setShouldRender(true);
-		game.addMenu(p1BuildMenu);
+		p1BuildMenu.setPosition(menuPadding, 0);
+		p1BuildMenu.setButtonPosition(0, (p1BuildMenu.getSquareBlockSelector().getHeight() * 2) + TotemDefender.V_HEIGHT/2);
+		p1BuildMenu.create(game);
+		
+		//Position the grid
+		Vector2 p1PedPos = game.worldToScreen(level.getPlayer1Pedestal().getPosition());
+		p1PedPos.add(-p1BuildMenu.getGrid().getWidth()/2 - TotemDefender.PEDESTAL_WIDTH/2, TotemDefender.PEDESTAL_HEIGHT/2);
+		p1BuildMenu.getGrid().setPosition(p1PedPos);
+		
+		Vector2 p2PedPos = game.worldToScreen(level.getPlayer2Pedestal().getPosition());
 		
 		p2BuildMenu=new BuildMenu(game, level, game.getPlayer2());
-		p2BuildMenu.setShouldRender(true);
-		game.addMenu(p2BuildMenu);
+		p2BuildMenu.setPosition(p2PedPos.x - p2BuildMenu.getGrid().getWidth()/2, 0);
+		p2BuildMenu.setButtonPosition(	p2BuildMenu.getGrid().getWidth()/2, 
+										(p2BuildMenu.getSquareBlockSelector().getHeight() * 2) + TotemDefender.V_HEIGHT/2);
+		p2BuildMenu.create(game);
+		
+		p2BuildMenu.getGrid().setPosition(0, TotemDefender.PEDESTAL_HEIGHT/2 + p2PedPos.y);
+
 		
 		
 		/* Disabling this for now
@@ -53,8 +69,8 @@ public class BuildState implements State {
 	}
 	@Override
 	public void onExit(TotemDefender game) {
-		game.removeMenu(p1BuildMenu);
-		game.removeMenu(p2BuildMenu);
+		p1BuildMenu.destroy(game);
+		p2BuildMenu.destroy(game);
 		game.getStateManager().attachState(new BattleState(level));
 		
 	}
@@ -64,7 +80,12 @@ public class BuildState implements State {
 	}
 	@Override
 	public void update(TotemDefender game) {
-		
-		
-	}//end of update function
+	}
+
+	public BuildMenu getP1BuildMenu() {
+		return p1BuildMenu;
+	}
+	public BuildMenu getP2BuildMenu() {
+		return p2BuildMenu;
+	}
 }//end of class

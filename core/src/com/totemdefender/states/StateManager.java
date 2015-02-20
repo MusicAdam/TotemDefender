@@ -8,6 +8,11 @@ import com.totemdefender.TotemDefender;
 
 public class StateManager {	
 	
+	public enum Event{
+		Enter,
+		Exit
+	}
+	
 	/** 
 	 * This wraps the basic state class to keep track of whether or not its entry function has been run
 	 */
@@ -19,12 +24,14 @@ public class StateManager {
 	private TotemDefender game; //Reference to the main game
 	private ConcurrentLinkedQueue<StateWrapper> callEnterStateQueue; //Used to keep track of which onEnter calls need to be made without violating concurency
 	private ConcurrentLinkedQueue<StateWrapper> callExitStateQueue;  //"                       "   onExit  "                                          "
+	private ArrayList<StateListener> listeners;
 	
 	public StateManager(TotemDefender game){
 		this.game = game;
 		attachedStates = new ArrayList<StateWrapper>();
 		callEnterStateQueue = new ConcurrentLinkedQueue<StateWrapper>();
-		callExitStateQueue = new ConcurrentLinkedQueue<StateWrapper>();		
+		callExitStateQueue = new ConcurrentLinkedQueue<StateWrapper>();	
+		listeners = new ArrayList<StateListener>();
 	}
 	
 	/** Calls active state's updates if entry condition is true, checks active states exit conditions, if the are met the state is updates and exited.
@@ -51,11 +58,15 @@ public class StateManager {
 		}
 		
 		while(!callEnterStateQueue.isEmpty()){
-			callEnterStateQueue.poll().state.onEnter(game);
+			State state = callEnterStateQueue.poll().state;
+			state.onEnter(game);
+			invokeListener(game, state, state.getClass(), Event.Enter);
 		}
 		
 		while(!callExitStateQueue.isEmpty()){
-			callExitStateQueue.poll().state.onExit(game);
+			State state = callEnterStateQueue.poll().state;
+			state.onExit(game);
+			invokeListener(game, state, state.getClass(), Event.Exit);
 		}
 	}
 	
@@ -105,5 +116,21 @@ public class StateManager {
 		}
 		
 		return states;
+	}
+	
+	public void addListener(StateListener l){
+		listeners.add(l);
+	}
+	
+	public void removeListener(StateListener l){
+		listeners.remove(l);
+	}
+	
+	private <T> void invokeListener(TotemDefender game, State state, Class<T> klass, Event event){
+		for(StateListener l : listeners){
+			if(l.klass.equals(klass) && l.event == event){
+				l.callback(game, state);
+			}
+		}
 	}
 }

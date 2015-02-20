@@ -8,6 +8,7 @@ import com.totemdefender.entities.PedestalEntity;
 import com.totemdefender.entities.TotemEntity;
 import com.totemdefender.entities.WeaponEntity;
 import com.totemdefender.entities.blocks.BlockEntity;
+import com.totemdefender.menu.hud.HUD;
 
 /** Provides easy way to maintain references to placed blocks and other game entities */
 public class Level {
@@ -18,6 +19,7 @@ public class Level {
 	private PedestalEntity	player2Pedestal;
 	private TotemEntity		player1Totem;
 	private BackgroundEntity background; 
+	private HUD	hud;
 
 	private TotemEntity		player2Totem;
 	private ArrayList<BlockEntity> placedBlocks = new ArrayList<BlockEntity>();
@@ -53,6 +55,9 @@ public class Level {
 		player2Pedestal.setName("Player 2 Pedestal");
 		player2Pedestal.spawn(game);
 		game.addEntity(player2Pedestal, TotemDefender.PEDESTAL_DEPTH);
+		
+		hud = new HUD(game);
+		hud.create(game);
 	}
 
 	public GroundEntity getGround() {

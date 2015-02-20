@@ -125,8 +125,8 @@ public class InputHandler implements InputProcessor{
 	}
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		// Unused
-		return false;
+		MouseEvent cmp = new MouseEvent(MouseEvent.MOUSE_MOVE, -1, screenCoordsToGame(new Vector2(screenX, screenY)), 0);
+		return dispatchMouseEvent(cmp);
 	}
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {

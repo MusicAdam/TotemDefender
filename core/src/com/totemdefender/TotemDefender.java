@@ -9,9 +9,13 @@ import com.totemdefender.entities.Entity;
 import com.totemdefender.entities.TotemEntity;
 import com.totemdefender.input.InputHandler;
 import com.totemdefender.input.KeyboardEvent;
-import com.totemdefender.menu.Menu;
+import com.totemdefender.menu.Component;
+import com.totemdefender.menu.Container;
+import com.totemdefender.menu.Panel;
 import com.totemdefender.states.BuildState;
 import com.totemdefender.states.DepthTestState;
+import com.totemdefender.states.MenuTestState;
+import com.totemdefender.states.ResolutionTestState;
 import com.totemdefender.states.StateManager;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -78,7 +82,7 @@ public class TotemDefender extends ApplicationAdapter {
 	private static TotemDefender game;
 	private SpriteBatch 		entityBatch;	//Sprite batch for rendering
 	private DepthMap<Entity> 	entities; //List of spawned entities
-	private DepthMap<Menu> 	menus; //List of spawned entities
+	private DepthMap<Container> 	menus; //List of spawned entities
 	private StateManager		stateManager; //Controls game's states.
 	private World				world; //Box2d physics world.
 	private OrthographicCamera  worldCamera; //World camera
@@ -86,8 +90,8 @@ public class TotemDefender extends ApplicationAdapter {
 	private float 				accum = 0;	//Time accumulator to ensure updates are performed at the same rate as step.
 	private AssetManager 		assetManager; //Libgdx utility to asynchronusly load assets.
 	private InputMultiplexer	inputMultiplexer; //Multiplexer for input handling
-	private InputMultiplexer	menuMultiplexer; //Menus will attach to this
-	private InputHandler		inputHandler; //Game controls will add listeners to this
+	private InputHandler		menuInputHandler; //Menus will attach to this
+	private InputHandler		gameInputHandler; //Game controls will add listeners to this
 	private Viewport			worldViewport;	//Keep the game looking good at any aspect ratio
 	private Viewport			menuViewport;	//Can't have two cameras on the same viewport
 	private ShapeRenderer		menuRenderer; //This is for menus and is therefore not not transformed by cam matrix
@@ -99,9 +103,9 @@ public class TotemDefender extends ApplicationAdapter {
 	private Queue<Entity> 		entityDeleteQueue; //Need these queues to avoid concurrent modifications during box2d step and menu/entity iteration
 	private Queue<DepthWrapper<Entity>> 		entityAddQueue;
 	private ConcurrentLinkedQueue<DepthWrapper<Entity>> entityDepthQueue; //Depth change queue
-	private ConcurrentLinkedQueue<DepthWrapper<Menu>> menuDepthQueue; //Depth change queue
-	private Queue<Menu> 		menuDeleteQueue;
-	private Queue<DepthWrapper<Menu>> 		menuAddQueue;
+	private ConcurrentLinkedQueue<DepthWrapper<Container>> menuDepthQueue; //Depth change queue
+	private Queue<Container> 		menuDeleteQueue;
+	private Queue<DepthWrapper<Container>> 		menuAddQueue;
 	
 	/** Control Variables */
 	private boolean isDoneBuilding;
@@ -135,18 +139,18 @@ public class TotemDefender extends ApplicationAdapter {
 		b2dRenderer = new Box2DDebugRenderer();
 		assetManager = new AssetManager();
 		inputMultiplexer = new InputMultiplexer();
-		menuMultiplexer = new InputMultiplexer();
-		inputHandler = new InputHandler(this);
-		menus = new DepthMap<Menu>();
+		menuInputHandler = new InputHandler(this);
+		gameInputHandler = new InputHandler(this);
+		menus = new DepthMap<Container>();
 		entityDeleteQueue = new ConcurrentLinkedQueue<Entity>();
 		entityAddQueue = new ConcurrentLinkedQueue<DepthWrapper<Entity>>();
 		entityDepthQueue = new ConcurrentLinkedQueue<DepthWrapper<Entity>>();
-		menuDepthQueue = new ConcurrentLinkedQueue<DepthWrapper<Menu>>();
-		menuDeleteQueue = new ConcurrentLinkedQueue<Menu>();
-		menuAddQueue = new ConcurrentLinkedQueue<DepthWrapper<Menu>>();
+		menuDepthQueue = new ConcurrentLinkedQueue<DepthWrapper<Container>>();
+		menuDeleteQueue = new ConcurrentLinkedQueue<Container>();
+		menuAddQueue = new ConcurrentLinkedQueue<DepthWrapper<Container>>();
 		
-		inputMultiplexer.addProcessor(menuMultiplexer);
-		inputMultiplexer.addProcessor(inputHandler);
+		inputMultiplexer.addProcessor(menuInputHandler);
+		inputMultiplexer.addProcessor(gameInputHandler);
 		Gdx.input.setInputProcessor(inputMultiplexer);
 		
 		world.setContactListener(new ContactHandler());
@@ -157,10 +161,11 @@ public class TotemDefender extends ApplicationAdapter {
 		
 		//Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode()); //Default to fullscreen desktop mode
 		////		DEBUG STUFF	 /////	 
-		//stateManager.attachState(new BuildState());
-		stateManager.attachState(new DepthTestState());
+		stateManager.attachState(new BuildState());
+		//stateManager.attachState(new ResolutionTestState());
+		//stateManager.attachState(new MenuTestState());
 		//Add an exit function
-		inputHandler.addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, Input.Keys.ESCAPE){
+		gameInputHandler.addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, Input.Keys.ESCAPE){
 			@Override
 			public boolean callback(){
 				Gdx.app.exit();
@@ -186,9 +191,8 @@ public class TotemDefender extends ApplicationAdapter {
 		}
 		
 		while(!menuAddQueue.isEmpty()){
-			DepthWrapper<Menu> menu = menuAddQueue.poll();
-			menus.insert(menu.depth, menu.object);
-			menuMultiplexer.addProcessor(menu.object);
+			DepthWrapper<Container> cmp = menuAddQueue.poll();
+			menus.insert(cmp.depth, cmp.object);
 		}
 		
 		//Process depth changes
@@ -198,8 +202,8 @@ public class TotemDefender extends ApplicationAdapter {
 		}
 		
 		while(!menuDepthQueue.isEmpty()){
-			DepthWrapper<Menu> menu = menuDepthQueue.poll();
-			menus.move(menu.object, menu.depth);
+			DepthWrapper<Container> cmp = menuDepthQueue.poll();
+			menus.move(cmp.object, cmp.depth);
 		}
 		
 		//Process deletions
@@ -211,9 +215,8 @@ public class TotemDefender extends ApplicationAdapter {
 		}
 		
 		while(!menuDeleteQueue.isEmpty()){
-			Menu menu = menuDeleteQueue.poll();
-			menus.remove(menu);
-			menuMultiplexer.removeProcessor(menu);
+			Container cmp = menuDeleteQueue.poll();
+			menus.remove(cmp);
 		}
 		
 		//Maintain updates at the STEP rate
@@ -225,8 +228,8 @@ public class TotemDefender extends ApplicationAdapter {
 			world.step(STEP, 8, 6);
 			stateManager.update();
 			
-			for(Menu menu : menus.getObjectList()){
-				menu.update(this);
+			for(Container cmp : menus.getObjectList()){
+				cmp.update(this);
 			}
 			
 			//Update entities
@@ -248,8 +251,8 @@ public class TotemDefender extends ApplicationAdapter {
 			ent.render(entityBatch, entityRenderer);
 		}
 		
-		for(Menu menu : menus.getObjectList()){
-			menu.render(menuBatch, menuRenderer);
+		for(Container cmp : menus.getObjectList()){
+			cmp.render(menuBatch, menuRenderer);
 		}
 		
 		//Debug b2d rendering
@@ -300,10 +303,10 @@ public class TotemDefender extends ApplicationAdapter {
 		defaultFont.fontFileName = "fonts/times.ttf";
 		defaultFont.fontParameters.size = 12;
 		
-		String hudFontName = "fonts/DJB Almost Perfect.ttf";
+		String hudFontName = "fonts/Think Thick.ttf";
 		FreeTypeFontLoaderParameter hud_small = new FreeTypeFontLoaderParameter();
 		hud_small.fontFileName = hudFontName;
-		hud_small.fontParameters.size = 12;
+		hud_small.fontParameters.size = 14;
 		FreeTypeFontLoaderParameter hud_medium = new FreeTypeFontLoaderParameter();
 		hud_medium.fontFileName =hudFontName;
 		hud_medium.fontParameters.size = 16;
@@ -317,15 +320,29 @@ public class TotemDefender extends ApplicationAdapter {
 		assetManager.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
 		assetManager.setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(resolver));
 		
-		//Textures
+		//Game Textures
 		assetManager.load("cannon.png", Texture.class, textureParam);
 		assetManager.load("projectiles/cannon_projectile.png", Texture.class, textureParam);		
 		assetManager.load("wooden_pedestal.png", Texture.class, textureParam);
 		assetManager.load("blocks/block_square_stone_1.png", Texture.class, textureParam);
 		assetManager.load("blocks/block_square_stone_2.png", Texture.class, textureParam);
+		assetManager.load("blocks/block_square_stone_3.png", Texture.class, textureParam);
+		assetManager.load("blocks/block_rectangle_stone_1.png", Texture.class, textureParam);
+		assetManager.load("blocks/block_rectangle_stone_2.png", Texture.class, textureParam);
+		assetManager.load("blocks/block_rectangle_stone_3.png", Texture.class, textureParam);
 		assetManager.load("totem_face_flat.png", Texture.class, textureParam);
 		assetManager.load("totem_face_shaded.png", Texture.class, textureParam);
 		assetManager.load("bg.png", Texture.class, textureParam);
+		//UI Textures
+		assetManager.load("ui/square_highlight.png", Texture.class, textureParam);	
+		assetManager.load("ui/rectangle_highlight.png", Texture.class, textureParam);	
+		assetManager.load("ui/square_highlight_hover.png", Texture.class, textureParam);	
+		assetManager.load("ui/rectangle_highlight_hover.png", Texture.class, textureParam);		
+		assetManager.load("ui/bar.png", Texture.class, textureParam);				
+		assetManager.load("ui/bar_hover.png", Texture.class, textureParam);		
+		assetManager.load("ui/shadow.png", Texture.class, textureParam);	
+		assetManager.load("ui/arrow_left.png", Texture.class, textureParam);
+		assetManager.load("ui/arrow_hover_left.png", Texture.class, textureParam);					
 		//Fonts
 		assetManager.load("default.ttf", BitmapFont.class, defaultFont);
 		assetManager.load("hud_small.ttf", BitmapFont.class, hud_small);
@@ -419,22 +436,26 @@ public class TotemDefender extends ApplicationAdapter {
 	 * 
 	 * @return inputHandler instance
 	 */
-	public InputHandler getInputHandler(){
-		return inputHandler;
+	public InputHandler getGameInputHandler(){
+		return gameInputHandler;
 	}
 	
-	public void addMenu(Menu menu){
+	public InputHandler getMenuInputHandler(){
+		return menuInputHandler;
+	}
+	
+	public void addMenu(Container menu){
 		addMenu(menu, 0);
 	}
 	
-	public void addMenu(Menu menu, int depth){
-		DepthWrapper<Menu> wrapper = new DepthWrapper<Menu>();
+	public void addMenu(Container menu, int depth){
+		DepthWrapper<Container> wrapper = new DepthWrapper<Container>();
 		wrapper.depth = depth;
 		wrapper.object = menu;
 		menuAddQueue.add(wrapper);
 	}
 	
-	public void removeMenu(Menu menu){
+	public void removeMenu(Container menu){
 		menuDeleteQueue.add(menu);
 	}
 	
@@ -459,7 +480,9 @@ public class TotemDefender extends ApplicationAdapter {
 	public Vector2 screenToWorld(Vector2 screen){
 		Vector2 offsetScreen = screen.cpy();
 		offsetScreen = menuViewport.project(offsetScreen);
-		return worldViewport.unproject(offsetScreen);
+		offsetScreen = worldViewport.unproject(offsetScreen);
+		offsetScreen.y *= -1;
+		return offsetScreen;
 	}
 	
 	/** Translates given world space vector to screen space.
@@ -515,7 +538,7 @@ public class TotemDefender extends ApplicationAdapter {
 		return entities.getDepth(ent);
 	}
 	
-	public int getDepth(Menu menu) {
+	public int getDepth(Container menu) {
 		return menus.getDepth(menu);
 	}
 
@@ -526,8 +549,8 @@ public class TotemDefender extends ApplicationAdapter {
 		entityDepthQueue.add(wrapper);
 	}
 	
-	public void setDepth(Menu menu, int newDepth) {
-		DepthWrapper<Menu> wrapper = new DepthWrapper<Menu>();
+	public void setDepth(Container menu, int newDepth) {
+		DepthWrapper<Container> wrapper = new DepthWrapper<Container>();
 		wrapper.object = menu;
 		wrapper.depth = newDepth;
 		menuDepthQueue.add(wrapper);

@@ -8,11 +8,11 @@ import com.totemdefender.entities.TotemEntity;
 import com.totemdefender.entities.blocks.BlockEntity;
 import com.totemdefender.entities.blocks.SquareBlockEntity;
 import com.totemdefender.menu.Component;
-import com.totemdefender.menu.Menu;
+import com.totemdefender.menu.Panel;
 
 public class DepthTestState implements State{
 	TotemEntity totem;
-	Menu menu;
+	Panel menu;
 	
 	long timeStart = 0;
 	@Override
@@ -35,20 +35,20 @@ public class DepthTestState implements State{
 		game.addEntity(totem, -1);
 		
 		
-		menu = new Menu(game);
+		menu = new Panel(game);
 		menu.setPosition(200, 200);
 		Component cmp = new Component(menu);
 		cmp.setColor(Color.RED);
 		cmp.setSize(100, 100);
-		menu.addComponent(cmp);
+		menu.addPanel(cmp);
 		game.addMenu(menu, -1);
 		
-		Menu menu2 = new Menu(game);
+		Panel menu2 = new Panel(game);
 		menu2.setPosition(250, 250);
 		Component cmp2 = new Component(menu);
 		cmp2.setColor(Color.BLUE);
 		cmp2.setSize(100, 100);
-		menu2.addComponent(cmp2);
+		menu2.addPanel(cmp2);
 		game.addMenu(menu2, 0);
 		
 		timeStart = System.currentTimeMillis();

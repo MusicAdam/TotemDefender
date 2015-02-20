@@ -1,4 +1,4 @@
-package com.totemdefender.menu.hud;
+package com.totemdefender.menu.buildmenu;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -12,7 +12,6 @@ import com.totemdefender.input.MouseEvent;
 import com.totemdefender.menu.Component;
 import com.totemdefender.menu.Container;
 import com.totemdefender.menu.Panel;
-import com.totemdefender.menu.buildmenu.BuildMenu;
 
 public class Grid extends Panel {
 	public enum PlacementMode{
@@ -142,14 +141,15 @@ public class Grid extends Panel {
 	public void snapToIndex(){
 		TotemDefender game = TotemDefender.Get();
 
-		Vector2 indexWorldPos = game.screenToWorld(getIndexPosition().add(getWorldPosition()));
+		Vector2 indexWorldPos = game.screenToWorld(getIndexPosition());//game.screenToWorld(getIndexPosition()); //.add(getWorldPosition())
 		indexWorldPos.add(entity.getWidth()/2, entity.getHeight()/2);
 		entity.setPosition(indexWorldPos);
 	}
 	
 	public Vector2 getIndexPosition(){
-		return new Vector2(	getPosition().x + index.x * TotemDefender.BLOCK_SIZE,
-							getPosition().y + index.y * TotemDefender.BLOCK_SIZE);
+		Vector2 pos = getWorldPosition();
+		return new Vector2(	pos.x + index.x * TotemDefender.BLOCK_SIZE,
+							pos.y + index.y * TotemDefender.BLOCK_SIZE);
 	}
 	
 	public Vector2 getIndexFromPosition(Vector2 position){
@@ -160,7 +160,7 @@ public class Grid extends Panel {
 	@Override
 	public boolean onMouseMove(MouseEvent event){
 		if(getParent().getSpawnedBlock() == null) return false;
-		mousePosition = worldToLocal(event.mousePosition);
+		mousePosition = event.mousePosition;
 
 		if(pointIsInBounds(event.mousePosition)){
 			if(getParent().isMouseMode()){

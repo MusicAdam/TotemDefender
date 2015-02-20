@@ -19,6 +19,12 @@ import com.totemdefender.TotemDefender;
 import com.totemdefender.entities.Entity;
 
 public abstract class BlockEntity extends Entity{
+	public static final int RECTANGLE_XSCALE 	= 2;
+	public static final int RECTANGLE_YSCALE 	= 1;
+	public static final int SQUARE_XSCALE 		= 1;
+	public static final int SQUARE_YSCALE 		= 1;
+	public static final int TOTEM_XSCALE 		= 1;
+	public static final int TOTEM_YSCALE 		= 2;
 	public enum Material{
 		Wood,
 		Stone,
@@ -45,14 +51,14 @@ public abstract class BlockEntity extends Entity{
 		super(owner);
 		
 		if(shape == Shape.Rectangle){
-			xScale = 2;
-			yScale = 1;
+			xScale = RECTANGLE_XSCALE;
+			yScale = RECTANGLE_YSCALE;
 		}else if(shape == Shape.Totem){
-			xScale = 1;
-			yScale = 2;
+			xScale = TOTEM_XSCALE;
+			yScale = TOTEM_YSCALE;
 		}else{
-			xScale = 1;
-			yScale = 1;
+			xScale = SQUARE_XSCALE;
+			yScale = SQUARE_YSCALE;
 		}
 		
 		this.cost = 0;
@@ -60,10 +66,10 @@ public abstract class BlockEntity extends Entity{
 		this.shape = shape;
 	}
 	
-	private String getRandomAsset(){
+	public static String GetRandomAsset(Material material, Shape shape){
 		String materialId="", shapeId="";
 		
-		switch(this.material){
+		switch(material){
 			case Wood:
 				materialId = "wood";
 				break;
@@ -78,7 +84,7 @@ public abstract class BlockEntity extends Entity{
 				break;
 		}
 		
-		switch(this.shape){
+		switch(shape){
 			case Square:
 				shapeId = "square";
 				break;
@@ -94,7 +100,7 @@ public abstract class BlockEntity extends Entity{
 		}
 		
 		Random rand = new Random();
-		int num = rand.nextInt(2) + 1;
+		int num = rand.nextInt(3) + 1;
 		
 		return "blocks/block_"+shapeId+"_"+materialId+"_"+num+".png";
 	}
@@ -102,10 +108,10 @@ public abstract class BlockEntity extends Entity{
 	@Override
 	public void spawn(TotemDefender game) {
 		if(shape != Shape.Totem){
-			Texture blockTexture = game.getAssetManager().get(getRandomAsset(), Texture.class);
+			Texture blockTexture = game.getAssetManager().get(GetRandomAsset(material, shape), Texture.class);
 			blockTexture.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
 			setSprite(new Sprite(blockTexture));
-			getSprite().setSize(TotemDefender.BLOCK_SIZE, TotemDefender.BLOCK_SIZE);
+			getSprite().setSize(TotemDefender.BLOCK_SIZE * xScale, TotemDefender.BLOCK_SIZE * yScale);
 			getSprite().setOriginCenter();
 		}
 		

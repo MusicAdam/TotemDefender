@@ -11,59 +11,65 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.totemdefender.TotemDefender;
+import com.totemdefender.input.MouseEvent;
 
-public class Button extends Component {	
-	private Label label;
-	
-	public Button(Menu parent, String labelText, Vector2 newSize, Vector2 newPosition, Color newColor) {
+public class Button extends Label {	
+	public Button(Container parent, String labelText, Vector2 newSize, Vector2 newPosition, Color newColor) {
 		super(parent);
-		label = new Label(parent);
-		label.setText(labelText);
-		
+		setText(labelText, false);		
 		setSize(newSize); 
 		setPosition(newPosition);
 		setColor(newColor);
-		setSelectable(true);
 	}
 	
-	public Button(Menu parent){
+	public Button(Container parent){
 		super(parent);
-		label = new Label(parent);
-		color = Color.BLACK;
+		setColor(Color.BLACK);
+		setHighlightColor(Color.WHITE);
 	}
 	
 	@Override
-	public void update(TotemDefender game){
-		label.update(game);
+	public void setColor(Color color){
+		super.setColor(color);
 	}
 	
 	@Override
-	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer) {
-		super.render(batch, shapeRenderer);
-		label.render(batch, shapeRenderer);
-	}
-	
-	public void dispose() {
-	}
-	
-	public Label getLabel() 
-	{ return label; }
-	
-	public void setLabel(Label label) 
-	{ this.label = label; }
-	
 	public void setText(String text){
-		label.setText(text);
+		super.setText(text, false);
 	}
 	
 	@Override
 	public void setPosition(Vector2 pos){
 		super.setPosition(pos);
-		alignLabelToCenter();
 	}
 	
-	public void alignLabelToCenter(){
-		label.setPosition(getPosition().x + getWidth()/2 - label.getWidth()/2, getPosition().y + getHeight()/2);
+	@Override
+	public boolean onClick(){
+		return false;
 	}
-
+	
+	@Override
+	public void onGainFocus(){
+		setHighlighted(true);
+	}
+	
+	@Override
+	public void onLoseFocus(){
+		setHighlighted(false);
+	}
+	
+	@Override
+	public void onMouseEnter(MouseEvent event){
+		setMouseOver(true);
+		setHighlighted(true);
+		super.onMouseEnter(event);
+	}
+	
+	@Override
+	public void onMouseExit(MouseEvent event){
+		setMouseOver(false);
+		setHighlighted(false);
+		super.onMouseExit(event);
+	}
+	
 }
