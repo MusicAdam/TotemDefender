@@ -159,17 +159,15 @@ public class Grid extends Panel {
 	
 	@Override
 	public boolean onMouseMove(MouseEvent event){
-		if(getParent().getSpawnedBlock() == null) return false;
+		if(getParent().getSpawnedBlock() == null || !getParent().isMouseMode()) return false;
 		mousePosition = worldToLocal(event.mousePosition);
 
 		if(pointIsInBounds(event.mousePosition)){
-			if(getParent().isMouseMode()){
-				if(getEntity() == null){
-					setEntity(getParent().getSpawnedBlock());
-					setPlacementMode(PlacementMode.Mouse);
-				}
-				snapEntityToGrid();
+			if(getEntity() == null){
+				setEntity(getParent().getSpawnedBlock());
+				setPlacementMode(PlacementMode.Mouse);
 			}
+			snapEntityToGrid();
 		}
 		
 		return super.onMouseMove(event);

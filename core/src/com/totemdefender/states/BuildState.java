@@ -36,12 +36,12 @@ public class BuildState implements State {
 		
 		p1BuildMenu=new BuildMenu(game, level, game.getPlayer1());
 		p1BuildMenu.setPosition(menuPadding, 0);
-		p1BuildMenu.setButtonPosition(0, (p1BuildMenu.getSquareBlockSelector().getHeight() * 2) + TotemDefender.V_HEIGHT/2);
+		p1BuildMenu.setButtonPosition(0, (p1BuildMenu.getSquareBlockSelector().getHeight() * 3) + TotemDefender.V_HEIGHT/2);
 		p1BuildMenu.create(game);
 		
 		//Position the grid
 		Vector2 p1PedPos = game.worldToScreen(level.getPlayer1Pedestal().getPosition());
-		p1PedPos.add(-p1BuildMenu.getGrid().getWidth()/2 - TotemDefender.PEDESTAL_WIDTH/2, TotemDefender.PEDESTAL_HEIGHT/2);
+		p1PedPos.add(-(p1BuildMenu.getGrid().getWidth()/2) - 8, TotemDefender.PEDESTAL_HEIGHT/2); //-8 for some reason because it doesn't line up correctly.
 		p1BuildMenu.getGrid().setPosition(p1PedPos);
 		
 		Vector2 p2PedPos = game.worldToScreen(level.getPlayer2Pedestal().getPosition());
@@ -49,34 +49,23 @@ public class BuildState implements State {
 		p2BuildMenu=new BuildMenu(game, level, game.getPlayer2());
 		p2BuildMenu.setPosition(p2PedPos.x - p2BuildMenu.getGrid().getWidth()/2, 0);
 		p2BuildMenu.setButtonPosition(	p2BuildMenu.getGrid().getWidth()/2, 
-										(p2BuildMenu.getSquareBlockSelector().getHeight() * 2) + TotemDefender.V_HEIGHT/2);
+										(p2BuildMenu.getSquareBlockSelector().getHeight() * 3) + TotemDefender.V_HEIGHT/2);
 		p2BuildMenu.create(game);
 		
 		p2BuildMenu.getGrid().setPosition(0, TotemDefender.PEDESTAL_HEIGHT/2 + p2PedPos.y);
-
-		
-		
-		/* Disabling this for now
-		  timer.scheduleTask(new Task(){
-		 
-			
-			public void run(){
-				exit=true;
-			}
-			
-		}, 4000*60);
-		*/
 	}
 	@Override
 	public void onExit(TotemDefender game) {
 		p1BuildMenu.destroy(game);
 		p2BuildMenu.destroy(game);
+		game.setDoneBuilding(true);
 		game.getStateManager().attachState(new BattleState(level));
 		
 	}
 	@Override
 	public boolean canExit(TotemDefender game) {
-		return exit || game.isDoneBuilding();
+		if(p1BuildMenu == null || p2BuildMenu == null) return false;
+		return p1BuildMenu.isDone() && p2BuildMenu.isDone();
 	}
 	@Override
 	public void update(TotemDefender game) {

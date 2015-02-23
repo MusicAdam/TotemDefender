@@ -64,7 +64,7 @@ public class StateManager {
 		}
 		
 		while(!callExitStateQueue.isEmpty()){
-			State state = callEnterStateQueue.poll().state;
+			State state = callExitStateQueue.poll().state;
 			state.onExit(game);
 			invokeListener(game, state, state.getClass(), Event.Exit);
 		}
