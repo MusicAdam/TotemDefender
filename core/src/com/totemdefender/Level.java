@@ -56,7 +56,7 @@ public class Level {
 		player2Pedestal.spawn(game);
 		game.addEntity(player2Pedestal, TotemDefender.PEDESTAL_DEPTH);
 		
-		hud = new HUD(game);
+		hud = new HUD(game, this);
 		hud.create(game);
 	}
 
@@ -157,5 +157,9 @@ public class Level {
 		}else{
 			player2Totem = totem;
 		}
+	}
+	
+	public HUD getHUD(){
+		return hud;
 	}
 }

@@ -29,6 +29,17 @@ public class BlockSelector extends Container{
 	private Texture bar;
 	private Texture barHover;
 	private Texture shadow;
+	/** This is the best way to do this without some sort of XML layout system */
+	//Derived these numbers from the illustrator design src file
+	float barW = 135;
+	float barH = 15;
+	float shadowW = 73;
+	float shadowH = 18;
+	float squareHighlightW = 56f;
+	float squareHighlightH = 56f;
+	float rectangleHighlightW = 86;
+	float rectangleHighlightH = 56;
+	
 	private ArrowButton arrowRight;
 	private ArrowButton arrowLeft;
 	private float blockWidth, blockHeight;	
@@ -36,6 +47,7 @@ public class BlockSelector extends Container{
 	private BlockEntity mouseSpawned = null;
 	private Vector2 mouseLocation = null;
 	private MouseEvent mouseMoveListener;
+	private float alpha;
 	
 	public BlockSelector(BuildMenu parent, Player owner, BlockEntity.Shape shape){
 		super(parent);
@@ -50,6 +62,8 @@ public class BlockSelector extends Container{
 			blockWidth = TotemDefender.BLOCK_SIZE * BlockEntity.SQUARE_XSCALE;
 			blockHeight = TotemDefender.BLOCK_SIZE * BlockEntity.SQUARE_YSCALE;
 		}
+		
+		alpha = 1;
 	}
 	
 	@Override
@@ -64,10 +78,10 @@ public class BlockSelector extends Container{
 		
 		//Cost label
 		cost = new Label(this);
-		cost.setFont("hud_small.ttf");
+		cost.setFont("hud_medium.ttf");
 		cost.setText("$100", true);
 		cost.setTextColor(new Color(0.011765f, 0.541176f, 0.239215f, 1));
-		cost.setPosition(getWidth()/2 - cost.getWidth()/2, 20 - bar.getHeight()/2);
+		cost.setPosition(getWidth()/2 - cost.getWidth()/2, 20 - barH/2);
 		addComponent(cost);
 		
 		float yPos = getHeight() - blockHeight/2;
@@ -100,6 +114,7 @@ public class BlockSelector extends Container{
 		game.getMenuInputHandler().removeListener(mouseMoveListener);
 		arrowLeft.destroy(game);
 		arrowRight.destroy(game);
+		super.destroy(game);
 	}
 	
 	@Override
@@ -113,25 +128,22 @@ public class BlockSelector extends Container{
 		float x = getPosition().x;
 		float y = getPosition().y;
 		
-		Texture blockHighlightActive, barActive, shadowActive;
+		Texture blockHighlightActive, barActive;
 		if(!hovered){
-			blockHighlightActive = blockHighlightHover;
+			blockHighlightActive = blockHighlight;	
 			barActive = bar;
 		}else{
-			blockHighlightActive = blockHighlight;		
+			blockHighlightActive = blockHighlightHover;	
 			barActive = barHover;
 		}
 		
-		TotemDefender.EnableBlend();
-		
+		TotemDefender.EnableBlend();		
 		batch.begin();
-		batch.draw(blockHighlightActive, x + centerX - blockHighlight.getWidth()/2, y + getHeight() - blockHighlight.getHeight()/2 - 15, blockHighlight.getWidth()-1, blockHighlight.getHeight()-1);
-		batch.end();
-		
-		batch.begin();
+		batch.setColor(1, 1, 1, alpha);
+		batch.draw(blockHighlightActive, x + centerX - blockHighlightActive.getWidth()/2, y + getHeight() - blockHighlightActive.getHeight()/2 - 15, blockHighlightActive.getWidth() - 2, blockHighlightActive.getHeight() - 1);
 		batch.draw(block, x + centerX - blockWidth/2, y + getHeight() - blockHeight, blockWidth, blockHeight);
-		batch.draw(barActive, x + centerX - bar.getWidth()/2, y + 15 - bar.getHeight()/2, bar.getWidth(), bar.getHeight());
-		batch.draw(shadow, x + centerX - shadow.getWidth()/2, y, shadow.getWidth(), shadow.getHeight());
+		batch.draw(barActive, x + centerX - barW/2, y + 15 - barH/2, barW, barH);
+		batch.draw(shadow, x + centerX - shadowW/2, y, shadowW, shadowH);
 		batch.end();
 		TotemDefender.DisableBlend();
 		
@@ -150,11 +162,13 @@ public class BlockSelector extends Container{
 	@Override
 	public void onGainFocus(){
 		hovered = true;
+		super.onGainFocus();
 	}
 	
 	@Override
 	public void onLoseFocus(){
 		hovered = false;
+		super.onLoseFocus();
 	}
 	
 	@Override
@@ -172,8 +186,9 @@ public class BlockSelector extends Container{
 	
 	@Override
 	public boolean onMouseDown(MouseEvent event){
-		if(!arrowLeft.isMouseOver() && !arrowRight.isMouseOver()){
+		if(!arrowLeft.isMouseOver() && !arrowRight.isMouseOver() && !getParent().isKeyboardMode()){
 			mouseSpawned = spawnBlock(TotemDefender.Get());
+			getParent().setPlacementMode(BuildMenu.PlacementMode.Mouse);
 		}
 		return super.onMouseDown(event);
 	}
@@ -181,13 +196,16 @@ public class BlockSelector extends Container{
 	@Override
 	public boolean onMouseUp(MouseEvent event){
 		super.onMouseUp(event);
-		getParent().destroySpawnedBlock(TotemDefender.Get());
-		mouseSpawned = null;
+		if(getParent().isMouseMode()){
+			getParent().destroySpawnedBlock(TotemDefender.Get());
+			mouseSpawned = null;
+		}
 		return false;
 	}
 	
 	@Override
 	public boolean onClick(){
+		if(getParent().getGrid().hasEntity() || getParent().isMouseMode()) return false;
 		if(mouseSpawned != null) return false;
 		
 		if(arrowLeft.isMouseOver()){
@@ -195,12 +213,16 @@ public class BlockSelector extends Container{
 		}else if(arrowRight.isMouseOver()){
 			return arrowRight.onClick();
 		}
-		
-		spawnBlock(TotemDefender.Get());
+
+		getParent().setPlacementMode(BuildMenu.PlacementMode.Keyboard);
+		getParent().setSpawnedBlock(spawnBlock(TotemDefender.Get()));
+		getParent().getGrid().setEntity(getParent().getSpawnedBlock());
 		return true;
 	}
 	
 	public BlockEntity spawnBlock(TotemDefender game){
+		if(getParent().getGrid().hasEntity()) return null;
+		
 		BlockEntity blockEntity = null;
 		if(shape == Shape.Square){
 			blockEntity = new SquareBlockEntity(owner);
@@ -229,6 +251,14 @@ public class BlockSelector extends Container{
 
 	public Vector2 getMouseLocation() {
 		return mouseLocation;
+	}	
+	
+	public void reset(){
+		mouseSpawned = null;
 	}
 	
+	public void setAlpha(float alpha){
+		this.alpha = alpha;
+		cost.getTextColor().a = alpha;
+	}
 }

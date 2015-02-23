@@ -158,7 +158,7 @@ public class TotemDefender extends ApplicationAdapter {
 		loadResources();
 		assetManager.finishLoading(); //Block until finished loading for now.
 		
-		
+
 		//Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode()); //Default to fullscreen desktop mode
 		////		DEBUG STUFF	 /////	 
 		stateManager.attachState(new BuildState());
@@ -306,13 +306,13 @@ public class TotemDefender extends ApplicationAdapter {
 		String hudFontName = "fonts/Think Thick.ttf";
 		FreeTypeFontLoaderParameter hud_small = new FreeTypeFontLoaderParameter();
 		hud_small.fontFileName = hudFontName;
-		hud_small.fontParameters.size = 14;
+		hud_small.fontParameters.size = 12;
 		FreeTypeFontLoaderParameter hud_medium = new FreeTypeFontLoaderParameter();
 		hud_medium.fontFileName =hudFontName;
-		hud_medium.fontParameters.size = 16;
+		hud_medium.fontParameters.size = 14;
 		FreeTypeFontLoaderParameter hud_large = new FreeTypeFontLoaderParameter();
 		hud_large.fontFileName = hudFontName;
-		hud_large.fontParameters.size = 32;
+		hud_large.fontParameters.size = 16;
 		
 
 		/** Set special loaders for fonts */
@@ -339,10 +339,12 @@ public class TotemDefender extends ApplicationAdapter {
 		assetManager.load("ui/square_highlight_hover.png", Texture.class, textureParam);	
 		assetManager.load("ui/rectangle_highlight_hover.png", Texture.class, textureParam);		
 		assetManager.load("ui/bar.png", Texture.class, textureParam);				
-		assetManager.load("ui/bar_hover.png", Texture.class, textureParam);		
+		assetManager.load("ui/bar_hover.png", Texture.class, textureParam);	
+		assetManager.load("ui/bar_tall.png", Texture.class, textureParam);			
+		assetManager.load("ui/bar_tall_hover.png", Texture.class, textureParam);		
 		assetManager.load("ui/shadow.png", Texture.class, textureParam);	
-		assetManager.load("ui/arrow_left.png", Texture.class, textureParam);
-		assetManager.load("ui/arrow_hover_left.png", Texture.class, textureParam);					
+		assetManager.load("ui/arrow.png", Texture.class, textureParam);
+		assetManager.load("ui/arrow_hover.png", Texture.class, textureParam);					
 		//Fonts
 		assetManager.load("default.ttf", BitmapFont.class, defaultFont);
 		assetManager.load("hud_small.ttf", BitmapFont.class, hud_small);

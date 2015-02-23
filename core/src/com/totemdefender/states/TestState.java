@@ -67,7 +67,7 @@ public class TestState implements State {
 		//Setup test keys
 		final TestState thisRef = this;
 		final TotemDefender gameRef = game;
-		spaceListener = game.getInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, Input.Keys.SPACE){
+		spaceListener = game.getGameInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, Input.Keys.SPACE){
 			@Override
 			public boolean callback(){
 				thisRef.spawnBall(gameRef);
@@ -87,7 +87,7 @@ public class TestState implements State {
 
 	@Override
 	public void onExit(TotemDefender game) {
-		game.getInputHandler().removeListener(spaceListener);
+		game.getGameInputHandler().removeListener(spaceListener);
 		
 		System.out.println("Balls have touched the ground " + touchCount + " times");
 		System.out.println("TestState:onExit");

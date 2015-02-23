@@ -18,9 +18,9 @@ public class ArrowButton extends Button{
 	
 	@Override
 	public void create(TotemDefender game){
-		arrow 		= game.getAssetManager().get("ui/arrow_left.png", Texture.class);
-		arrowHover 	= game.getAssetManager().get("ui/arrow_hover_left.png", Texture.class);
-		setSize(arrow.getWidth(), arrow.getHeight());
+		arrow 		= game.getAssetManager().get("ui/arrow.png", Texture.class);
+		arrowHover 	= game.getAssetManager().get("ui/arrow_hover.png", Texture.class);
+		setSize(12, 25); //From illustrator src
 		setColor(null);
 		setText("");
 		super.create(game);

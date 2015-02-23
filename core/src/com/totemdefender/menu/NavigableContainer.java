@@ -15,6 +15,7 @@ public class NavigableContainer extends Container{
 		public float distance;
 		public int yDir;
 		public int xDir;
+		public boolean isNullConnector = false;
 		
 		public void updateDistances(){
 			this.distance = node2.component.getPosition().dst(node1.component.getPosition());
@@ -38,20 +39,21 @@ public class NavigableContainer extends Container{
 	}
 	
 	private ArrayList<Node> graph;
-	private Node			focus;
-	private KeyboardEvent 	upKeyDownListener;
-	private KeyboardEvent 	upKeyUpListener;
-	private KeyboardEvent 	downKeyDownListener;
-	private KeyboardEvent 	downKeyUpListener;
-	private KeyboardEvent 	leftKeyDownListener;
-	private KeyboardEvent 	leftKeyUpListener;
-	private KeyboardEvent 	rightKeyDownListener;
-	private KeyboardEvent 	rightKeyUpListener;
-	private KeyboardEvent 	selectKeyUpListener;
+	private Node			nodeFocus;
+	protected KeyboardEvent 	upKeyDownListener;
+	protected KeyboardEvent 	upKeyUpListener;
+	protected KeyboardEvent 	downKeyDownListener;
+	protected KeyboardEvent 	downKeyUpListener;
+	protected KeyboardEvent 	leftKeyDownListener;
+	protected KeyboardEvent 	leftKeyUpListener;
+	protected KeyboardEvent 	rightKeyDownListener;
+	protected KeyboardEvent 	rightKeyUpListener;
+	protected KeyboardEvent 	selectKeyUpListener;
 	private boolean traverseDown;
 	private boolean traverseUp;
 	private boolean traverseLeft;
 	private boolean traverseRight;
+	private boolean disableTraverse;
 	private long lastTraversalTime = 0;
 	private long traversalTime = 250; //Time between movement (miliseconds)
 	
@@ -67,17 +69,7 @@ public class NavigableContainer extends Container{
 			cmp.update(game);
 		}
 		
-		if(traverseDown && shouldTraverse()){
-			System.out.println("HERE");
-			moveFocusDown();
-		}else if(traverseUp && shouldTraverse()){
-			moveFocusUp();			
-		}else if(traverseLeft && shouldTraverse()){
-			moveFocusLeft();			
-		}else if(traverseRight && shouldTraverse()){
-			moveFocusRight();			
-		}
-		
+		doTraverse();
 		
 		validate();
 	}
@@ -91,31 +83,67 @@ public class NavigableContainer extends Container{
 		super.validate();
 	}
 	
-	@Override
-	public void addComponent(Component cmp){
-		super.addComponent(cmp);
-		Node node = new Node();
-		node.component = cmp;
-		graph.add(node);
+	public void doTraverse(){
+		if(!shouldTraverse()) return;
+				
+		if(traverseDown){
+			onTraverseDown();
+		}else if(traverseUp){
+			onTraverseUp();		
+		}else if(traverseLeft){
+			onTraverseLeft();			
+		}else if(traverseRight){
+			onTraverseRight();		
+		}
 	}
 	
-	private boolean shouldTraverse(){
-		return (System.currentTimeMillis() - lastTraversalTime > traversalTime);
+	public boolean shouldTraverse(){
+		return (System.currentTimeMillis() - lastTraversalTime > traversalTime) && !disableTraverse;
+	}
+	
+	public void onTraverseDown(){
+		moveFocusDown();		
+	}
+	
+	public void onTraverseUp(){
+		moveFocusUp();			
+	}
+	
+	public void onTraverseLeft(){
+		moveFocusLeft();		
+	}
+	
+	public void onTraverseRight(){
+		moveFocusRight();			
 	}
 	
 	public void connectComponents(Component cmp1, Component cmp2){
-		Edge edge = new Edge();
+		Edge edge1 = new Edge();
+		Edge edge2 = new Edge();
+
 		Node node1 = findNode(cmp1);
 		Node node2 = findNode(cmp2);
 		
-		if(node1 == null || node2 == null)
-			throw new NullPointerException("Component doesn't exist in graph");
+		if(node1 == null){
+			node1 = new Node();
+			node1.component = cmp1;
+			graph.add(node1);
+		}
 		
-		edge.node1 = node1;
-		edge.node2 = node2;
-		edge.updateDistances();
-		node1.edges.add(edge);
-		node2.edges.add(edge);
+		if(node2 == null){
+			node2 = new Node();
+			node2.component = cmp2;
+			graph.add(node2);
+		}
+		
+		edge1.node1 = node1;
+		edge1.node2 = node2;
+		edge1.updateDistances();
+		node1.edges.add(edge1);
+		edge2.node1 = node2;
+		edge2.node2 = node1;
+		edge2.updateDistances();
+		node2.edges.add(edge2);
 	}
 	
 	public Node findNode(Component cmp){
@@ -146,8 +174,7 @@ public class NavigableContainer extends Container{
 	public void setFocus(Component cmp){
 		super.setFocus(cmp);
 		
-		focus = findNode(cmp);
-		System.out.println("Set focus: " + focus);
+		nodeFocus = findNode(cmp);
 	}
 	
 	public void setFocus(Node node){
@@ -157,7 +184,7 @@ public class NavigableContainer extends Container{
 			super.setFocus(node.component);			
 		}
 		
-		focus = node;
+		nodeFocus = node;
 	}
 	
 	private Node findClosestNode(Node node, int xDir, int yDir){
@@ -168,7 +195,7 @@ public class NavigableContainer extends Container{
 				edge.xDir != xDir ) continue;
 			if(edge.distance < dist){
 				dist = edge.distance;
-				if(edge.node1 == focus){
+				if(edge.node1 == nodeFocus){
 					closest = edge.node2;
 				}else{
 					closest = edge.node1;
@@ -180,58 +207,113 @@ public class NavigableContainer extends Container{
 	}
 	
 	public void moveFocusDown(){
-
-		System.out.println("Focus: " + focus);
-		if(focus == null){
-			System.out.println("Using 0 cmp");
-			if(!components.isEmpty())
-				setFocus(components.get(0));
+		//if(!shouldTraverse()) return;
+		if(nodeFocus == null){
+			if(!graph.isEmpty())
+				setFocus(graph.get(0));
 		}else{
-			Node found = findClosestNode(focus, 0, -1);
+			Node found = findClosestNode(nodeFocus, 0, -1);
 			if(found != null)
 				setFocus(found);
 		}
-		
-		lastTraversalTime = System.currentTimeMillis();
+
+		resetTraversalTime();
 	}
 	
 	public void moveFocusLeft(){
-		if(focus == null){
-			if(!components.isEmpty())
-				setFocus(components.get(0));
+		//if(!shouldTraverse()) return;
+		if(nodeFocus == null){
+			if(!graph.isEmpty())
+				setFocus(graph.get(0));
 		}else{
-			Node found = findClosestNode(focus, -1, 0);
+			Node found = findClosestNode(nodeFocus, -1, 0);
 			if(found != null)
 				setFocus(found);
 		}
-		
-		lastTraversalTime = System.currentTimeMillis();
+
+		resetTraversalTime();
 	}
 	
 	public void moveFocusRight(){
-		if(focus == null){
-			if(!components.isEmpty())
-				setFocus(components.get(0));
+		//if(!shouldTraverse()) return;
+		if(nodeFocus == null){
+			if(!graph.isEmpty())
+				setFocus(graph.get(0));
 		}else{
-			Node found = findClosestNode(focus, 1, 0);
+			Node found = findClosestNode(nodeFocus, 1, 0);
 			if(found != null)
 				setFocus(found);
 		}
-		
-		lastTraversalTime = System.currentTimeMillis();
+
+		resetTraversalTime();
 	}
 	
 	public void moveFocusUp(){
-		if(focus == null){
-			if(!components.isEmpty())
-				setFocus(components.get(0));
+		//if(!shouldTraverse()) return;
+		if(nodeFocus == null){
+			if(!graph.isEmpty())
+				setFocus(graph.get(0));
 		}else{
-			Node found = findClosestNode(focus, 0, 1);
+			Node found = findClosestNode(nodeFocus, 0, 1);
 			if(found != null)
 				setFocus(found);
 		}
 		
+		resetTraversalTime();
+	}
+	
+	public void resetTraversalTime(){
 		lastTraversalTime = System.currentTimeMillis();
+	}
+	
+	public boolean onUpKeyDown(){
+		onTraverseUp();
+		traverseUp = true;
+		return true;		
+	}
+	
+	public boolean onUpKeyUp(){
+		traverseUp = false;
+		return true;		
+	}
+	
+	public boolean onDownKeyDown(){
+		onTraverseDown();
+		traverseDown = true;
+		return true;		
+	}
+	
+	public boolean onDownKeyUp(){
+		traverseDown = false;
+		return true;		
+	}
+	
+	public boolean onLeftKeyDown(){
+		onTraverseLeft();
+		traverseLeft = true;
+		return true;
+	}
+	
+	public boolean onLeftKeyUp(){
+		traverseLeft = false;
+		return true;		
+	}
+	
+	public boolean onRightKeyDown(){
+		onTraverseRight();
+		traverseRight = true;
+		return true;
+	}
+	
+	public boolean onRightKeyUp(){
+		traverseRight = false;
+		return true;
+	}
+	
+	public boolean onSelectKeyUp(){
+		if(getFocus() != null)
+			getFocus().onClick();
+		return true;
 	}
 	
 	public void attachKeyboardListeners(Player player){
@@ -240,78 +322,78 @@ public class NavigableContainer extends Container{
 		upKeyDownListener = inputHandler.addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, player.getUpKey()){
 			@Override
 			public boolean callback(){
-				moveFocusUp();
-				traverseUp = true;
-				return true;
+				return onUpKeyDown();
 			}
 		});
 		
 		upKeyUpListener = inputHandler.addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, player.getUpKey()){
 			@Override
 			public boolean callback(){
-				traverseUp = false;
-				return true;
+				return onUpKeyUp();
 			}
 		});
 		
 		downKeyDownListener = inputHandler.addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, player.getDownKey()){
 			@Override
 			public boolean callback(){
-				moveFocusDown();
-				traverseDown = true;
-				return true;
+				return onDownKeyDown();
 			}
 		});
 		
 		downKeyUpListener = inputHandler.addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, player.getDownKey()){
 			@Override
 			public boolean callback(){
-				traverseDown = false;
-				return true;
+				return onDownKeyUp();
 			}
 		});
 		
 		leftKeyDownListener = inputHandler.addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, player.getLeftKey()){
 			@Override
 			public boolean callback(){
-				moveFocusLeft();
-				traverseLeft = true;
-				return true;
+				return onLeftKeyDown();
 			}
 		});
 		
 		leftKeyUpListener = inputHandler.addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, player.getLeftKey()){
 			@Override
 			public boolean callback(){
-				traverseLeft = false;
-				return true;
+				return onLeftKeyUp();
 			}
 		});
 		
 		rightKeyDownListener = inputHandler.addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, player.getRightKey()){
 			@Override
 			public boolean callback(){
-				moveFocusRight();
-				traverseRight = true;
-				return true;
+				return onRightKeyDown();
 			}
 		});
 		
 		rightKeyUpListener = inputHandler.addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, player.getRightKey()){
 			@Override
 			public boolean callback(){
-				traverseRight = false;
-				return true;
+				return onRightKeyUp();
 			}
 		});
 		
 		selectKeyUpListener = inputHandler.addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, player.getSelectKey()){
 			@Override
 			public boolean callback(){
-				getFocus().onClick();
-				return true;
+				return onSelectKeyUp();
 			}
 		});
+	}
+
+	public void setDisableTraverse(boolean disableTraverse) {
+		this.disableTraverse = disableTraverse;
+	}
+	
+	@Override
+	public void removeComponent(Component cmp){
+		if(getFocus() == cmp){
+			setFocus((Node)null);
+		}
+		graph.remove(findNode(cmp));
+		super.removeComponent(cmp);
 	}
 
 }

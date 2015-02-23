@@ -34,7 +34,7 @@ public class DepthTestState implements State{
 		totem.getBody().setActive(false);
 		game.addEntity(totem, -1);
 		
-		
+		/* TODO: Fix this
 		menu = new Panel(game);
 		menu.setPosition(200, 200);
 		Component cmp = new Component(menu);
@@ -50,7 +50,7 @@ public class DepthTestState implements State{
 		cmp2.setSize(100, 100);
 		menu2.addPanel(cmp2);
 		game.addMenu(menu2, 0);
-		
+		*/
 		timeStart = System.currentTimeMillis();
 	}
 
@@ -69,7 +69,7 @@ public class DepthTestState implements State{
 		if(System.currentTimeMillis() - timeStart > 500){
 			int newDepth = (game.getDepth(totem) == 1) ? -1 : 1;
 			game.setDepth(totem, newDepth);		
-			game.setDepth(menu, newDepth);		
+			//game.setDepth(menu, newDepth);		
 			timeStart = System.currentTimeMillis();
 		}
 	}

@@ -14,16 +14,11 @@ import com.totemdefender.menu.Container;
 import com.totemdefender.menu.Panel;
 
 public class Grid extends Panel {
-	public enum PlacementMode{
-		Mouse,
-		Keyboard
-	}
 	public static final int WIDTH = 6;
 	public static final int HEIGHT = 10; //The build area.
 	
 	private BlockEntity entity; 	//The entity being positioned.
 	private Vector2 index; 			//The current position in the grid.
-	private PlacementMode mode;
 	private Vector2 mousePosition;
 	
 	public Grid(BuildMenu parent){
@@ -130,9 +125,9 @@ public class Grid extends Panel {
 	public void snapEntityToGrid(){
 		if(!hasEntity()) return; 
 		
-		if(mode == PlacementMode.Keyboard){
+		if(getParent().isKeyboardMode()){
 			snapToIndex();
-		}else{
+		}else if(getParent().isMouseMode()){
 			index = getIndexFromPosition(mousePosition);
 			snapToIndex();
 		}
@@ -153,20 +148,20 @@ public class Grid extends Panel {
 	}
 	
 	public Vector2 getIndexFromPosition(Vector2 position){
-		return new Vector2(	(float)Math.floor((position.x - getPosition().x) / TotemDefender.BLOCK_SIZE),
-							(float)Math.floor((position.y - getPosition().y) / TotemDefender.BLOCK_SIZE));
+		Vector2 pos = getWorldPosition();
+		return new Vector2(	(float)Math.floor((position.x - pos.x) / TotemDefender.BLOCK_SIZE),
+							(float)Math.floor((position.y - pos.y) / TotemDefender.BLOCK_SIZE));
 	}
 	
 	@Override
 	public boolean onMouseMove(MouseEvent event){
-		if(getParent().getSpawnedBlock() == null) return false;
+		if(getParent().getSpawnedBlock() == null || !getParent().isMouseMode()) return false;
 		mousePosition = event.mousePosition;
 
-		if(pointIsInBounds(event.mousePosition)){
+		if(pointIsInBounds(getParent().worldToLocal(event.mousePosition))){
 			if(getParent().isMouseMode()){
 				if(getEntity() == null){
 					setEntity(getParent().getSpawnedBlock());
-					setPlacementMode(PlacementMode.Mouse);
 				}
 				snapEntityToGrid();
 			}
@@ -180,7 +175,6 @@ public class Grid extends Panel {
 		if(getParent().isMouseMode()){
 			if(getEntity() == null){
 				setEntity(getParent().getSpawnedBlock());
-				setPlacementMode(PlacementMode.Mouse);
 			}			
 		}
 		super.onMouseEnter(event);
@@ -188,7 +182,7 @@ public class Grid extends Panel {
 	
 	@Override
 	public boolean onMouseUp(MouseEvent event){
-		if(mode == PlacementMode.Mouse && hasEntity()){
+		if(getParent().isMouseMode() && hasEntity()){
 			getParent().addPlacedBlock(getEntity());
 			setEntity(null);
 		}
@@ -199,22 +193,16 @@ public class Grid extends Panel {
 	public void onMouseExit(MouseEvent event){
 		if(getParent().isMouseMode()){
 			setEntity(null);
-			setPlacementMode(null);
 		}
 		super.onMouseExit(event);
 	}
 	
-	public void setPlacementMode(PlacementMode mode){
-		this.mode = mode;
-	}
-	
-	public PlacementMode getPlacementMode(){
-		return mode;
-	}
-
 	@Override
 	public BuildMenu getParent(){
 		return (BuildMenu)super.getParent();
 	}
-
+	
+	public void reset(){
+		setEntity(null);
+	}
 }
