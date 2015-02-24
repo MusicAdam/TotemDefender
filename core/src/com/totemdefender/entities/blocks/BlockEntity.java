@@ -39,7 +39,7 @@ public abstract class BlockEntity extends Entity{
 		Totem
 	}
 	
-	protected float cost;
+	protected float cost=0;
 	protected float xScale, yScale; //This is the scale of the block in multiples of TotemDefender.BlockSize in each direction
 	private Fixture fixture;
 	private boolean rotated = false;

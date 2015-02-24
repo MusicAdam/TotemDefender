@@ -8,6 +8,7 @@ public class SquareBlockEntity extends BlockEntity {
 	
 	public SquareBlockEntity(Player owner){
 		super(owner, Material.Stone, Shape.Square);
+		this.setCost(100);
 	}
 	
 	@Override
