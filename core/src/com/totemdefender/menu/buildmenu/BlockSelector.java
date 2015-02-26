@@ -229,37 +229,26 @@ public class BlockSelector extends Container{
 		}else if(shape == Shape.Rectangle){
 			blockEntity = new RectangleBlockEntity(owner);
 		}
-		
+
 		if(blockEntity.getCost()<=blockEntity.getOwner().getBudget()){
-		
-		if(blockEntity != null){
+			if(blockEntity != null){
+				blockEntity.spawn(game);
+				game.addEntity(blockEntity);
+				blockEntity.getBody().setActive(false);
+			}
 			
-		
-			blockEntity.spawn(game);
-			game.addEntity(blockEntity);
-			blockEntity.getBody().setActive(false);
+			getParent().setSpawnedBlock(blockEntity);
+			blockEntity.getOwner().setBudget(blockEntity.getOwner().getBudget()-blockEntity.getCost());
 			
-			
-			
-		}
-		
-		
-		
-		getParent().setSpawnedBlock(blockEntity);
-		blockEntity.getOwner().setBudget(blockEntity.getOwner().getBudget()-blockEntity.getCost());
-		System.out.println("Player "+blockEntity.getOwner().getID() + ": "+ blockEntity.getOwner().getBudget());
-		
-		return blockEntity;
-		}//end of if statement
-		else
+			return blockEntity;
+		}else{
 			return null;
+		}
 		
 	}
 	
 	public boolean isMouseMode(){
 		return mouseSpawned != null;
-		
-	
 	}
 	
 	@Override

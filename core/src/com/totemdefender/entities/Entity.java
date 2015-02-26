@@ -52,9 +52,9 @@ public abstract class Entity {
 			sprite.setPosition(0, 0);
 			sprite.setRotation((float)Math.toDegrees(body.getAngle()));
 			sprite.setPosition(bodyX - spriteHW, bodyY - spriteHH);
-		}
-		
+		}		
 	}
+	
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer){
 		if(sprite != null){
 			batch.begin();

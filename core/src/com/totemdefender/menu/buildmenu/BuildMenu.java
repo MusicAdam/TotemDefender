@@ -148,6 +148,7 @@ public class BuildMenu extends NavigableContainer {
 	
 	public void destroySpawnedBlock(TotemDefender game){
 		if(getSpawnedBlock() == null) return;
+		getSpawnedBlock().getOwner().setBudget(getSpawnedBlock().getOwner().getBudget() + getSpawnedBlock().getCost()); //Reimburse player if they didn't use the block
 		game.destroyEntity(getSpawnedBlock());
 		setSpawnedBlock(null);
 		setPlacementMode(null);

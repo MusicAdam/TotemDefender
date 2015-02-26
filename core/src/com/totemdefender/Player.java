@@ -46,5 +46,6 @@ public class Player {
 	
 	public void setBudget(float budget){
 		this.budget=budget;
+		System.out.println("Player "+getID() + ": "+ getBudget());
 	}
 }
