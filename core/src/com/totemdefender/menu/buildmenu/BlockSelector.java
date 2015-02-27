@@ -155,7 +155,6 @@ public class BlockSelector extends Container{
 		DisplayPlayerBudget=new Label(this);
 		DisplayPlayerBudget.setFont("hud_medium.ttf");
 		DisplayPlayerBudget.getFont().draw(batch, "Player "+this.owner.getID()+": "+this.owner.getBudget(), -150+getWidth(), 873-getHeight());
-		System.out.println(getHeight());
 		}
 		
 		if(this.owner.getID()==2){
