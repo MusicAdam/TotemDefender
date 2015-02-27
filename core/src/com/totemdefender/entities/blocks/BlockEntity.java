@@ -39,7 +39,7 @@ public abstract class BlockEntity extends Entity{
 		Totem
 	}
 	
-	protected float cost=0;
+	protected int cost=0;
 	protected float xScale, yScale; //This is the scale of the block in multiples of TotemDefender.BlockSize in each direction
 	private Fixture fixture;
 	private boolean rotated = false;
@@ -151,7 +151,7 @@ public abstract class BlockEntity extends Entity{
 		return fixture.getDensity();
 	}
 	
-	public void setCost(float amount){
+	public void setCost(int amount){
 		this.cost = amount;
 	}
 	
@@ -168,7 +168,7 @@ public abstract class BlockEntity extends Entity{
 		}
 	}
 	
-	public float getCost(){ return cost; }
+	public int getCost(){ return cost; }
 	public float getXScale(){ return xScale; }
 	public float getYScale(){ return yScale; }
 	public float getWidth(){ 

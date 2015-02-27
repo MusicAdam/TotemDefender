@@ -48,6 +48,7 @@ public class BlockSelector extends Container{
 	private Vector2 mouseLocation = null;
 	private MouseEvent mouseMoveListener;
 	private float alpha;
+	private Label DisplayPlayerBudget;
 	
 	public BlockSelector(BuildMenu parent, Player owner, BlockEntity.Shape shape){
 		super(parent);
@@ -79,7 +80,12 @@ public class BlockSelector extends Container{
 		//Cost label
 		cost = new Label(this);
 		cost.setFont("hud_medium.ttf");
+		if(shape==Shape.Square){
 		cost.setText("$100", true);
+		}
+		else{
+			cost.setText("$200",true);
+		}
 		cost.setTextColor(new Color(0.011765f, 0.541176f, 0.239215f, 1));
 		cost.setPosition(getWidth()/2 - cost.getWidth()/2, 20 - barH/2);
 		addComponent(cost);
@@ -144,6 +150,20 @@ public class BlockSelector extends Container{
 		batch.draw(block, x + centerX - blockWidth/2, y + getHeight() - blockHeight, blockWidth, blockHeight);
 		batch.draw(barActive, x + centerX - barW/2, y + 15 - barH/2, barW, barH);
 		batch.draw(shadow, x + centerX - shadowW/2, y, shadowW, shadowH);
+		
+		if(this.owner.getID()==1){
+		DisplayPlayerBudget=new Label(this);
+		DisplayPlayerBudget.setFont("hud_medium.ttf");
+		DisplayPlayerBudget.getFont().draw(batch, "Player "+this.owner.getID()+": "+this.owner.getBudget(), -150+getWidth(), 873-getHeight());
+		System.out.println(getHeight());
+		}
+		
+		if(this.owner.getID()==2){
+			DisplayPlayerBudget=new Label(this);
+			DisplayPlayerBudget.setFont("hud_medium.ttf");
+			DisplayPlayerBudget.getFont().draw(batch, "Player "+this.owner.getID()+": "+this.owner.getBudget(), 200-getWidth(), 873-getHeight());
+			}
+		
 		batch.end();
 		TotemDefender.DisableBlend();
 		
@@ -239,7 +259,6 @@ public class BlockSelector extends Container{
 			
 			getParent().setSpawnedBlock(blockEntity);
 			blockEntity.getOwner().setBudget(blockEntity.getOwner().getBudget()-blockEntity.getCost());
-			
 			return blockEntity;
 		}else{
 			return null;

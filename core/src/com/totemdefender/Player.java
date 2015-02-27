@@ -5,7 +5,7 @@ import com.totemdefender.input.InputHandler;
 public class Player {
 	private int id; //1 or 2
 	private String nickname; //User entered nickname
-	private float budget=1000; //The amount of money the player has to spend on blocks
+	private int budget=1000; //The amount of money the player has to spend on blocks
 	
 	public Player(int id){
 		this.id = id;
@@ -40,12 +40,11 @@ public class Player {
 		return (id == 1) ? InputHandler.PL_1_ROTATE : InputHandler.PL_2_ROTATE;
 	}
 	
-	public float getBudget(){
+	public int getBudget(){
 		return budget;
 	}
 	
-	public void setBudget(float budget){
+	public void setBudget(int budget){
 		this.budget=budget;
-		System.out.println("Player "+getID() + ": "+ getBudget());
 	}
 }
