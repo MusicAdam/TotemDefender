@@ -70,8 +70,7 @@ public class ReadyButton extends Button{
 	@Override
 	public boolean onClick(){
 		if(totemSpawned) return false;
-		if(getParent().getGrid().hasEntity() && !getParent().isMouseMode()) return false;
-		getParent().setPlacementMode(BuildMenu.PlacementMode.Keyboard);
+		if(getParent().getGrid().hasEntity()) return false;
 		spawnTotem();
 		getParent().getGrid().setEntity(getParent().getSpawnedBlock());
 			
@@ -79,13 +78,13 @@ public class ReadyButton extends Button{
 	}
 	
 	@Override
-	public boolean onMouseDown(MouseEvent event){
+	public boolean onKeyboardSelect(){
 		if(totemSpawned) return false;
-		if(!getParent().isKeyboardMode()){
-			spawnTotem();
-			getParent().setPlacementMode(BuildMenu.PlacementMode.Mouse);
-		}
-		return super.onMouseDown(event);
+		if(getParent().getGrid().hasEntity()) return false;
+		spawnTotem();
+		getParent().getGrid().setEntity(getParent().getSpawnedBlock());
+			
+		return true;		
 	}
 
 	@Override

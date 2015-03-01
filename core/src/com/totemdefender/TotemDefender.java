@@ -345,7 +345,8 @@ public class TotemDefender extends ApplicationAdapter {
 		assetManager.load("ui/bar_tall_hover.png", Texture.class, textureParam);		
 		assetManager.load("ui/shadow.png", Texture.class, textureParam);	
 		assetManager.load("ui/arrow.png", Texture.class, textureParam);
-		assetManager.load("ui/arrow_hover.png", Texture.class, textureParam);					
+		assetManager.load("ui/arrow_hover.png", Texture.class, textureParam);	
+		assetManager.load("ui/invalid.png", Texture.class, textureParam);					
 		//Fonts
 		assetManager.load("default.ttf", BitmapFont.class, defaultFont);
 		assetManager.load("hud_small.ttf", BitmapFont.class, hud_small);

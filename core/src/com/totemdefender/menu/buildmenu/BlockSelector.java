@@ -48,7 +48,7 @@ public class BlockSelector extends Container{
 	private Vector2 mouseLocation = null;
 	private MouseEvent mouseMoveListener;
 	private float alpha;
-	private Label DisplayPlayerBudget;
+	private Label playerBudget;
 	
 	public BlockSelector(BuildMenu parent, Player owner, BlockEntity.Shape shape){
 		super(parent);
@@ -81,14 +81,14 @@ public class BlockSelector extends Container{
 		cost = new Label(this);
 		cost.setFont("hud_medium.ttf");
 		if(shape==Shape.Square){
-		cost.setText("$100", true);
+			cost.setText("$100", true);
 		}
 		else{
 			cost.setText("$200",true);
 		}
 		cost.setTextColor(new Color(0.011765f, 0.541176f, 0.239215f, 1));
 		cost.setPosition(getWidth()/2 - cost.getWidth()/2, 20 - barH/2);
-		addComponent(cost);
+		cost.create(game);
 		
 		float yPos = getHeight() - blockHeight/2;
 		//Arrow button left
@@ -152,16 +152,16 @@ public class BlockSelector extends Container{
 		batch.draw(shadow, x + centerX - shadowW/2, y, shadowW, shadowH);
 		
 		if(this.owner.getID()==1){
-		DisplayPlayerBudget=new Label(this);
-		DisplayPlayerBudget.setFont("hud_medium.ttf");
-		DisplayPlayerBudget.getFont().draw(batch, "Player "+this.owner.getID()+": "+this.owner.getBudget(), -150+getWidth(), 873-getHeight());
+			playerBudget=new Label(this);
+			playerBudget.setFont("hud_medium.ttf");
+			playerBudget.getFont().draw(batch, "Player "+this.owner.getID()+": "+this.owner.getBudget(), -150+getWidth(), 873-getHeight());
 		}
 		
 		if(this.owner.getID()==2){
-			DisplayPlayerBudget=new Label(this);
-			DisplayPlayerBudget.setFont("hud_medium.ttf");
-			DisplayPlayerBudget.getFont().draw(batch, "Player "+this.owner.getID()+": "+this.owner.getBudget(), 200-getWidth(), 873-getHeight());
-			}
+			playerBudget=new Label(this);
+			playerBudget.setFont("hud_medium.ttf");
+			playerBudget.getFont().draw(batch, "Player "+this.owner.getID()+": "+this.owner.getBudget(), 200-getWidth(), 873-getHeight());
+		}
 		
 		batch.end();
 		TotemDefender.DisableBlend();
@@ -203,9 +203,10 @@ public class BlockSelector extends Container{
 		super.onMouseExit(event);
 	}
 	
+	/*
 	@Override
 	public boolean onMouseDown(MouseEvent event){
-		if(!arrowLeft.isMouseOver() && !arrowRight.isMouseOver() && !getParent().isKeyboardMode()){
+		if(!arrowLeft.isMouseOver() && !arrowRight.isMouseOver() && !getParent().isKeyboardMode()){ 
 			mouseSpawned = spawnBlock(TotemDefender.Get());
 			getParent().setPlacementMode(BuildMenu.PlacementMode.Mouse);
 		}
@@ -220,22 +221,28 @@ public class BlockSelector extends Container{
 			mouseSpawned = null;
 		}
 		return false;
+	}*/
+	
+	@Override
+	public boolean onKeyboardSelect(){
+		if(getParent().getGrid().hasEntity()) return false;
+		
+		getParent().setSpawnedBlock(spawnBlock(TotemDefender.Get()));
+		return true;
 	}
 	
 	@Override
 	public boolean onClick(){
-		if(getParent().getGrid().hasEntity() || getParent().isMouseMode()) return false;
-		if(mouseSpawned != null) return false;
+		if(getParent().getGrid().hasEntity()) return false;
 		
 		if(arrowLeft.isMouseOver()){
 			return arrowLeft.onClick();
 		}else if(arrowRight.isMouseOver()){
 			return arrowRight.onClick();
 		}
+		
 
-		getParent().setPlacementMode(BuildMenu.PlacementMode.Keyboard);
-		getParent().setSpawnedBlock(spawnBlock(TotemDefender.Get()));
-		getParent().getGrid().setEntity(getParent().getSpawnedBlock());
+		getParent().setSpawnedBlock(spawnBlock(TotemDefender.Get()));		
 		return true;
 	}
 	

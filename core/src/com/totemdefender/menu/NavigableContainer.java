@@ -312,7 +312,7 @@ public class NavigableContainer extends Container{
 	
 	public boolean onSelectKeyUp(){
 		if(getFocus() != null)
-			getFocus().onClick();
+			getFocus().onKeyboardSelect();
 		return true;
 	}
 	

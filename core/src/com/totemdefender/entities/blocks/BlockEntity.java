@@ -120,7 +120,7 @@ public abstract class BlockEntity extends Entity{
 		setBody(game.getWorld().createBody(def));
 		
 		PolygonShape shape = new PolygonShape();
-		shape.setAsBox((xScale * TotemDefender.BLOCK_SIZE * TotemDefender.WORLD_TO_BOX)/2, (yScale * TotemDefender.BLOCK_SIZE * TotemDefender.WORLD_TO_BOX)/2);
+		shape.setAsBox((xScale * TotemDefender.BLOCK_SIZE * TotemDefender.WORLD_TO_BOX)/2 - 1 * TotemDefender.WORLD_TO_BOX, (yScale * TotemDefender.BLOCK_SIZE * TotemDefender.WORLD_TO_BOX)/2 - 1 * TotemDefender.WORLD_TO_BOX);
 
 		short projectileMask = (getOwner().getID() == 1) ? Entity.PLAYER2_PROJECTILE : Entity.PLAYER1_PROJECTILE;
 		FixtureDef fixtureDef = new FixtureDef();

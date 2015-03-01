@@ -66,7 +66,8 @@ public abstract class Component {
 	public boolean onMouseMove(MouseEvent event){ return false; }
 	public boolean onMouseDown(MouseEvent event){ return false; }
 	public boolean onMouseUp(MouseEvent event){ return false; }
-	public boolean onClick(){return false;} //Called when selected with keyboard or mouse up falls on the component
+	public boolean onClick(){return false;} //Called when mouseup falls on the component
+	public boolean onKeyboardSelect(){ return false; } //Called when selected with the keyboard
 	public void onGainFocus(){}
 	public void onLoseFocus(){}
 	

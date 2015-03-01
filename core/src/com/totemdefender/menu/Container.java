@@ -16,6 +16,8 @@ import com.totemdefender.input.InputHandler;
 import com.totemdefender.input.MouseEvent;
 
 public class Container extends Component{
+	public static boolean DEBUG_HIGHLIGHT_FOCUS = false;
+	
 	protected ArrayList<Component> components; 
 	private Component focus;
 	private MouseEvent mouseUpListener;
@@ -81,6 +83,13 @@ public class Container extends Component{
 		shapeRenderer.end();
 		
 		super.render(batch, shapeRenderer);
+		
+		if(focus != null && DEBUG_HIGHLIGHT_FOCUS){
+			shapeRenderer.begin(ShapeType.Line);
+			shapeRenderer.setColor(0, 0, 1, 1);
+			shapeRenderer.rect(focus.getWorldPosition().x, focus.getWorldPosition().y, focus.getWidth(), focus.getHeight());
+			shapeRenderer.end();
+		}
 	}
 	
 	@Override
@@ -92,10 +101,6 @@ public class Container extends Component{
 					return cmp.onMouseDown(event);
 				}
 			}
-		}else{
-			if(getFocus() != null){
-				setFocus(null);
-			}
 		}
 		return false;
 	}
@@ -103,16 +108,16 @@ public class Container extends Component{
 	@Override
 	public boolean onMouseUp(MouseEvent event){
 		if(focus != null){
-			boolean handled = false;
+			boolean handled = focus.onMouseUp(event);
+
 			if(focus.pointIsInBounds(worldToLocal(event.mousePosition))){
-				handled = handled || focus.onClick() || focus.onMouseUp(event);
+				handled = handled || focus.onClick();
 			}else{
 				for(Component cmp : components){
 					if(cmp.pointIsInBounds(worldToLocal(event.mousePosition))){
 						cmp.onMouseUp(event);
 					}
 				}
-				setFocus(null);
 			}
 			return handled;
 		}

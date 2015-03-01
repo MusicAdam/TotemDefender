@@ -12,12 +12,7 @@ import com.totemdefender.input.MouseEvent;
 import com.totemdefender.menu.NavigableContainer;
 import com.badlogic.gdx.math.Vector2;
 
-public class BuildMenu extends NavigableContainer {
-	public enum PlacementMode{
-		Mouse,
-		Keyboard
-	}
-	
+public class BuildMenu extends NavigableContainer {	
 	private Player owner;
 	private Level level;
 	
@@ -27,7 +22,6 @@ public class BuildMenu extends NavigableContainer {
 	private Grid grid;
 	private ReadyButton readyButton;
 	private Vector2 buttonPosition;
-	private PlacementMode mode;
 	private KeyboardEvent rotateKeyUpListener;
 	private float buttonPadding = 20;
 	private float fade;
@@ -80,11 +74,7 @@ public class BuildMenu extends NavigableContainer {
 	}
 	
 	@Override
-	public void update(TotemDefender game){
-		if(isMouseMode() && getSpawnedBlock() != null && !grid.hasEntity() || (readyButton.isTotemSpawned() && isMouseMode() && !grid.hasEntity())){
-			getSpawnedBlock().setPosition(squareSelector.getMouseLocation().x, squareSelector.getMouseLocation().y);
-		}
-		
+	public void update(TotemDefender game){		
 		if(readyButton.isTotemSpawned() && fade > 0){
 			fade -= .01f;
 			if(fade < 0)
@@ -102,24 +92,27 @@ public class BuildMenu extends NavigableContainer {
 		super.update(game);
 	}
 	
-	@Override
-	public boolean onMouseUp(MouseEvent event){
-		if(isMouseMode() && getSpawnedBlock() != null && !grid.hasEntity() && !readyButton.isTotemSpawned()){
-			destroySpawnedBlock(TotemDefender.Get());
-		}
-		
-		return super.onMouseUp(event);
-	}
-	
 	public BlockEntity getSpawnedBlock(){
 		return spawnedBlock;
 	}
 
 	public void setSpawnedBlock(BlockEntity blockEntity) {
 		spawnedBlock = blockEntity;
+		
+		if(blockEntity == null){
+			grid.reset();
+			squareSelector.reset();
+			rectangleSelector.reset();
+		}else{
+			grid.centerIndex();
+			grid.setEntity(spawnedBlock);
+			setFocus(grid);
+		}
 	}
 	
 	public void addPlacedBlock(BlockEntity block){
+		if(block == null) return;
+		
 		if(block instanceof TotemEntity){
 			level.addTotem((TotemEntity)block);
 			isDone = true;
@@ -127,11 +120,12 @@ public class BuildMenu extends NavigableContainer {
 			level.addPlacedBlock(block);
 		}
 		
-		if(block == getSpawnedBlock()){
-			setSpawnedBlock(null);
-			setPlacementMode(null);
-		}
-		
+		setSpawnedBlock(null);	
+	}
+	
+	public void removePlacedBlock(BlockEntity block){
+		if(block instanceof TotemEntity) return;
+		level.removePlacedBlock(block);
 	}
 	
 	public BlockSelector getSquareBlockSelector(){
@@ -146,12 +140,14 @@ public class BuildMenu extends NavigableContainer {
 		return buttonPosition;
 	}
 	
-	public void destroySpawnedBlock(TotemDefender game){
-		if(getSpawnedBlock() == null) return;
-		getSpawnedBlock().getOwner().setBudget(getSpawnedBlock().getOwner().getBudget() + getSpawnedBlock().getCost()); //Reimburse player if they didn't use the block
-		game.destroyEntity(getSpawnedBlock());
-		setSpawnedBlock(null);
-		setPlacementMode(null);
+	public void destroyBlock(TotemDefender game, BlockEntity block){
+		if(block instanceof TotemEntity) return;
+		block.getOwner().setBudget(block.getOwner().getBudget() + block.getCost()); //Reimburse player if they didn't use the block
+		
+		if(block == getSpawnedBlock())
+			setSpawnedBlock(null);
+		level.removePlacedBlock(block);
+		game.destroyEntity(block);
 	}
 
 	public void setButtonPosition(Vector2 buttonPosition) {
@@ -163,34 +159,11 @@ public class BuildMenu extends NavigableContainer {
 		setButtonPosition(new Vector2(x, y));
 	}
 	
-	public void setPlacementMode(PlacementMode mode){
-		this.mode = mode;
-		
-		if(mode == null){
-			grid.reset();
-			squareSelector.reset();
-			rectangleSelector.reset();
-		}
-	}
-	
-	public PlacementMode getPlacementMode(){
-		return mode;
-	}
-	
-	public boolean isMouseMode(){
-		return  mode == PlacementMode.Mouse;
-	}
-	
-	public boolean isKeyboardMode(){
-		return  mode == PlacementMode.Keyboard;
-	}
-	
 	@Override
 	public boolean onSelectKeyUp(){
-		if(isKeyboardMode() && grid.hasEntity()){
+		if(grid.hasEntity()){
 			addPlacedBlock(getSpawnedBlock());
 			setSpawnedBlock(null);
-			setPlacementMode(null);
 		}else{
 			return super.onSelectKeyUp();
 		}
@@ -199,7 +172,7 @@ public class BuildMenu extends NavigableContainer {
 	
 	@Override
 	public void onTraverseDown(){
-		if(isKeyboardMode() && grid.hasEntity()){
+		if(grid.hasEntity()){
 			grid.shiftIndexDown();
 			resetTraversalTime();
 		}else{
@@ -209,7 +182,7 @@ public class BuildMenu extends NavigableContainer {
 	
 	@Override
 	public void onTraverseUp(){
-		if(isKeyboardMode() && grid.hasEntity()){
+		if(grid.hasEntity()){
 			grid.shiftIndexUp();
 			resetTraversalTime();
 		}else{
@@ -219,7 +192,7 @@ public class BuildMenu extends NavigableContainer {
 	
 	@Override
 	public void onTraverseLeft(){
-		if(isKeyboardMode() && grid.hasEntity()){
+		if(grid.hasEntity()){
 			grid.shiftIndexLeft();
 			resetTraversalTime();
 		}else{
@@ -229,7 +202,7 @@ public class BuildMenu extends NavigableContainer {
 	
 	@Override
 	public void onTraverseRight(){
-		if(isKeyboardMode() && grid.hasEntity()){
+		if(grid.hasEntity()){
 			grid.shiftIndexRight();
 			resetTraversalTime();
 		}else{
@@ -238,9 +211,8 @@ public class BuildMenu extends NavigableContainer {
 	}
 	
 	public boolean doRotate(){
-		if(getSpawnedBlock() != null)
-			getSpawnedBlock().rotate();
 		if(grid.hasEntity())
+			grid.getEntity().rotate();
 			grid.snapEntityToGrid();
 		return true;
 	}
@@ -260,4 +232,6 @@ public class BuildMenu extends NavigableContainer {
 	public boolean isDone(){
 		return isDone;
 	}
+	
+	public Level getLevel(){ return level; }
 }

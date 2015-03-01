@@ -85,7 +85,13 @@ public class Level {
 	}
 	
 	public void addPlacedBlock(BlockEntity ent){
-		placedBlocks.add(ent);
+		if(!placedBlocks.contains(ent)){
+			placedBlocks.add(ent);
+		}
+	}
+	
+	public void removePlacedBlock(BlockEntity ent){
+		placedBlocks.remove(ent);
 	}
 	
 	public ArrayList<BlockEntity> getPlacedBlocks(){
