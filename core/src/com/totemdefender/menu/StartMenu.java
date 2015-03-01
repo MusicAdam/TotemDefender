@@ -6,32 +6,22 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.totemdefender.TotemDefender;
 
-public class StartMenu extends Panel {
+public class StartMenu extends NavigableContainer {
+	public enum PlacementMode{
+		Mouse,
+		Keyboard
+	}
 	
-	private Button start;
-	private Button leaderboard;
-	private Button option;
-	private Button instruction;
+	Button ready;
 	
 	public StartMenu(TotemDefender game){		
 		super(null);
-		/*
-		Vector2 buttonSize = new Vector2(new Vector2((TotemDefender.V_WIDTH/3),TotemDefender.V_HEIGHT/6));
 		
-		start = new Button(this, "Start Game", buttonSize, 
-				new Vector2(buttonSize.x, buttonSize.y * 4), Color.GREEN);
-		leaderboard = new Button(this, "Leaderboard", buttonSize, 
-				new Vector2(buttonSize.x, buttonSize.y * 3), Color.YELLOW);
-		option = new Button(this, "Option", buttonSize, 
-				new Vector2(buttonSize.x, buttonSize.y * 2), Color.RED);
-		instruction = new Button(this, "Instruction", buttonSize, 
-				new Vector2(buttonSize.x ,buttonSize.y), Color.CYAN);
+		Vector2 buttonSize = new Vector2((TotemDefender.V_WIDTH/4),TotemDefender.V_HEIGHT/7);
+		float buttonArea = TotemDefender.V_WIDTH/2 - buttonSize.x/2; //width position of where the button are position
 		
-		this.addPanel(start);
-		this.addPanel(leaderboard);
-		this.addPanel(option);
-		this.addPanel(instruction);
-		*/
+		ready = new Button(this, "READY", buttonSize, new Vector2(buttonArea, 0), Color.GREEN);
+		this.addComponent(ready);
 	}
 
 }

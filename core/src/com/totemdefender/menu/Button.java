@@ -20,6 +20,7 @@ public class Button extends Label {
 		setSize(newSize); 
 		setPosition(newPosition);
 		setColor(newColor);
+		setHighlightColor(newColor.cpy().add(.5f, .5f, .5f, 1));
 	}
 	
 	public Button(Container parent){

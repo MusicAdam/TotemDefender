@@ -14,6 +14,7 @@ import com.totemdefender.menu.Container;
 import com.totemdefender.menu.Panel;
 import com.totemdefender.states.BuildState;
 import com.totemdefender.states.DepthTestState;
+import com.totemdefender.states.MainMenuState;
 import com.totemdefender.states.MenuTestState;
 import com.totemdefender.states.ResolutionTestState;
 import com.totemdefender.states.StateManager;
@@ -161,7 +162,7 @@ public class TotemDefender extends ApplicationAdapter {
 
 		//Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode()); //Default to fullscreen desktop mode
 		////		DEBUG STUFF	 /////	 
-		stateManager.attachState(new BuildState());
+		stateManager.attachState(new MainMenuState());
 		//stateManager.attachState(new ResolutionTestState());
 		//stateManager.attachState(new MenuTestState());
 		//Add an exit function

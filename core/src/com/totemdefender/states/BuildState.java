@@ -25,11 +25,7 @@ public class BuildState implements State {
 		return true;
 	}
 	@Override
-	public void onEnter(final TotemDefender game) {
-		/** TODO: Move to pregame menu */
-		game.setPlayer1(new Player(1));
-		game.setPlayer2(new Player(2));
-		
+	public void onEnter(final TotemDefender game) {		
 		level = new Level(game);
 		
 		float menuPadding = 10; //Distance from the size of the screen to the menu
