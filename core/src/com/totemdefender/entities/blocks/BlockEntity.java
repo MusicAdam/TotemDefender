@@ -10,13 +10,16 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.totemdefender.CollisionListener;
 import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.entities.Entity;
+import com.totemdefender.entities.GroundEntity;
 
 public abstract class BlockEntity extends Entity{
 	public static final int RECTANGLE_XSCALE 	= 2;
@@ -46,6 +49,7 @@ public abstract class BlockEntity extends Entity{
 	private boolean rotatable = true;
 	private Material material;
 	private Shape	shape;
+	private boolean shouldDelete=false;
 	
 	public BlockEntity(Player owner, Material material, Shape shape){
 		super(owner);
@@ -132,13 +136,40 @@ public abstract class BlockEntity extends Entity{
 		fixtureDef.filter.maskBits = (short) (Entity.GROUND | Entity.PEDESTAL | projectileMask | Entity.BLOCK);
 
 		// Create our fixture and attach it to the body
-		fixture = getBody().createFixture(fixtureDef);
+		final BlockEntity thisRef=this;
+		final TotemDefender gameRef=game;
+		
+	
+		getBody().createFixture(fixtureDef).setUserData(new CollisionListener(){
+			@Override
+			public void beginContact(Fixture other, Contact contact) {
+				if(other.getBody().getUserData() instanceof GroundEntity){
+					thisRef.shouldDelete=true;
+					
+					
+				}
+			}
+
+			@Override
+			public void endContact(Fixture other, Contact contact) {
+				
+				thisRef.Delete(gameRef);
+			}
+		});
 
 		shape.dispose();	
 		
 		isSpawned = true;
 	}
 	
+	public void Delete(TotemDefender game){
+		if(shouldDelete==true){
+		game.destroyEntity(this);
+		this.getBody().setAwake(false);
+		
+		}
+		}
+		
 	public void setDensity(float density){
 		if(fixture == null) return;
 		
