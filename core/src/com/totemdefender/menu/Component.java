@@ -1,6 +1,9 @@
 package com.totemdefender.menu;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -8,14 +11,26 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.input.MouseEvent;
-
-public abstract class Component {
+	
+public class Component {
 	protected Rectangle rectangle; //Mathematical representation of the component
 	protected boolean mouseOver;
 	private Container parent;
 	private boolean hasFocus;
+	public static final Color DEFAULT_HIGHTLIGHT = new Color(.5f, .5f, .5f, 1);
 	
-	public Component(Container parent){
+	protected Vector2 size, position;
+	protected Sprite backgroundSprite;
+	protected Color color;
+	protected Menu parent; //Parent menu
+	protected boolean selectable; //Determines whether a component in a menu will receive "onSelect" events and can be traversed/hovered with mouse
+	private Color highlightColor;
+	private boolean highlighted = false;
+	protected Texture tex;
+
+	public Component(Menu parent){
+		position = new Vector2();
+		size = new Vector2();
 		this.parent = parent;
 		rectangle = new Rectangle();
 		if(parent != null)
@@ -38,6 +53,21 @@ public abstract class Component {
 			shapeRenderer.rect(getPosition().x, getPosition().y, getSize().x, getSize().y);
 			shapeRenderer.end();
 		}
+		Color effectiveHighlight = (isHighlighted()) ? highlightColor : Color.BLACK;
+		
+		if(backgroundSprite != null)
+			batch.begin();
+				tex.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
+
+			batch.end();
+		if(color != null){
+			shapeRenderer.begin(ShapeType.Filled);
+			shapeRenderer.setColor(color.cpy().add(effectiveHighlight));
+			shapeRenderer.rect(position.x, position.y, size.x, size.y);
+			shapeRenderer.end();
+		}
+
+>>>>>>> 1011e7cac35d1579a59b02044f0e19451d1df9d3
 		
 	}
 	

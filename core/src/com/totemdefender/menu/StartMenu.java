@@ -1,17 +1,17 @@
 package com.totemdefender.menu;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.totemdefender.TotemDefender;
+import com.totemdefender.input.KeyboardEvent;
 
 public class StartMenu extends NavigableContainer {
-	public enum PlacementMode{
-		Mouse,
-		Keyboard
-	}
-	
+
 	Button ready;
 	
 	public StartMenu(TotemDefender game){		
@@ -22,6 +22,6 @@ public class StartMenu extends NavigableContainer {
 		
 		ready = new Button(this, "READY", buttonSize, new Vector2(buttonArea, 0), Color.GREEN);
 		this.addComponent(ready);
-	}
 
+	}
 }
