@@ -28,7 +28,6 @@ public class BattleState implements State {
 	private KeyboardEvent pl2DownKeyDownListener;
 	private KeyboardEvent pl2DownKeyUpListener;
 	private Level level;
-	private HUD hud;
 	private boolean spaceIsDown = false;
 	private Player turn; //the player whose turn it is
 	private boolean p1UpKeyDown = false;
@@ -48,10 +47,7 @@ public class BattleState implements State {
 
 	@Override
 	public void onEnter(TotemDefender game) {
-		hud = new HUD(game, this);
-		game.addMenu(hud);
-
-		game.getStateManager().attachState(new PostGameState(hud));
+		game.getStateManager().attachState(new PostGameState(level.getHUD()));
 		
 		for(BlockEntity ent : level.getPlacedBlocks()){
 			ent.getBody().setActive(true);
@@ -62,63 +58,63 @@ public class BattleState implements State {
 		
 		final BattleState thisRef = this;
 		//Add onSpaceDown listener
-		spaceDownListener = game.getInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, Input.Keys.SPACE){
+		spaceDownListener = game.getGameInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, Input.Keys.SPACE){
 			@Override
 			public boolean callback(){
 				return thisRef.onSpaceDown();
 			}
 		});	
-		spaceUpListener = game.getInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, Input.Keys.SPACE){
+		spaceUpListener = game.getGameInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, Input.Keys.SPACE){
 			@Override
 			public boolean callback(){
 				return thisRef.onSpaceUp();
 			}
 		});		
-		pl1UpKeyDownListener = game.getInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, InputHandler.PL_1_U){
+		pl1UpKeyDownListener = game.getGameInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, InputHandler.PL_1_U){
 			@Override
 			public boolean callback(){
 				return thisRef.p1UpKeyDown = true; 
 			}
 		});		
-		pl1UpKeyUpListener = game.getInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, InputHandler.PL_1_U){
+		pl1UpKeyUpListener = game.getGameInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, InputHandler.PL_1_U){
 			@Override
 			public boolean callback(){
 				thisRef.p1UpKeyDown = false; 
 				return true;
 			}
 		});		
-		pl1DownKeyDownListener = game.getInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, InputHandler.PL_1_D){
+		pl1DownKeyDownListener = game.getGameInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, InputHandler.PL_1_D){
 			@Override
 			public boolean callback(){
 				return thisRef.p1DownKeyDown = true; 
 			}
 		});		
-		pl1DownKeyUpListener = game.getInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, InputHandler.PL_1_D){
+		pl1DownKeyUpListener = game.getGameInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, InputHandler.PL_1_D){
 			@Override
 			public boolean callback(){
 				thisRef.p1DownKeyDown = false;
 				return true;
 			}
 		});		
-		pl2UpKeyDownListener = game.getInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, InputHandler.PL_2_U){
+		pl2UpKeyDownListener = game.getGameInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, InputHandler.PL_2_U){
 			@Override
 			public boolean callback(){
 				return thisRef.p2UpKeyDown = true; 
 			}
 		});		
-		pl2UpKeyUpListener = game.getInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, InputHandler.PL_2_U){
+		pl2UpKeyUpListener = game.getGameInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, InputHandler.PL_2_U){
 			@Override
 			public boolean callback(){
 				return thisRef.p2UpKeyDown = false; 
 			}
 		});
-		pl2DownKeyDownListener = game.getInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, InputHandler.PL_2_D){
+		pl2DownKeyDownListener = game.getGameInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_DOWN, InputHandler.PL_2_D){
 			@Override
 			public boolean callback(){
 				return thisRef.p2DownKeyDown = true; 
 			}
 		});
-		pl2DownKeyUpListener = game.getInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, InputHandler.PL_2_D){
+		pl2DownKeyUpListener = game.getGameInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, InputHandler.PL_2_D){
 			@Override
 			public boolean callback(){
 				thisRef.p2DownKeyDown = false; 
@@ -126,7 +122,7 @@ public class BattleState implements State {
 			}
 		});
 		/** TODO: REMOVE THIS */
-		resetListener = game.getInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, Input.Keys.R){
+		resetListener = game.getGameInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, Input.Keys.R){
 			@Override
 			public boolean callback(){
 				return thisRef.dbg_resetWeapon();
@@ -136,17 +132,17 @@ public class BattleState implements State {
 
 	@Override
 	public void onExit(TotemDefender game) {
-		game.getInputHandler().removeListener(spaceDownListener);
-		game.getInputHandler().removeListener(spaceUpListener);
-		game.getInputHandler().removeListener(resetListener);
-		game.getInputHandler().removeListener(pl1UpKeyDownListener);
-		game.getInputHandler().removeListener(pl1UpKeyUpListener);
-		game.getInputHandler().removeListener(pl1DownKeyDownListener);
-		game.getInputHandler().removeListener(pl1DownKeyUpListener);
-		game.getInputHandler().removeListener(pl2UpKeyDownListener);
-		game.getInputHandler().removeListener(pl2UpKeyUpListener);
-		game.getInputHandler().removeListener(pl2DownKeyDownListener);
-		game.getInputHandler().removeListener(pl2DownKeyUpListener);
+		game.getGameInputHandler().removeListener(spaceDownListener);
+		game.getGameInputHandler().removeListener(spaceUpListener);
+		game.getGameInputHandler().removeListener(resetListener);
+		game.getGameInputHandler().removeListener(pl1UpKeyDownListener);
+		game.getGameInputHandler().removeListener(pl1UpKeyUpListener);
+		game.getGameInputHandler().removeListener(pl1DownKeyDownListener);
+		game.getGameInputHandler().removeListener(pl1DownKeyUpListener);
+		game.getGameInputHandler().removeListener(pl2UpKeyDownListener);
+		game.getGameInputHandler().removeListener(pl2UpKeyUpListener);
+		game.getGameInputHandler().removeListener(pl2DownKeyDownListener);
+		game.getGameInputHandler().removeListener(pl2DownKeyUpListener);
 	}
 
 	@Override

@@ -1,43 +1,47 @@
 package com.totemdefender.states;
 
+import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
-import com.totemdefender.menu.Menu;
+import com.totemdefender.menu.MainMenu;
 
 public class MainMenuState implements State {
 
-	private Menu menu;//will be MainMenu in the future
-	protected boolean exit=false;
-	
+	private MainMenu menu;
+	protected boolean startButtonPressed=false;
 	
 	@Override
 	public boolean canEnter(TotemDefender game) {
-		// TODO Auto-generated method stub
 		return true;
 	}
 
 	@Override
 	public void onEnter(TotemDefender game) {
-		game.addMenu(menu);
+		game.setPlayer1(new Player(1));
+		game.setPlayer2(new Player(2));
 		
+		menu = new MainMenu(this);
+		menu.create(game);
 	}
 
 	@Override
 	public void onExit(TotemDefender game) {
-		game.removeMenu(menu);
-	
+		menu.destroy(game);
 		
+		if(startButtonPressed){
+			game.getStateManager().attachState(new StartState());
+		}
 	}
 
 	@Override
 	public boolean canExit(TotemDefender game) {
-		// TODO Auto-generated method stub
-		return exit;
+		return startButtonPressed;
 	}
 
 	@Override
-	public void update(TotemDefender game) {
-		// TODO Auto-generated method stub
-		
+	public void update(TotemDefender game) {}
+	
+	
+	public void startButtonPressed(boolean t){
+		startButtonPressed = t;
 	}
-
 }

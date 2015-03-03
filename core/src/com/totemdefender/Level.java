@@ -8,6 +8,7 @@ import com.totemdefender.entities.PedestalEntity;
 import com.totemdefender.entities.TotemEntity;
 import com.totemdefender.entities.WeaponEntity;
 import com.totemdefender.entities.blocks.BlockEntity;
+import com.totemdefender.menu.hud.HUD;
 
 /** Provides easy way to maintain references to placed blocks and other game entities */
 public class Level {
@@ -18,6 +19,7 @@ public class Level {
 	private PedestalEntity	player2Pedestal;
 	private TotemEntity		player1Totem;
 	private BackgroundEntity background; 
+	private HUD	hud;
 
 	private TotemEntity		player2Totem;
 	private ArrayList<BlockEntity> placedBlocks = new ArrayList<BlockEntity>();
@@ -27,32 +29,35 @@ public class Level {
 		background = new BackgroundEntity();
 		background.setName("Background");
 		background.spawn(game);
-		game.addEntity(background);
+		game.addEntity(background, TotemDefender.BACKGROUND_DEPTH);
 		
 		ground = new GroundEntity();
 		ground.setName("Ground");
 		ground.spawn(game);
-		game.addEntity(ground);
+		game.addEntity(ground, TotemDefender.GROUND_DEPTH);
 		
 		player1Weapon = new WeaponEntity(game.getPlayer1());
 		player1Weapon.setName("Weapon 1");
 		player1Weapon.spawn(game);
-		game.addEntity(player1Weapon);
+		game.addEntity(player1Weapon, TotemDefender.WEAPON_DEPTH);
 		
 		player2Weapon = new WeaponEntity(game.getPlayer2());
 		player2Weapon.setName("Weapon 2");
 		player2Weapon.spawn(game);
-		game.addEntity(player2Weapon);
+		game.addEntity(player2Weapon, TotemDefender.WEAPON_DEPTH);
 		
 		player1Pedestal = new PedestalEntity(game.getPlayer1());
 		player1Pedestal.setName("Player 1 Pedestal");
 		player1Pedestal.spawn(game);
-		game.addEntity(player1Pedestal);
+		game.addEntity(player1Pedestal, TotemDefender.PEDESTAL_DEPTH);
 		
 		player2Pedestal = new PedestalEntity(game.getPlayer2());
 		player2Pedestal.setName("Player 2 Pedestal");
 		player2Pedestal.spawn(game);
-		game.addEntity(player2Pedestal);
+		game.addEntity(player2Pedestal, TotemDefender.PEDESTAL_DEPTH);
+		
+		hud = new HUD(game, this);
+		hud.create(game);
 	}
 
 	public GroundEntity getGround() {
@@ -80,7 +85,13 @@ public class Level {
 	}
 	
 	public void addPlacedBlock(BlockEntity ent){
-		placedBlocks.add(ent);
+		if(!placedBlocks.contains(ent)){
+			placedBlocks.add(ent);
+		}
+	}
+	
+	public void removePlacedBlock(BlockEntity ent){
+		placedBlocks.remove(ent);
 	}
 	
 	public ArrayList<BlockEntity> getPlacedBlocks(){
@@ -152,5 +163,9 @@ public class Level {
 		}else{
 			player2Totem = totem;
 		}
+	}
+	
+	public HUD getHUD(){
+		return hud;
 	}
 }

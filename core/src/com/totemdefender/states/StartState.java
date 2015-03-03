@@ -1,12 +1,12 @@
 package com.totemdefender.states;
 
 import com.totemdefender.TotemDefender;
-import com.totemdefender.menu.StartMenu;
+import com.totemdefender.menu.MainMenu;
+import com.totemdefender.menu.PreGameMenu;
 
-public class StartState implements State {
-	
-private StartMenu startmenu;
-protected boolean exit=false;
+public class StartState implements State {		
+	private PreGameMenu menu;
+	protected boolean readyButtonPressed=false;
 
 	@Override
 	public boolean canEnter(TotemDefender game) {
@@ -16,21 +16,21 @@ protected boolean exit=false;
 
 	@Override
 	public void onEnter(TotemDefender game) {
-		
-		game.addMenu(startmenu);
+		menu = new PreGameMenu(this);
+		menu.create(game);
 	}
 
 	@Override
 	public void onExit(TotemDefender game) {
-		game.removeMenu(startmenu);
-		game.getStateManager().attachState(new BuildState());
-		
+		menu.destroy(game);
+		if(readyButtonPressed){
+			game.getStateManager().attachState(new BuildState());
+		}
 	}
 
 	@Override
 	public boolean canExit(TotemDefender game) {
-		// TODO Auto-generated method stub
-		return exit;
+		return readyButtonPressed;
 	}
 
 	@Override
@@ -38,5 +38,8 @@ protected boolean exit=false;
 		// TODO Auto-generated method stub
 		
 	}
-
+	
+	public void readyButtonPressed(boolean t){
+		readyButtonPressed = t;
+	}
 }

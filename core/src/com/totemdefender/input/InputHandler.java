@@ -63,6 +63,7 @@ public class InputHandler implements InputProcessor{
 	private boolean dispatchKeyboardEvent(KeyboardEvent cmp){
 		for(KeyboardEvent evt : keyboardListeners){
 			if(cmp.equals(evt)){
+				evt.character = cmp.character;
 				if(evt.callback()){
 					return true;
 				}
@@ -110,8 +111,8 @@ public class InputHandler implements InputProcessor{
 	}
 	@Override
 	public boolean keyTyped(char character) {
-		//Unused
-		return false;
+		KeyboardEvent cmp = new KeyboardEvent(KeyboardEvent.KEY_TYPED, -1, character);
+		return dispatchKeyboardEvent(cmp);
 	}
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
@@ -125,8 +126,8 @@ public class InputHandler implements InputProcessor{
 	}
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		// Unused
-		return false;
+		MouseEvent cmp = new MouseEvent(MouseEvent.MOUSE_MOVE, -1, screenCoordsToGame(new Vector2(screenX, screenY)), 0);
+		return dispatchMouseEvent(cmp);
 	}
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {

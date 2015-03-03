@@ -8,14 +8,12 @@ public class SquareBlockEntity extends BlockEntity {
 	
 	public SquareBlockEntity(Player owner){
 		super(owner, Material.Stone, Shape.Square);
+		this.setCost(100);
 	}
 	
 	@Override
 	public void spawn(TotemDefender game){
 		super.spawn(game);
-		
-		
-		
 		setDensity(DENSITY);
 	}
 }

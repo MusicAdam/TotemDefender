@@ -1,8 +1,8 @@
 package com.totemdefender.states;
 
 import com.totemdefender.TotemDefender;
+import com.totemdefender.menu.Label;
 import com.totemdefender.menu.hud.HUD;
-import com.totemdefender.menu.hud.WinnerStatus;
 
 public class PostGameState implements State {
 	HUD hud;
@@ -18,14 +18,16 @@ public class PostGameState implements State {
 
 	@Override
 	public void onEnter(TotemDefender game) {
-		WinnerStatus winner = new WinnerStatus(hud);
-		hud.addComponent(winner);
+		Label winner = new Label(hud);
+		winner.setFont("hud_large.ttf");
+		winner.create(game);
 		
 		if(game.getWinner().getID() == 1){
 			winner.setText("Player 1 Wins!");
 		}else{
 			winner.setText("Player 2 Wins!");			
 		}
+		winner.setPosition(TotemDefender.V_WIDTH/2 - winner.getWidth()/2, TotemDefender.V_HEIGHT/2);
 	}
 
 	@Override

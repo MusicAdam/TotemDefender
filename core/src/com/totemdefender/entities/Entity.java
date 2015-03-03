@@ -53,9 +53,9 @@ public abstract class Entity {
 			sprite.setPosition(0, 0);
 			sprite.setRotation((float)Math.toDegrees(body.getAngle()));
 			sprite.setPosition(bodyX - spriteHW, bodyY - spriteHH);
-		}
-		
+		}		
 	}
+	
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer){
 		if(sprite != null){
 			batch.begin();
@@ -87,6 +87,10 @@ public abstract class Entity {
 		}else if(sprite != null){
 			sprite.setPosition(position.x, position.y);
 		}
+	}
+	
+	public void setPosition(float x, float y){
+		setPosition(new Vector2(x, y));
 	}
 	
 	public Body getBody(){

@@ -8,14 +8,15 @@ import com.badlogic.gdx.math.Vector2;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.entities.WeaponEntity;
 import com.totemdefender.menu.Component;
-import com.totemdefender.menu.Menu;
+import com.totemdefender.menu.Container;
+import com.totemdefender.menu.Panel;
 
 public class ChargeMeter extends Component{
 	private static final Color chargeFG = new Color(.34f, 1f, .1f, 1); 
 	private static final Color chargeBG = new Color(.29f, .3f, .09f, 1); 
 	WeaponEntity weapon;
 	
-	public ChargeMeter(Menu parent, WeaponEntity weapon){
+	public ChargeMeter(Container parent, WeaponEntity weapon){
 		super(parent);
 		this.weapon = weapon;
 	}

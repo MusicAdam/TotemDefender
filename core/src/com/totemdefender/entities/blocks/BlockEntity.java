@@ -10,15 +10,24 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.totemdefender.CollisionListener;
 import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.entities.Entity;
+import com.totemdefender.entities.GroundEntity;
 
 public abstract class BlockEntity extends Entity{
+	public static final int RECTANGLE_XSCALE 	= 2;
+	public static final int RECTANGLE_YSCALE 	= 1;
+	public static final int SQUARE_XSCALE 		= 1;
+	public static final int SQUARE_YSCALE 		= 1;
+	public static final int TOTEM_XSCALE 		= 1;
+	public static final int TOTEM_YSCALE 		= 2;
 	public enum Material{
 		Wood,
 		Stone,
@@ -33,26 +42,27 @@ public abstract class BlockEntity extends Entity{
 		Totem
 	}
 	
-	protected float cost;
+	protected int cost=0;
 	protected float xScale, yScale; //This is the scale of the block in multiples of TotemDefender.BlockSize in each direction
 	private Fixture fixture;
 	private boolean rotated = false;
 	private boolean rotatable = true;
 	private Material material;
 	private Shape	shape;
+	private boolean shouldDelete=false;
 	
 	public BlockEntity(Player owner, Material material, Shape shape){
 		super(owner);
 		
 		if(shape == Shape.Rectangle){
-			xScale = 2;
-			yScale = 1;
+			xScale = RECTANGLE_XSCALE;
+			yScale = RECTANGLE_YSCALE;
 		}else if(shape == Shape.Totem){
-			xScale = 1;
-			yScale = 2;
+			xScale = TOTEM_XSCALE;
+			yScale = TOTEM_YSCALE;
 		}else{
-			xScale = 1;
-			yScale = 1;
+			xScale = SQUARE_XSCALE;
+			yScale = SQUARE_YSCALE;
 		}
 		
 		this.cost = 0;
@@ -60,10 +70,10 @@ public abstract class BlockEntity extends Entity{
 		this.shape = shape;
 	}
 	
-	private String getRandomAsset(){
+	public static String GetRandomAsset(Material material, Shape shape){
 		String materialId="", shapeId="";
 		
-		switch(this.material){
+		switch(material){
 			case Wood:
 				materialId = "wood";
 				break;
@@ -78,7 +88,7 @@ public abstract class BlockEntity extends Entity{
 				break;
 		}
 		
-		switch(this.shape){
+		switch(shape){
 			case Square:
 				shapeId = "square";
 				break;
@@ -94,7 +104,7 @@ public abstract class BlockEntity extends Entity{
 		}
 		
 		Random rand = new Random();
-		int num = rand.nextInt(2) + 1;
+		int num = rand.nextInt(3) + 1;
 		
 		return "blocks/block_"+shapeId+"_"+materialId+"_"+num+".png";
 	}
@@ -102,10 +112,10 @@ public abstract class BlockEntity extends Entity{
 	@Override
 	public void spawn(TotemDefender game) {
 		if(shape != Shape.Totem){
-			Texture blockTexture = game.getAssetManager().get(getRandomAsset(), Texture.class);
+			Texture blockTexture = game.getAssetManager().get(GetRandomAsset(material, shape), Texture.class);
 			blockTexture.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
 			setSprite(new Sprite(blockTexture));
-			getSprite().setSize(TotemDefender.BLOCK_SIZE, TotemDefender.BLOCK_SIZE);
+			getSprite().setSize(TotemDefender.BLOCK_SIZE * xScale, TotemDefender.BLOCK_SIZE * yScale);
 			getSprite().setOriginCenter();
 		}
 		
@@ -114,7 +124,7 @@ public abstract class BlockEntity extends Entity{
 		setBody(game.getWorld().createBody(def));
 		
 		PolygonShape shape = new PolygonShape();
-		shape.setAsBox((xScale * TotemDefender.BLOCK_SIZE * TotemDefender.WORLD_TO_BOX)/2, (yScale * TotemDefender.BLOCK_SIZE * TotemDefender.WORLD_TO_BOX)/2);
+		shape.setAsBox((xScale * TotemDefender.BLOCK_SIZE * TotemDefender.WORLD_TO_BOX)/2 - 1 * TotemDefender.WORLD_TO_BOX, (yScale * TotemDefender.BLOCK_SIZE * TotemDefender.WORLD_TO_BOX)/2 - 1 * TotemDefender.WORLD_TO_BOX);
 
 		short projectileMask = (getOwner().getID() == 1) ? Entity.PLAYER2_PROJECTILE : Entity.PLAYER1_PROJECTILE;
 		FixtureDef fixtureDef = new FixtureDef();
@@ -126,13 +136,45 @@ public abstract class BlockEntity extends Entity{
 		fixtureDef.filter.maskBits = (short) (Entity.GROUND | Entity.PEDESTAL | projectileMask | Entity.BLOCK);
 
 		// Create our fixture and attach it to the body
-		fixture = getBody().createFixture(fixtureDef);
+		
+		
+		
+		//deletion of blocks
+		final BlockEntity thisRef=this;
+		final TotemDefender gameRef=game;
+		
+	
+		getBody().createFixture(fixtureDef).setUserData(new CollisionListener(){
+			@Override
+			public void beginContact(Fixture other, Contact contact) {
+				if(other.getBody().getUserData() instanceof GroundEntity){
+					thisRef.shouldDelete=true;
+					
+					
+				}
+			}
+
+			@Override
+			public void endContact(Fixture other, Contact contact) {
+				
+				
+			}
+		});
+		
+		//end of deletion code
 
 		shape.dispose();	
 		
 		isSpawned = true;
 	}
 	
+	public void Delete(TotemDefender game){
+		if(shouldDelete==true){
+			game.getLevel().removePlacedBlock(this);
+			game.destroyEntity(this);
+		}	
+	}
+		
 	public void setDensity(float density){
 		if(fixture == null) return;
 		
@@ -145,7 +187,7 @@ public abstract class BlockEntity extends Entity{
 		return fixture.getDensity();
 	}
 	
-	public void setCost(float amount){
+	public void setCost(int amount){
 		this.cost = amount;
 	}
 	
@@ -162,7 +204,7 @@ public abstract class BlockEntity extends Entity{
 		}
 	}
 	
-	public float getCost(){ return cost; }
+	public int getCost(){ return cost; }
 	public float getXScale(){ return xScale; }
 	public float getYScale(){ return yScale; }
 	public float getWidth(){ 
@@ -182,5 +224,10 @@ public abstract class BlockEntity extends Entity{
 
 	public void setRotatable(boolean rotateable) {
 		this.rotatable = rotateable;
+	}
+	
+	public void update(TotemDefender game){
+		super.update(game);
+		Delete(game);
 	}
 }
