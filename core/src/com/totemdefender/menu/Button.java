@@ -16,7 +16,7 @@ import com.totemdefender.input.MouseEvent;
 public class Button extends Label {	
 	public Button(Container parent, String labelText, Vector2 newSize, Vector2 newPosition, Color newColor) {
 		super(parent);
-		setText(labelText, false);		
+		setText(labelText);		
 		setSize(newSize); 
 		setPosition(newPosition);
 		setColor(newColor);
@@ -36,7 +36,7 @@ public class Button extends Label {
 	
 	@Override
 	public void setText(String text){
-		super.setText(text, false);
+		super.setText(text, true);
 	}
 	
 	@Override
