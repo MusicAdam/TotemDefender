@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
+import com.totemdefender.entities.TotemEntity;
 import com.totemdefender.entities.blocks.BlockEntity;
 import com.totemdefender.entities.blocks.SquareBlockEntity;
 import com.totemdefender.input.MouseEvent;
@@ -193,15 +194,11 @@ public class Grid extends Panel {
 		return super.onMouseMove(event);
 	}
 	
-	/*@Override
+	@Override
 	public void onMouseEnter(MouseEvent event){
-		if(getParent().isMouseMode()){
-			if(getEntity() == null){
-				setEntity(getParent().getSpawnedBlock());
-			}			
-		}
+		shouldDelete = false;
 		super.onMouseEnter(event);
-	}*/
+	}
 	
 	@Override
 	public boolean onMouseDown(MouseEvent event){
@@ -222,8 +219,10 @@ public class Grid extends Panel {
 		mouseDown = false;
 		if(hasEntity()){
 			if(shouldDelete){
-				getParent().destroyBlock(TotemDefender.Get(), getEntity());
-				setEntity(null);
+				if(!(getEntity() instanceof TotemEntity)){
+					getParent().destroyBlock(TotemDefender.Get(), getEntity());
+					setEntity(null);
+				}
 				shouldDelete = false;
 			}else{
 				placeBlock();

@@ -20,11 +20,11 @@ public class GroundEntity extends Entity{
 
 	@Override
 	public void render(SpriteBatch spriteBatch, ShapeRenderer shapeRenderer){
-		TotemDefender game = TotemDefender.Get();
+		/*TotemDefender game = TotemDefender.Get();
 		shapeRenderer.begin(ShapeType.Filled);
 		shapeRenderer.setColor(Color.valueOf("124C1F"));
 		shapeRenderer.rect(getPosition().x - TotemDefender.V_WIDTH/2, getPosition().y - TotemDefender.GROUND_HEIGHT/2, TotemDefender.V_WIDTH, TotemDefender.GROUND_HEIGHT);
-		shapeRenderer.end();
+		shapeRenderer.end();*/
 	}
 	
 	@Override
