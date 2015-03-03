@@ -54,7 +54,7 @@ public class ReadyButton extends Button{
 		TotemDefender.EnableBlend();
 		batch.begin();
 		batch.setColor(1, 1, 1, alpha);
-		batch.draw(barActive, getPosition().x, getPosition().y, getWidth()+50, getHeight());
+		batch.draw(barActive, getPosition().x, getPosition().y, getWidth(), getHeight());
 		if(!totemSpawned)
 			batch.draw(totemTexture, totemPosition.x, totemPosition.y, TotemDefender.BLOCK_SIZE, TotemDefender.BLOCK_SIZE*2);
 		batch.end();
