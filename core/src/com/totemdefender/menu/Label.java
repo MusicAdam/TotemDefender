@@ -14,8 +14,8 @@ public class Label extends Panel{
 	private BitmapFont font;
 	private String text;
 	private Color textColor;
-	private Vector2 textOffset;
-	private TextBounds bounds;
+	protected Vector2 textOffset;
+	protected TextBounds bounds;
 
 	public Label(Container parent){
 		super(parent);
@@ -24,6 +24,7 @@ public class Label extends Panel{
 		textColor = Color.WHITE;
 		textOffset = new Vector2();
 		setText("Default");
+		invalidate();
 	}
 	
 	@Override
@@ -37,6 +38,7 @@ public class Label extends Panel{
 	
 	public void updateBounds(){
 		font.getBounds(text, bounds);
+		invalidate();
 	}
 	
 	public BitmapFont getFont() {

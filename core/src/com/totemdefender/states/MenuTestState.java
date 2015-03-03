@@ -11,6 +11,7 @@ import com.totemdefender.menu.Container;
 import com.totemdefender.menu.Label;
 import com.totemdefender.menu.NavigableContainer;
 import com.totemdefender.menu.Panel;
+import com.totemdefender.menu.TextEntry;
 
 public class MenuTestState implements State{
 	Container menu;
@@ -26,7 +27,13 @@ public class MenuTestState implements State{
 		System.out.println("MenuTestState:onEnter");
 		
 		menu = new Container();
-		NavigableContainer test = new NavigableContainer(menu);
+		/*NavigableContainer test = new NavigableContainer(menu){
+			@Override
+			public boolean onMouseMove(MouseEvent event){
+				System.out.println("MOuseMOVE");
+				return super.onMouseMove(event);
+			}
+		};
 		test.attachKeyboardListeners(new Player(2));
 		test.create(game);
 		//menu.setSize(100, 100);
@@ -58,17 +65,14 @@ public class MenuTestState implements State{
 		test.connectComponents(testButton4, testButton3);
 		test.connectComponents(testButton4, testButton2);
 		
-		test.setPosition(10, 10);
-		//test.setSize(50, 50);
-		menu.validate();
+		test.setPosition(10, 10);*/
+		
+		TextEntry entry = new TextEntry(menu);
+		entry.setPosition(210, 210);
+		entry.create(game);
 		//menu.setPosition(TotemDefender.V_WIDTH/2 - menu.getWidth()/2, TotemDefender.V_HEIGHT/2 - menu.getHeight()/2);
 		menu.setPosition(10, 10);
-		//menu.setPosition(300, 300);
 		menu.create(game);
-
-		System.out.println(test.getWorldPosition());
-		//Container test = new Container();
-		//test.create(game);
 	}
 
 	@Override

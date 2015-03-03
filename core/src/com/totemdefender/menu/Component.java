@@ -14,12 +14,14 @@ public abstract class Component {
 	protected boolean mouseOver;
 	private Container parent;
 	private boolean hasFocus;
+	private boolean valid = false;
 	
 	public Component(Container parent){
 		this.parent = parent;
 		rectangle = new Rectangle();
 		if(parent != null)
 			parent.invalidate();
+		invalidate();
 	}
 	
 	public Component(){
@@ -27,9 +29,10 @@ public abstract class Component {
 		rectangle = new Rectangle();
 		if(parent != null)
 			parent.invalidate();
+		invalidate();
 	}
 	
-	public void update(TotemDefender game){}
+	public void update(TotemDefender game){doLayout();}
 	
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer){
 		if(TotemDefender.DEBUG){
@@ -38,10 +41,10 @@ public abstract class Component {
 			shapeRenderer.rect(getPosition().x, getPosition().y, getSize().x, getSize().y);
 			shapeRenderer.end();
 		}
-		
 	}
 	
 	public void create(TotemDefender game){
+		invalidate();
 		if(this instanceof Container && parent == null){
 			game.addMenu((Container)this);
 		}else if(parent != null){
@@ -84,6 +87,7 @@ public abstract class Component {
 		rectangle.setPosition(position);
 		if(parent != null)
 			parent.invalidate();
+		invalidate();
 	}
 	
 	public void setPosition(float x, float y){
@@ -91,6 +95,7 @@ public abstract class Component {
 	}
 
 	public Vector2 getSize() {
+		doLayout();
 		return rectangle.getSize(new Vector2());
 	}
 	
@@ -98,10 +103,12 @@ public abstract class Component {
 		rectangle.setSize(size.x, size.y);
 		if(parent != null)
 			parent.invalidate();
+		invalidate();
 	}
 	
 	public void setSize(float w, float h){
 		setSize(new Vector2(w, h));
+		invalidate();
 	}
 	
 	public void setWidth(float w){
@@ -113,10 +120,12 @@ public abstract class Component {
 	}
 	
 	public float getWidth(){
+		doLayout();
 		return rectangle.getWidth();
 	}
 	
 	public float getHeight(){
+		doLayout();
 		return rectangle.getHeight();
 	}
 	
@@ -138,6 +147,7 @@ public abstract class Component {
 	
 	//Gets the local point from a world point
 	public Vector2 worldToLocal(Vector2 worldPoint){
+		doLayout();
 		if(parent == null){
 			return new Vector2(worldPoint.x - rectangle.x, worldPoint.y - rectangle.y);
 		}else{
@@ -147,9 +157,8 @@ public abstract class Component {
 		}
 	}
 	
-
-	
 	public Vector2 getWorldPosition(){
+		//doLayout();
 		if(parent == null){
 			return getPosition();
 		}else{
@@ -163,5 +172,19 @@ public abstract class Component {
 
 	public void setHasFocus(boolean hasFocus) {
 		this.hasFocus = hasFocus;
+	}
+	
+	public void doLayout(){
+		if(parent != null)
+			getParent().invalidate();
+		valid = true;
+	}
+	
+	public void invalidate(){
+		valid = false;
+	}
+	
+	public boolean shouldLayout(){
+		return !valid;
 	}
 }
