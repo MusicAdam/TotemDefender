@@ -4,18 +4,33 @@ public class KeyboardEvent {
 
 	public static final int KEY_DOWN 	= 1;
 	public static final int KEY_UP		= 2;
+	public static final int KEY_TYPED	= 3;
 	
 	public int event;
 	public int key;
+	public char character;
+	
+	public KeyboardEvent(int event){
+		this.event = event;
+		this.key = -1;
+		character = '\0';
+	}
 	
 	public KeyboardEvent(int event, int key){
 		this.event = event;
 		this.key = key;
 	}
 	
+	public KeyboardEvent(int event, int key, char character){
+		this.event = event;
+		this.key = key;
+		this.character = character;
+	}
+	
 	public KeyboardEvent(){
 		event = 0;
 		key = -1;
+		character = '\0';
 	}
 	
 	public boolean callback(){ return false; }; //Should be overriden to perform an action
