@@ -107,6 +107,7 @@ public class TotemDefender extends ApplicationAdapter {
 	private ConcurrentLinkedQueue<DepthWrapper<Container>> menuDepthQueue; //Depth change queue
 	private Queue<Container> 		menuDeleteQueue;
 	private Queue<DepthWrapper<Container>> 		menuAddQueue;
+	private Level level;
 	
 	/** Control Variables */
 	private boolean isDoneBuilding;
@@ -558,5 +559,13 @@ public class TotemDefender extends ApplicationAdapter {
 		wrapper.object = menu;
 		wrapper.depth = newDepth;
 		menuDepthQueue.add(wrapper);
+	}
+
+	public Level getLevel() {
+		return level;
+	}
+
+	public void setLevel(Level level) {
+		this.level = level;
 	}
 }

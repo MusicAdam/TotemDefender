@@ -136,6 +136,10 @@ public abstract class BlockEntity extends Entity{
 		fixtureDef.filter.maskBits = (short) (Entity.GROUND | Entity.PEDESTAL | projectileMask | Entity.BLOCK);
 
 		// Create our fixture and attach it to the body
+		
+		
+		
+		//deletion of blocks
 		final BlockEntity thisRef=this;
 		final TotemDefender gameRef=game;
 		
@@ -153,9 +157,11 @@ public abstract class BlockEntity extends Entity{
 			@Override
 			public void endContact(Fixture other, Contact contact) {
 				
-				thisRef.Delete(gameRef);
+				
 			}
 		});
+		
+		//end of deletion code
 
 		shape.dispose();	
 		
@@ -164,11 +170,10 @@ public abstract class BlockEntity extends Entity{
 	
 	public void Delete(TotemDefender game){
 		if(shouldDelete==true){
-		game.destroyEntity(this);
-		this.getBody().setAwake(false);
-		
-		}
-		}
+			game.getLevel().removePlacedBlock(this);
+			game.destroyEntity(this);
+		}	
+	}
 		
 	public void setDensity(float density){
 		if(fixture == null) return;
@@ -219,5 +224,10 @@ public abstract class BlockEntity extends Entity{
 
 	public void setRotatable(boolean rotateable) {
 		this.rotatable = rotateable;
+	}
+	
+	public void update(TotemDefender game){
+		super.update(game);
+		Delete(game);
 	}
 }
