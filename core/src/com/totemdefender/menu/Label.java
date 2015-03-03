@@ -10,13 +10,12 @@ import com.totemdefender.TotemDefender;
 
 /** Label allows a text field to be created and provides utilities for displaying text. */
 public class Label extends Panel{
-
 	private BitmapFont font;
 	private String text;
 	private Color textColor;
 	private Vector2 textOffset;
 	private TextBounds bounds;
-
+	
 	public Label(Container parent){
 		super(parent);
 		font = TotemDefender.Get().getAssetManager().get("default.ttf", BitmapFont.class);
@@ -35,23 +34,17 @@ public class Label extends Panel{
 		batch.end();
 	}
 	
-	public void updateBounds(){
-		font.getBounds(text, bounds);
-	}
+	public void updateBounds(){ font.getBounds(text, bounds); }
 	
-	public BitmapFont getFont() {
-		return font;
-	}
-
+	public BitmapFont getFont() { return font; }
+	
 	public void setFont(String fontName) {
 		this.font = TotemDefender.Get().getAssetManager().get(fontName, BitmapFont.class);
 		updateBounds();
 	}
-
-	public String getText() {
-		return text;
-	}
-
+	
+	public String getText() { return text; }
+	
 	public void setText(String text, boolean scale) {
 		this.text = text;
 		updateBounds();
@@ -60,36 +53,19 @@ public class Label extends Panel{
 		}
 	}
 	
-	public void sizeToBounds(){
-		setSize(bounds.width, bounds.height);
-	}
+	public void sizeToBounds(){ setSize(bounds.width, bounds.height); }
 	
-	public void setText(String text){
-		setText(text, true);
-	}
-
-	public Color getTextColor() {
-		return textColor;
-	}
-
-	public void setTextColor(Color textColor) {
-		this.textColor = textColor;
-	}
+	public void setText(String text){ setText(text, true); }
 	
-	public void setTextOffset(Vector2 offset){
-		textOffset = offset;
-	}
+	public Color getTextColor() { return textColor; }
 	
-	public void setTextOffset(float x, float y){
-		setTextOffset(new Vector2(x, y));
-	}
+	public void setTextColor(Color textColor) { this.textColor = textColor; }
 	
-	public Vector2 getTextOffset(){
-		return textOffset;
-	}
+	public void setTextOffset(Vector2 offset){ textOffset = offset; }
 	
-	public TextBounds getTextBounds(){
-		return bounds;
-	}
-
+	public void setTextOffset(float x, float y){ setTextOffset(new Vector2(x, y)); }
+	
+	public Vector2 getTextOffset(){ return textOffset; }
+	
+	public TextBounds getTextBounds(){ return bounds; }
 }

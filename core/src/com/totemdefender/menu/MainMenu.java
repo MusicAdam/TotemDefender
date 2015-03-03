@@ -1,8 +1,6 @@
 package com.totemdefender.menu;
-
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -18,11 +16,6 @@ import com.totemdefender.states.MainMenuState;
 import com.totemdefender.states.StartState;
 
 public class MainMenu extends NavigableContainer{
-	public enum PlacementMode{
-		Mouse,
-		Keyboard
-	}
-
 	private Button start;
 	private Button leaderboard;
 	private Button option;
@@ -37,12 +30,11 @@ public class MainMenu extends NavigableContainer{
 	@Override
 	public void create(TotemDefender game){
 		Vector2 buttonSize = new Vector2((TotemDefender.V_WIDTH/4),TotemDefender.V_HEIGHT/7);
-		float buttonArea = TotemDefender.V_WIDTH/2 - buttonSize.x/2; //width position of where the button are position
+		float areaWidth = TotemDefender.V_WIDTH/2 - buttonSize.x/2; //width position of where the button are position
 		float centerScreenHeight = TotemDefender.V_HEIGHT/2;
-		float nearMiddle = buttonSize.y + buttonSize.y/70; //height position of two button near the center of the screen
-		float farMiddle = buttonSize.y + buttonSize.y/35 + nearMiddle;  //height position of two button far the center of the screen
 		
-		start = new Button(this, "Start Game", buttonSize, new Vector2(buttonArea, centerScreenHeight + farMiddle), Color.GREEN){
+		start = new Button(this, "Start Game", buttonSize, 
+				new Vector2(areaWidth, centerScreenHeight + buttonSize.y + (buttonSize.y * 3/40)), Color.GREEN){
 			@Override
 			public boolean onClick(){
 				state.startButtonPressed(true);
@@ -51,32 +43,33 @@ public class MainMenu extends NavigableContainer{
 		};
 		start.create(game);
 		
-		leaderboard = new Button(this, "Leaderboard", buttonSize, new Vector2(buttonArea, centerScreenHeight + nearMiddle), Color.YELLOW){
+		leaderboard = new Button(this, "Leaderboard", buttonSize, 
+					  new Vector2(areaWidth, centerScreenHeight + buttonSize.y/40), Color.YELLOW){
 			@Override
 			public boolean onClick(){
-				
 				return true;
 			}
 		};
 		leaderboard.create(game);
-
-		option = new Button(this, "Option", buttonSize, new Vector2(buttonArea, centerScreenHeight - farMiddle), Color.RED){
+		
+		option = new Button(this, "Option", buttonSize, 
+				 new Vector2(areaWidth, centerScreenHeight - (buttonSize.y + buttonSize.y/40)), Color.RED){
 			@Override
 			public boolean onClick(){
-				
-				return true;
+			return true;
 			}
 		};
 		option.create(game);
 		
-		instruction = new Button(this, "Instruction", buttonSize, new Vector2(buttonArea, centerScreenHeight - nearMiddle) , Color.BLUE){
+		instruction = new Button(this, "Instruction", buttonSize, 
+					  new Vector2(areaWidth, centerScreenHeight - (buttonSize.y*2) - (buttonSize.y * 3/40)), Color.BLUE){
 			@Override
 			public boolean onClick(){
-				
 				return true;
 			}
 		};
 		instruction.create(game);
+		
 		connectComponents(start, leaderboard);
 		connectComponents(leaderboard, option);
 		connectComponents(option, instruction);

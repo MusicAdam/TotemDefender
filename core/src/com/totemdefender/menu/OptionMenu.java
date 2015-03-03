@@ -3,18 +3,14 @@ package com.totemdefender.menu;
 import com.totemdefender.TotemDefender;
 
 public class OptionMenu extends NavigableContainer{
-	public enum PlacementMode{
-		Mouse,
-		Keyboard
-	}
+
+	/*
+	->Volume
+	->Graphics
+	->Brightness
+	 */
 	
 	public OptionMenu(TotemDefender game) {
 		super(null);
 	}
-	
-	/*
-		->Volume
-		->Graphics
-		->Brightness
-	*/
 }

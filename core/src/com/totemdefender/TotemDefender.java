@@ -353,6 +353,10 @@ public class TotemDefender extends ApplicationAdapter {
 		assetManager.load("hud_small.ttf", BitmapFont.class, hud_small);
 		assetManager.load("hud_medium.ttf", BitmapFont.class, hud_medium);
 		assetManager.load("hud_large.ttf", BitmapFont.class, hud_large);
+		//BuildMenu shapeButton
+		//assetManager.load("circle blue.png", Texture.class, textureParam);
+		//assetManager.load("triangle.png", Texture.class, textureParam);
+		//assetManager.load("Square red.png", Texture.class, textureParam);
 	}
 	
 	/** addEntity registers a spawned entity with the game so it will be rendered and updated.

@@ -9,7 +9,6 @@ public class MainMenuState implements State {
 	private MainMenu menu;
 	protected boolean startButtonPressed=false;
 	
-	
 	@Override
 	public boolean canEnter(TotemDefender game) {
 		return true;
@@ -29,7 +28,7 @@ public class MainMenuState implements State {
 		menu.destroy(game);
 		
 		if(startButtonPressed){
-			game.getStateManager().attachState(new BuildState());
+			game.getStateManager().attachState(new StartState());
 		}
 	}
 

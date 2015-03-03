@@ -1,5 +1,4 @@
 package com.totemdefender.menu;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -11,8 +10,11 @@ import com.totemdefender.input.MouseEvent;
 
 public abstract class Component {
 	protected Rectangle rectangle; //Mathematical representation of the component
+	
 	protected boolean mouseOver;
+	
 	private Container parent;
+	
 	private boolean hasFocus;
 	
 	public Component(Container parent){
@@ -28,8 +30,9 @@ public abstract class Component {
 		if(parent != null)
 			parent.invalidate();
 	}
-	
-	public void update(TotemDefender game){}
+	public void update(TotemDefender game){
+		
+	}
 	
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer){
 		if(TotemDefender.DEBUG){
@@ -38,7 +41,6 @@ public abstract class Component {
 			shapeRenderer.rect(getPosition().x, getPosition().y, getSize().x, getSize().y);
 			shapeRenderer.end();
 		}
-		
 	}
 	
 	public void create(TotemDefender game){
@@ -56,85 +58,64 @@ public abstract class Component {
 			parent.removeComponent(this);
 		}
 	}
-
-	public void onMouseEnter(MouseEvent event){ 
-		setMouseOver(true);
-	}
-	public void onMouseExit(MouseEvent event){ 
-		setMouseOver(false);
-	}
+	public void onMouseEnter(MouseEvent event){ setMouseOver(true); }
+	
+	public void onMouseExit(MouseEvent event){ setMouseOver(false); }
+	
 	public boolean onMouseMove(MouseEvent event){ return false; }
+	
 	public boolean onMouseDown(MouseEvent event){ return false; }
+	
 	public boolean onMouseUp(MouseEvent event){ return false; }
+	
 	public boolean onClick(){return false;} //Called when mouseup falls on the component
+	
 	public boolean onKeyboardSelect(){ return false; } //Called when selected with the keyboard
+	
 	public void onGainFocus(){}
+	
 	public void onLoseFocus(){}
 	
 	/** Checks if given point lies within the menu */
-	public boolean pointIsInBounds(Vector2 point){
-		return rectangle.contains(point);
-	}
-
-	public Vector2 getPosition() {
-		return new Vector2(rectangle.x, rectangle.y);
-	}
-
+	public boolean pointIsInBounds(Vector2 point){ return rectangle.contains(point); }
+	
+	public Vector2 getPosition() { return new Vector2(rectangle.x, rectangle.y); }
+	
 	public void setPosition(Vector2 position) {
 		rectangle.setPosition(position);
 		if(parent != null)
-			parent.invalidate();
+		parent.invalidate();
 	}
 	
-	public void setPosition(float x, float y){
-		setPosition(new Vector2(x, y));
-	}
-
-	public Vector2 getSize() {
-		return rectangle.getSize(new Vector2());
-	}
+	public void setPosition(float x, float y){ setPosition(new Vector2(x, y)); }
 	
-	public void setSize(Vector2 size){
+	public Vector2 getSize() { return rectangle.getSize(new Vector2()); }
+	
+	public void setSize(Vector2 size) {
 		rectangle.setSize(size.x, size.y);
 		if(parent != null)
 			parent.invalidate();
 	}
 	
-	public void setSize(float w, float h){
-		setSize(new Vector2(w, h));
-	}
+	public void setSize(float w, float h){ setSize(new Vector2(w, h)); }
 	
-	public void setWidth(float w){
-		setSize(w, getHeight());
-	}
+	public void setWidth(float w){ setSize(w, getHeight()); }
 	
-	public void setHeight(float h){
-		setSize(getWidth(), h);
-	}
+	public void setHeight(float h) { setSize(getWidth(), h); }
 	
-	public float getWidth(){
-		return rectangle.getWidth();
-	}
+	public float getWidth(){ return rectangle.getWidth(); }
 	
-	public float getHeight(){
-		return rectangle.getHeight();
-	}
+	public float getHeight(){ return rectangle.getHeight(); }
 	
 	public Rectangle getRectangle(){ return rectangle; }
-
-	public Container getParent() {
-		return parent;
-	}
-
-	public void setParent(Container parent) {
-		this.parent = parent;
-	}
+	
+	public Container getParent() { return parent;}
+	
+	public void setParent(Container parent) { this.parent = parent; }
 	
 	public boolean isMouseOver(){ return mouseOver; }
-
-	public void setMouseOver(boolean b) {
-		mouseOver = b;
-	}
+	
+	public void setMouseOver(boolean b) { mouseOver = b; }
 	
 	//Gets the local point from a world point
 	public Vector2 worldToLocal(Vector2 worldPoint){
@@ -147,8 +128,6 @@ public abstract class Component {
 		}
 	}
 	
-
-	
 	public Vector2 getWorldPosition(){
 		if(parent == null){
 			return getPosition();
@@ -156,12 +135,8 @@ public abstract class Component {
 			return getPosition().add(parent.getWorldPosition());
 		}
 	}
-
-	public boolean hasFocus() {
-		return hasFocus;
-	}
-
-	public void setHasFocus(boolean hasFocus) {
-		this.hasFocus = hasFocus;
-	}
+	
+	public boolean hasFocus() { return hasFocus; }
+	
+	public void setHasFocus(boolean hasFocus) { this.hasFocus = hasFocus; }
 }
