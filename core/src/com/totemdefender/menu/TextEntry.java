@@ -6,15 +6,20 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.totemdefender.TotemDefender;
+import com.totemdefender.input.KeyboardEvent;
 import com.totemdefender.input.MouseEvent;
 
 public class TextEntry extends Label{
+	private Rectangle scissors = new Rectangle();
 	private int cursorIndex = 0;
 	private long cursorLastFlash = 0;
 	private long cursorFlashRate = 500;
-	private boolean drawCursor = true;
+	private boolean drawCursor = false;
 	private float padding = 5;
 	private boolean mouseDown = false;
 	
@@ -23,11 +28,20 @@ public class TextEntry extends Label{
 		setColor(Color.WHITE);
 		setTextColor(Color.BLACK);
 		setSize(100, 0);
+		
+		TotemDefender.Get().getMenuInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_TYPED){
+			@Override
+			public boolean callback(){
+				if(hasFocus())
+					keyTyped(character);
+				return true;
+			}
+		});
 	}
 	
 	@Override
 	public void update(TotemDefender game){
-		if(System.currentTimeMillis() - cursorLastFlash > cursorFlashRate){
+		if(System.currentTimeMillis() - cursorLastFlash > cursorFlashRate && hasFocus()){
 			drawCursor = !drawCursor;
 			cursorLastFlash = System.currentTimeMillis();
 		}
@@ -36,6 +50,7 @@ public class TextEntry extends Label{
 	
 	@Override
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer){
+		boolean shouldPop = ScissorStack.pushScissors(new Rectangle(scissors));
 		super.render(batch, shapeRenderer);
 		if(drawCursor){
 			Vector2 tmp = textOffset.cpy();
@@ -46,13 +61,17 @@ public class TextEntry extends Label{
 			shapeRenderer.line(getPosition().x + cursorPosition.x, getPosition().y, getPosition().x + cursorPosition.x, getPosition().y + getHeight());
 			shapeRenderer.end();
 		}
+		if(shouldPop)
+			ScissorStack.popScissors();
 	}
 	
 	@Override
 	public void doLayout(){
 		if(shouldLayout()){
-			setSize(rectangle.width + padding, bounds.height + padding);
+			setSize(rectangle.width, bounds.height + padding);
 			textOffset = new Vector2(padding, bounds.height/2 - padding/2);
+			ScissorStack.calculateScissors(TotemDefender.Get().getMenuCamera(), new Matrix4(), new Rectangle(getRectangle()), scissors);
+			scissors.setPosition(getWorldPosition());
 			super.doLayout();
 		}
 	}
@@ -66,7 +85,7 @@ public class TextEntry extends Label{
 	
 	@Override
 	public boolean onMouseUp(MouseEvent event){
-		mouseDown = true;
+		mouseDown = false;
 		return true;
 	}
 	
@@ -76,11 +95,6 @@ public class TextEntry extends Label{
 			setCursorIndex(worldToLocal(event.mousePosition));			
 		}
 		return true;
-	}
-	
-	@Override
-	public void onGainFocus(){
-		System.out.println("Gain focus");
 	}
 	
 	@Override
@@ -104,6 +118,22 @@ public class TextEntry extends Label{
 		}
 
 		cursorIndex = getText().length();
+	}
+	
+	public void keyTyped(char c){
+		String text1 = "";
+		String text2 = "";
+		if((int)c == 8 && cursorIndex != 0){
+			text1 = getText().substring(0, cursorIndex-1);
+			text2 = getText().substring(cursorIndex, getText().length());
+
+			cursorIndex--;
+		}else{
+			text1 = getText().substring(0, cursorIndex);
+			text2 = getText().substring(cursorIndex, getText().length());
+			cursorIndex++;
+		}
+		setText(text1 + c + text2, false);
 	}
 
 }
