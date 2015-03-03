@@ -225,7 +225,7 @@ public class Container extends Component{
 			focus.onLoseFocus();
 		}
 		focus = cmp;
-		if(focus != null){
+		if(focus != null && !focus.hasFocus()){
 			focus.setHasFocus(true);
 			focus.onGainFocus();
 		}
