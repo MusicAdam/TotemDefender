@@ -16,8 +16,8 @@ import com.totemdefender.input.InputHandler;
 import com.totemdefender.input.MouseEvent;
 
 public class Container extends Component{
-	public static boolean DEBUG_HIGHLIGHT_FOCUS = false;
-	
+	public static boolean DEBUG_HIGHLIGHT_FOCUS = true;
+
 	protected ArrayList<Component> components; 
 	private Component focus;
 	private MouseEvent mouseUpListener;
@@ -96,11 +96,16 @@ public class Container extends Component{
 	public boolean onMouseDown(MouseEvent event){
 		if(pointIsInBounds(event.mousePosition)){
 			for(Component cmp : components){
+				if(cmp instanceof TextEntry){
+					System.out.println(worldToLocal(event.mousePosition));
+				}
 				if(cmp.pointIsInBounds(worldToLocal(event.mousePosition))){
 					setFocus(cmp);
 					return cmp.onMouseDown(event);
 				}
 			}
+		}else{
+			System.out.println("OUT BOUNDS");
 		}
 		return false;
 	}
