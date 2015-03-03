@@ -104,8 +104,6 @@ public class Container extends Component{
 					return cmp.onMouseDown(event);
 				}
 			}
-		}else{
-			System.out.println("OUT BOUNDS");
 		}
 		return false;
 	}
