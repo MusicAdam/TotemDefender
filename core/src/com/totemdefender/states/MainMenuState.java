@@ -28,7 +28,7 @@ public class MainMenuState implements State {
 		menu.destroy(game);
 		
 		if(startButtonPressed){
-			game.getStateManager().attachState(new StartState());
+			game.getStateManager().attachState(new PresGameState());
 		}
 	}
 

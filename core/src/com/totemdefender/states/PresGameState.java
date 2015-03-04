@@ -4,7 +4,7 @@ import com.totemdefender.TotemDefender;
 import com.totemdefender.menu.MainMenu;
 import com.totemdefender.menu.PreGameMenu;
 
-public class StartState implements State {
+public class PresGameState implements State {
 	
 private PreGameMenu menu;
 protected boolean readyButtonPressed=false;
