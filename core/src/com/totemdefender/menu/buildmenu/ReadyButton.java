@@ -111,7 +111,7 @@ public class ReadyButton extends Button{
 		totem.spawn(game);
 		totem.setPosition(game.screenToWorld(totemPosition.add(getParent().getWorldPosition())));
 		totem.getBody().setActive(false);
-		game.addEntity(totem, TotemDefender.TOTEM_DEPTH);
+		game.addEntity(totem, TotemDefender.PROJECTILE_DEPTH); //Eclipse is giving me errors using the TOTEM_DEPTH const. No idea why.
 		getParent().setSpawnedBlock(totem);
 		
 		totemSpawned = true;
