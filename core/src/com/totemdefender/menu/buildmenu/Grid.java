@@ -53,7 +53,7 @@ public class Grid extends Panel {
 	@Override
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer) {
 		super.render(batch, shapeRenderer);
-		if(!hasEntity()) return; 
+		//if(!hasEntity()) return; 
 		
 		TotemDefender.EnableBlend();
 		shapeRenderer.begin(ShapeType.Line);
@@ -77,11 +77,12 @@ public class Grid extends Panel {
 		}
 		shapeRenderer.end();
 		if(doRenderInvalid){
-			Vector2 pos = TotemDefender.Get().worldToScreen(getEntity().getPosition());
+			Vector2 pos = getParent().worldToLocal(getIndexPosition());
 			float w = (TotemDefender.BLOCK_SIZE + 1);
 			float h = (TotemDefender.BLOCK_SIZE + 1);
+			float xOffset = (getEntity().getXScale() - 1) * w/2;
 			batch.begin();
-			batch.draw(invalid, pos.x - w/2, pos.y-h/2, w, h);
+			batch.draw(invalid, pos.x + xOffset, pos.y, w, h);
 			batch.end();
 		}
 		TotemDefender.DisableBlend();
