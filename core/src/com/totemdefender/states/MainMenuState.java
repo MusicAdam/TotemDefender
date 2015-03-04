@@ -3,6 +3,7 @@ package com.totemdefender.states;
 import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.menu.MainMenu;
+import com.totemdefender.states.PresGameState;
 
 public class MainMenuState implements State {
 
@@ -28,7 +29,7 @@ public class MainMenuState implements State {
 		menu.destroy(game);
 		
 		if(startButtonPressed){
-			game.getStateManager().attachState(new StartState());
+			game.getStateManager().attachState(new PresGameState());
 		}
 	}
 

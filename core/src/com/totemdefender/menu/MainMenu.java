@@ -13,7 +13,7 @@ import com.totemdefender.input.KeyboardEvent;
 import com.totemdefender.menu.buildmenu.BuildMenu;
 import com.totemdefender.states.BattleState;
 import com.totemdefender.states.MainMenuState;
-import com.totemdefender.states.StartState;
+import com.totemdefender.states.PresGameState;
 
 public class MainMenu extends NavigableContainer{
 	private Button start;
@@ -91,7 +91,7 @@ public class MainMenu extends NavigableContainer{
 		connectComponents(option, instruction);
 		connectComponents(instruction, start);
 		
-		attachKeyboardListeners(game.getPlayer1());
+		attachKeyboardListeners(game.getPlayer2());
 		super.create(game);
 	}
 }
