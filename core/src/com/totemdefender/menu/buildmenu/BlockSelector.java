@@ -259,7 +259,7 @@ public class BlockSelector extends Container{
 		if(blockEntity.getCost()<=blockEntity.getOwner().getBudget()){
 			if(blockEntity != null){
 				blockEntity.spawn(game);
-				game.addEntity(blockEntity);
+				game.addEntity(blockEntity, TotemDefender.BLOCK_DEPTH);
 				blockEntity.getBody().setActive(false);
 			}
 			

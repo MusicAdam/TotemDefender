@@ -111,7 +111,7 @@ public class ReadyButton extends Button{
 		totem.spawn(game);
 		totem.setPosition(game.screenToWorld(totemPosition.add(getParent().getWorldPosition())));
 		totem.getBody().setActive(false);
-		game.addEntity(totem);
+		game.addEntity(totem, TotemDefender.TOTEM_DEPTH);
 		getParent().setSpawnedBlock(totem);
 		
 		totemSpawned = true;
