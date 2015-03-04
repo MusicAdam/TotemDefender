@@ -255,6 +255,7 @@ public class Grid extends Panel {
 		BlockEntity block = getBlockAtPosition(position);
 		if(block != null){
 			placeBlock();
+			index = getIndexFromPosition(position);
 			setEntity(block);					
 		}
 	}
