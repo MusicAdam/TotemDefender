@@ -23,8 +23,9 @@ public class Grid extends Panel {
 	private Vector2 index; 			//The current position in the grid.
 	private Vector2 mousePosition;
 	private boolean shouldDelete = false;
-	private boolean mouseDown = false;;
+	private boolean mouseDown = false;
 	private boolean doRenderInvalid = false;
+	private boolean hideGrid = false;
 	private Texture invalid;
 	
 	public Grid(BuildMenu parent){
@@ -53,25 +54,26 @@ public class Grid extends Panel {
 	@Override
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer) {
 		super.render(batch, shapeRenderer);
-		//if(!hasEntity()) return; 
 		
 		TotemDefender.EnableBlend();
-		shapeRenderer.begin(ShapeType.Line);
-		for(int x = 0; x < WIDTH; x++){
-			for(int y = 0; y < HEIGHT; y++){		
-				shapeRenderer.setColor(.8f, .3f, .3f, 1);
-				//Render the grid
-				if(x == 0 || y == 0){
-					if(x == WIDTH - 1 || y == HEIGHT -1) continue;
-					float xPos = getPosition().x + (x+1) * (TotemDefender.BLOCK_SIZE + 1);
-					float yPos = getPosition().y + (y+1) * (TotemDefender.BLOCK_SIZE + 1);
-					shapeRenderer.line(xPos, yPos, xPos - (TotemDefender.BLOCK_SIZE + 1), yPos);
-					shapeRenderer.line(xPos, yPos, xPos, yPos - (TotemDefender.BLOCK_SIZE + 1));
-				}else{
-					float xPos = getPosition().x + x * (TotemDefender.BLOCK_SIZE + 1);
-					float yPos = getPosition().y + y * (TotemDefender.BLOCK_SIZE + 1);
-					shapeRenderer.line(xPos, yPos, xPos + (TotemDefender.BLOCK_SIZE + 1), yPos);
-					shapeRenderer.line(xPos, yPos, xPos, yPos + (TotemDefender.BLOCK_SIZE + 1));
+		if(!shouldHideGrid()){
+			shapeRenderer.begin(ShapeType.Line);
+			for(int x = 0; x < WIDTH; x++){
+				for(int y = 0; y < HEIGHT; y++){		
+					shapeRenderer.setColor(.8f, .3f, .3f, 1);
+					//Render the grid
+					if(x == 0 || y == 0){
+						if(x == WIDTH - 1 || y == HEIGHT -1) continue;
+						float xPos = getPosition().x + (x+1) * (TotemDefender.BLOCK_SIZE + 1);
+						float yPos = getPosition().y + (y+1) * (TotemDefender.BLOCK_SIZE + 1);
+						shapeRenderer.line(xPos, yPos, xPos - (TotemDefender.BLOCK_SIZE + 1), yPos);
+						shapeRenderer.line(xPos, yPos, xPos, yPos - (TotemDefender.BLOCK_SIZE + 1));
+					}else{
+						float xPos = getPosition().x + x * (TotemDefender.BLOCK_SIZE + 1);
+						float yPos = getPosition().y + y * (TotemDefender.BLOCK_SIZE + 1);
+						shapeRenderer.line(xPos, yPos, xPos + (TotemDefender.BLOCK_SIZE + 1), yPos);
+						shapeRenderer.line(xPos, yPos, xPos, yPos + (TotemDefender.BLOCK_SIZE + 1));
+					}
 				}
 			}
 		}
@@ -292,5 +294,13 @@ public class Grid extends Panel {
 	
 	public void centerIndex(){
 		index = new Vector2(WIDTH/2, HEIGHT/2);
+	}
+
+	public boolean shouldHideGrid() {
+		return hideGrid;
+	}
+
+	public void setHideGrid(boolean hideGrid) {
+		this.hideGrid = hideGrid;
 	}
 }

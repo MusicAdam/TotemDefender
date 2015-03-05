@@ -86,12 +86,6 @@ public class PreGameMenu extends NavigableContainer {
 		ready.setTextOffset(buttonSize.x/2 - ready.getTextBounds().width/2, buttonSize.y/2 - ready.getTextBounds().height/2 + 5);
 		ready.create(game);
 		
-		addComponent(userName);
-		addComponent(weapon1);
-		addComponent(weapon2);
-		addComponent(weapon3);
-		addComponent(ready);
-		
 		connectComponents(weapon1, weapon2);
 		connectComponents(weapon2, weapon3);
 		connectComponents(weapon3, ready);
