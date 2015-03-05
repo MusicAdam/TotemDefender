@@ -39,7 +39,6 @@ public class ReadyButton extends Button{
 		setText("Ready");
 		setTextOffset(TotemDefender.BLOCK_SIZE + 13, getSize().y/2 - getTextBounds().height/2 + 5);		
 		getParent().invalidate();
-		setWidth(122);
 		super.create(game);
 	}
 	
@@ -112,7 +111,7 @@ public class ReadyButton extends Button{
 		totem.spawn(game);
 		totem.setPosition(game.screenToWorld(totemPosition.add(getParent().getWorldPosition())));
 		totem.getBody().setActive(false);
-		game.addEntity(totem);
+		game.addEntity(totem, TotemDefender.PROJECTILE_DEPTH); //Eclipse is giving me errors using the TOTEM_DEPTH const. No idea why.
 		getParent().setSpawnedBlock(totem);
 		
 		totemSpawned = true;

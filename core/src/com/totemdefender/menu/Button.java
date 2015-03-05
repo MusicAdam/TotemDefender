@@ -14,13 +14,20 @@ import com.totemdefender.TotemDefender;
 import com.totemdefender.input.MouseEvent;
 
 public class Button extends Label {	
+	private Texture backgroundTexture;
+	private Texture backgroundHighlightTexture;
+	
 	public Button(Container parent, String labelText, Vector2 newSize, Vector2 newPosition, Color newColor) {
 		super(parent);
-		setText(labelText);		
+		setText(labelText, true);		
 		setSize(newSize); 
 		setPosition(newPosition);
 		setColor(newColor);
-		setHighlightColor(newColor.cpy().add(.5f, .5f, .5f, 1));
+		if(newColor == null){
+			setHighlightColor(null);
+		}else{
+			setHighlightColor(newColor.cpy().add(.5f, .5f, .5f, 1));
+		}
 	}
 	
 	public Button(Container parent){
@@ -30,23 +37,20 @@ public class Button extends Label {
 	}
 	
 	@Override
-	public void setColor(Color color){
-		super.setColor(color);
+	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer){
+		batch.begin();
+		if(isHighlighted() && backgroundHighlightTexture != null){
+			batch.draw(backgroundHighlightTexture, getPosition().x, getPosition().y, getWidth(), getHeight());
+		}else if(backgroundTexture != null){
+			batch.draw(backgroundTexture, getPosition().x, getPosition().y, getWidth(), getHeight());
+		}
+		batch.end();
+		super.render(batch, shapeRenderer);
 	}
 	
 	@Override
 	public void setText(String text){
-		super.setText(text, true);
-	}
-	
-	@Override
-	public void setPosition(Vector2 pos){
-		super.setPosition(pos);
-	}
-	
-	@Override
-	public boolean onClick(){
-		return false;
+		super.setText(text, false);
 	}
 	
 	@Override
@@ -71,6 +75,14 @@ public class Button extends Label {
 		setMouseOver(false);
 		setHighlighted(false);
 		super.onMouseExit(event);
+	}
+	
+	public void setBackgroundTexture(TotemDefender game, String file){
+		backgroundTexture = game.getAssetManager().get(file, Texture.class);
+	}
+	
+	public void setBackgroundHighlightTexture(TotemDefender game, String file){
+		backgroundHighlightTexture = game.getAssetManager().get(file, Texture.class);
 	}
 	
 }

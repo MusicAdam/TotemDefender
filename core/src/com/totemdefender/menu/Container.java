@@ -16,7 +16,7 @@ import com.totemdefender.input.InputHandler;
 import com.totemdefender.input.MouseEvent;
 
 public class Container extends Component{
-	public static boolean DEBUG_HIGHLIGHT_FOCUS = true;
+	public static boolean DEBUG_HIGHLIGHT_FOCUS = false;
 
 	protected ArrayList<Component> components; 
 	private Component focus;
@@ -104,8 +104,6 @@ public class Container extends Component{
 					return cmp.onMouseDown(event);
 				}
 			}
-		}else{
-			System.out.println("OUT BOUNDS");
 		}
 		return false;
 	}
