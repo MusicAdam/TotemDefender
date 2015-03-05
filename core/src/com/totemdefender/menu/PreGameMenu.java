@@ -12,7 +12,7 @@ import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.input.KeyboardEvent;
 import com.totemdefender.states.MainMenuState;
-import com.totemdefender.states.PresGameState;
+import com.totemdefender.states.PreGameState;
 
 public class PreGameMenu extends NavigableContainer {
 	private Player owner;
