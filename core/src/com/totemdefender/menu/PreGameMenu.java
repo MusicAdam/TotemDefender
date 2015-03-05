@@ -12,11 +12,12 @@ import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.input.KeyboardEvent;
 import com.totemdefender.states.MainMenuState;
-import com.totemdefender.states.PresGameState;
+import com.totemdefender.states.PreGameState;
 
 public class PreGameMenu extends NavigableContainer {
 	private Player owner;
 	private TextEntry userName;
+	private Button instruct;
 	private Button ready;
 	private Button weapon1, weapon2, weapon3;
 	private Boolean weaponSelected=false;
@@ -24,22 +25,20 @@ public class PreGameMenu extends NavigableContainer {
 	public PreGameMenu(TotemDefender game, Player owner) {
 		super(null);
 		this.owner = owner;
-		
 		Vector2 buttonSize = new Vector2((TotemDefender.V_WIDTH/6),(TotemDefender.V_WIDTH/6)/4.65517f); //4.6.. is the apsect ratio of the button texture
 		float side = 10;
 
-		userName = new TextEntry(this){
-			@Override
-			public boolean onClick(){
-				
-				return true;
-			}
-		};
+		userName = new TextEntry(this);
 		userName.setText("Player 1");
 		
 		if(owner.getID() == 2) {
-			side = TotemDefender.V_WIDTH - buttonSize.x - side;
+			side = TotemDefender.V_WIDTH - buttonSize.x - 10;
+			
 			userName.setText("Player 2");
+			instruct = new Button(this, "", new Vector2((TotemDefender.V_WIDTH *(2/3)),(TotemDefender.V_WIDTH*(2/3))/4.65517f), 
+					new Vector2(buttonSize.x + 10, 100), Color.WHITE);
+			instruct.setBackgroundTexture(game, "ui/bar_tall.png");
+			instruct.create(game);
 		}
 		userName.setSize(buttonSize);
 		userName.setPosition(new Vector2(side, TotemDefender.V_HEIGHT - buttonSize.y));

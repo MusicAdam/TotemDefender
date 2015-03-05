@@ -7,7 +7,7 @@ import com.totemdefender.menu.PreGameMenu;
 import com.totemdefender.menu.TextEntry;
 import com.totemdefender.menu.buildmenu.BuildMenu;
 
-public class PresGameState implements State {
+public class PreGameState implements State {
 	//private TextEntry p1Name, p2Name;
 	private PreGameMenu p1PreMenu;
 	private PreGameMenu p2PreMenu;

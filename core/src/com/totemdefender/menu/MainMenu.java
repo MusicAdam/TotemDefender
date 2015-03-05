@@ -13,7 +13,7 @@ import com.totemdefender.input.KeyboardEvent;
 import com.totemdefender.menu.buildmenu.BuildMenu;
 import com.totemdefender.states.BattleState;
 import com.totemdefender.states.MainMenuState;
-import com.totemdefender.states.PresGameState;
+import com.totemdefender.states.PreGameState;
 
 public class MainMenu extends NavigableContainer{
 	private Button start;
