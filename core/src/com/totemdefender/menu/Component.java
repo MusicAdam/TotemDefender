@@ -73,7 +73,7 @@ public abstract class Component {
 	
 	public boolean onClick(){return false;} //Called when mouseup falls on the component
 	
-	public boolean onKeyboardSelect(){ return false; } //Called when selected with the keyboard
+	public boolean onKeyboardSelect(){ return onClick(); } //Called when selected with the keyboard
 	
 	public void onGainFocus(){}
 	

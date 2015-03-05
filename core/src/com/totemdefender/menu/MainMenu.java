@@ -89,7 +89,7 @@ public class MainMenu extends NavigableContainer{
 		connectComponents(start, leaderboard);
 		connectComponents(leaderboard, option);
 		connectComponents(option, instruction);
-		connectComponents(instruction, start);
+		connectComponents(instruction, start, true);
 		
 		attachKeyboardListeners(game.getPlayer2());
 		super.create(game);

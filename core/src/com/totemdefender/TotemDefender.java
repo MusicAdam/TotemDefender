@@ -75,7 +75,8 @@ public class TotemDefender extends ApplicationAdapter {
 	public static final int PEDESTAL_DEPTH = 1;
 	public static final int BLOCK_DEPTH = 2;
 	public static final int WEAPON_DEPTH = 3;
-	public static final int PROJECTILE_DEPTH = 4;
+	public static final int TOTEM_DEPTH = 4;
+	public static final int PROJECTILE_DEPTH = 5;
 	
 	
 

@@ -12,17 +12,19 @@ public class NavigableContainer extends Container{
 	public class Edge{
 		public Node node1;
 		public Node node2;
-		public float distance;
 		public int yDir;
 		public int xDir;
-		public boolean isNullConnector = false;
+		public boolean isWrapper = false;
 		
-		public void updateDistances(){
-			this.distance = node2.component.getPosition().dst(node1.component.getPosition());
+		public void updateDirection(){
 			float xDist = node2.component.getPosition().x - node1.component.getPosition().x;
 			float yDist = node2.component.getPosition().y - node1.component.getPosition().y;
 			this.xDir =(int)(xDist / (float)Math.abs(xDist));
 			this.yDir =(int)(yDist / (float)Math.abs(yDist));
+			if(isWrapper){
+				xDir *= -1;
+				yDir *= -1;
+			}
 		}
 	}
 	
@@ -32,7 +34,7 @@ public class NavigableContainer extends Container{
 		public Node(){}
 		public void updateEdges(){
 			for(Edge edge : edges){
-				edge.updateDistances();
+				edge.updateDirection();
 			}
 		}
 		
@@ -117,7 +119,7 @@ public class NavigableContainer extends Container{
 		moveFocusRight();			
 	}
 	
-	public void connectComponents(Component cmp1, Component cmp2){
+	public void connectComponents(Component cmp1, Component cmp2, boolean isWrapper){
 		Edge edge1 = new Edge();
 		Edge edge2 = new Edge();
 
@@ -138,12 +140,18 @@ public class NavigableContainer extends Container{
 		
 		edge1.node1 = node1;
 		edge1.node2 = node2;
-		edge1.updateDistances();
+		edge1.isWrapper = isWrapper;
+		edge1.updateDirection();
 		node1.edges.add(edge1);
 		edge2.node1 = node2;
 		edge2.node2 = node1;
-		edge2.updateDistances();
+		edge2.isWrapper = isWrapper;
+		edge2.updateDirection();
 		node2.edges.add(edge2);
+	}
+	
+	public void connectComponents(Component cmp1, Component cmp2){
+		connectComponents(cmp1, cmp2, false);
 	}
 	
 	public Node findNode(Component cmp){
@@ -188,22 +196,18 @@ public class NavigableContainer extends Container{
 	}
 	
 	private Node findClosestNode(Node node, int xDir, int yDir){
-		Node closest = null;
-		float dist = Float.MAX_VALUE;
 		for(Edge edge : node.edges){
-			if(	edge.yDir != yDir &&
-				edge.xDir != xDir ) continue;
-			if(edge.distance < dist){
-				dist = edge.distance;
-				if(edge.node1 == nodeFocus){
-					closest = edge.node2;
+			if(	edge.yDir == xDir ||
+				edge.yDir == yDir){
+				if(edge.node1 == node){
+					return edge.node2;
 				}else{
-					closest = edge.node1;
+					return edge.node1;
 				}
 			}
 		}
 		
-		return closest;
+		return null;
 	}
 	
 	public void moveFocusDown(){

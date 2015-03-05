@@ -29,7 +29,7 @@ public class InputHandler implements InputProcessor{
 	public static int PL_2_R 		= Input.Keys.RIGHT;
 	public static int PL_2_D		= Input.Keys.DOWN;
 	public static int PL_2_ROTATE	= Input.Keys.CONTROL_RIGHT;
-	public static int PL_2_SELECT 	= Input.Keys.SHIFT_RIGHT;
+	public static int PL_2_SELECT 	= Input.Keys.ENTER;
 	
 	private ArrayList<KeyboardEvent> keyboardListeners;
 	private ArrayList<MouseEvent> mouseListeners;
