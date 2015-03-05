@@ -282,13 +282,13 @@ public class TotemDefender extends ApplicationAdapter {
 			
 			player1Score.setFont("hud_medium.ttf");
 			player1Score.getFont().setColor(Color.valueOf("03893cfe"));
-			player1Score.getFont().draw(entityBatch, "Player1 Score: "+this.getPlayer1().getScore(),-400+player1Score.getWidth(),400-player1Score.getHeight());
+			player1Score.getFont().draw(entityBatch, "Player" + getPlayer1().getID()+ " Score: "+this.getPlayer1().getScore(),-670+player1Score.getWidth(),400-player1Score.getHeight());
 			
 			
 			Label player2Score =new Label(new Container());
 			player2Score.setFont("hud_medium.ttf");
 			
-			player2Score.getFont().draw(entityBatch, "Player2 Score: "+this.getPlayer2().getScore(),400-player2Score.getWidth(),400-player1Score.getHeight());
+			player2Score.getFont().draw(entityBatch, "Player" +getPlayer2().getID()+ " Score: "+this.getPlayer2().getScore(),400-player2Score.getWidth(),400-player1Score.getHeight());
 			
 		}
 		
