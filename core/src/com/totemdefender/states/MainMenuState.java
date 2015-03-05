@@ -38,11 +38,10 @@ public class MainMenuState implements State {
 	}
 
 	@Override
-	public void update(TotemDefender game) {
-	}
+	public void update(TotemDefender game) {}
 	
 	
 	public void startButtonPressed(boolean t){
-		startButtonPressed = true;
+		startButtonPressed = t;
 	}
 }

@@ -4,10 +4,9 @@ import com.totemdefender.TotemDefender;
 import com.totemdefender.menu.MainMenu;
 import com.totemdefender.menu.PreGameMenu;
 
-public class StartState implements State {
-	
-private PreGameMenu menu;
-protected boolean readyButtonPressed=false;
+public class StartState implements State {		
+	private PreGameMenu menu;
+	protected boolean readyButtonPressed=false;
 
 	@Override
 	public boolean canEnter(TotemDefender game) {
@@ -31,7 +30,6 @@ protected boolean readyButtonPressed=false;
 
 	@Override
 	public boolean canExit(TotemDefender game) {
-		// TODO Auto-generated method stub
 		return readyButtonPressed;
 	}
 
@@ -40,8 +38,8 @@ protected boolean readyButtonPressed=false;
 		// TODO Auto-generated method stub
 		
 	}
-
+	
 	public void readyButtonPressed(boolean t){
-		readyButtonPressed = true;
+		readyButtonPressed = t;
 	}
 }
