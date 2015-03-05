@@ -35,6 +35,7 @@ public class BattleState implements State {
 	private boolean p2UpKeyDown = false;
 	private boolean p2DownKeyDown = false;
 	
+	
 	public BattleState(Level level){
 		this.level = level;
 		turn = TotemDefender.Get().getPlayer1();
@@ -128,6 +129,8 @@ public class BattleState implements State {
 				return thisRef.dbg_resetWeapon();
 			}
 		});
+		
+		game.setDrawScores(true);
 	}
 
 	@Override
