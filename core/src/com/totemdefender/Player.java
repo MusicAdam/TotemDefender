@@ -6,6 +6,7 @@ public class Player {
 	private int id; //1 or 2
 	private String nickname; //User entered nickname
 	private int budget=1000; //The amount of money the player has to spend on blocks
+	private int score=0;
 	
 	public Player(int id){
 		this.id = id;
@@ -46,5 +47,13 @@ public class Player {
 	
 	public void setBudget(int budget){
 		this.budget=budget;
+	}
+
+	public int getScore() {
+		return score;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
 	}
 }

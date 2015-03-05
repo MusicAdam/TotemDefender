@@ -11,6 +11,7 @@ import com.totemdefender.input.InputHandler;
 import com.totemdefender.input.KeyboardEvent;
 import com.totemdefender.menu.Component;
 import com.totemdefender.menu.Container;
+import com.totemdefender.menu.Label;
 import com.totemdefender.menu.Panel;
 import com.totemdefender.states.BuildState;
 import com.totemdefender.states.DepthTestState;
@@ -26,10 +27,12 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -108,6 +111,7 @@ public class TotemDefender extends ApplicationAdapter {
 	private Queue<Container> 		menuDeleteQueue;
 	private Queue<DepthWrapper<Container>> 		menuAddQueue;
 	private Level level;
+	private Boolean drawScores=false;
 	
 	/** Control Variables */
 	private boolean isDoneBuilding;
@@ -175,6 +179,7 @@ public class TotemDefender extends ApplicationAdapter {
 			}
 		});
 
+		
 		
 	}
 
@@ -264,6 +269,29 @@ public class TotemDefender extends ApplicationAdapter {
 		
 		worldCamera.update();
 		menuCamera.update();
+		
+		
+		
+		entityBatch.begin();
+		if(drawScores==true){
+			
+			
+		
+			Label player1Score =new Label(new Container());
+			
+			player1Score.setFont("hud_medium.ttf");
+			player1Score.getFont().setColor(Color.valueOf("03893cfe"));
+			player1Score.getFont().draw(entityBatch, "Player1 Score: "+this.getPlayer1().getScore(),-400+player1Score.getWidth(),400-player1Score.getHeight());
+			
+			
+			Label player2Score =new Label(new Container());
+			player2Score.setFont("hud_medium.ttf");
+			
+			player2Score.getFont().draw(entityBatch, "Player2 Score: "+this.getPlayer2().getScore(),400-player2Score.getWidth(),400-player1Score.getHeight());
+			
+		}
+		
+		entityBatch.end();
 	}
 	
 	@Override
@@ -571,5 +599,13 @@ public class TotemDefender extends ApplicationAdapter {
 
 	public void setLevel(Level level) {
 		this.level = level;
+	}
+
+	public Boolean getDrawScores() {
+		return drawScores;
+	}
+
+	public void setDrawScores(Boolean drawScores) {
+		this.drawScores = drawScores;
 	}
 }

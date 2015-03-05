@@ -2,6 +2,7 @@ package com.totemdefender.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.totemdefender.Level;
 import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
@@ -12,6 +13,8 @@ import com.totemdefender.entities.blocks.RectangleBlockEntity;
 import com.totemdefender.entities.blocks.SquareBlockEntity;
 import com.totemdefender.input.InputHandler;
 import com.totemdefender.input.KeyboardEvent;
+import com.totemdefender.menu.Container;
+import com.totemdefender.menu.Label;
 import com.totemdefender.menu.hud.HUD;
 
 
@@ -34,6 +37,7 @@ public class BattleState implements State {
 	private boolean p1DownKeyDown = false;
 	private boolean p2UpKeyDown = false;
 	private boolean p2DownKeyDown = false;
+	private Label player1Score;
 	
 	public BattleState(Level level){
 		this.level = level;
@@ -128,6 +132,8 @@ public class BattleState implements State {
 				return thisRef.dbg_resetWeapon();
 			}
 		});
+		
+		game.setDrawScores(true);
 	}
 
 	@Override
