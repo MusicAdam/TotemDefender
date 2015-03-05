@@ -115,6 +115,7 @@ public class BuildMenu extends NavigableContainer {
 		
 		if(block instanceof TotemEntity){
 			level.addTotem((TotemEntity)block);
+			getGrid().setHideGrid(true);
 			isDone = true;
 		}else{
 			level.addPlacedBlock(block);
