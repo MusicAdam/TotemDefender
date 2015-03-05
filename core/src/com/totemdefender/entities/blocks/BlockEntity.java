@@ -170,6 +170,11 @@ public abstract class BlockEntity extends Entity{
 	
 	public void Delete(TotemDefender game){
 		if(shouldDelete==true){
+			if(this.getOwner().getID()==1)
+			game.getPlayer2().setScore(game.getPlayer2().getScore()+cost);
+			
+			else
+				game.getPlayer1().setScore(game.getPlayer1().getScore()+cost);	
 			game.getLevel().removePlacedBlock(this);
 			game.destroyEntity(this);
 		}	
