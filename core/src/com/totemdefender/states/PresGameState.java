@@ -25,22 +25,24 @@ Vector2 buttonSize = new Vector2((TotemDefender.V_WIDTH/6),(TotemDefender.V_WIDT
 		p1PreMenu = new PreGameMenu(game, game.getPlayer1());
 		
 		p1Name = new TextEntry(this.p1PreMenu);
+		/*
 		p1Name.setText("Player 1");
 		p1Name.setSize(buttonSize);
 		p1Name.setPosition(new Vector2(10, TotemDefender.V_HEIGHT - buttonSize.y));
 		p1Name.setFont("hud_small.ttf");
 		p1Name.setTextOffset(buttonSize.x/2 - p1Name.getTextBounds().width/2, buttonSize.y/2 - p1Name.getTextBounds().height/2 + 5);
-
+		*/
 		p2PreMenu = new PreGameMenu(game, game.getPlayer2());
+		/*
 		p2Name = new TextEntry(this.p2PreMenu);
 		p2Name.setText("Player 1");
 		p2Name.setSize(buttonSize);
 		p2Name.setPosition(new Vector2(10, TotemDefender.V_HEIGHT - buttonSize.y));
 		p2Name.setFont("hud_small.ttf");
 		p2Name.setTextOffset(buttonSize.x/2 - p2Name.getTextBounds().width/2, buttonSize.y/2 - p2Name.getTextBounds().height/2 + 5);
-
-		p1Name.create(game);
-		p2Name.create(game);
+		*/
+		//p1Name.create(game);
+		//p2Name.create(game);
 		p1PreMenu.create(game);
 		p2PreMenu.create(game);
 	}

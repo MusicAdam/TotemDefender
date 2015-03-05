@@ -27,8 +27,14 @@ public class PreGameMenu extends NavigableContainer {
 		
 		Vector2 buttonSize = new Vector2((TotemDefender.V_WIDTH/6),(TotemDefender.V_WIDTH/6)/4.65517f); //4.6.. is the apsect ratio of the button texture
 		float side = 10;
-		/*
-		userName = new TextEntry(this);
+
+		userName = new TextEntry(this){
+			@Override
+			public boolean onClick(){
+				
+				return true;
+			}
+		};
 		userName.setText("Player 1");
 		
 		if(owner.getID() == 2) {
@@ -40,7 +46,7 @@ public class PreGameMenu extends NavigableContainer {
 		userName.setFont("hud_small.ttf");
 		userName.setTextOffset(buttonSize.x/2 - userName.getTextBounds().width/2, buttonSize.y/2 - userName.getTextBounds().height/2 + 5);
 		userName.create(game);
-		*/
+
 		weapon1 = new Button(this, "Player 1 Weapon 1", buttonSize, new Vector2(side, TotemDefender.V_HEIGHT - (buttonSize.y)*2), Color.RED){
 			@Override
 			public boolean onClick(){
