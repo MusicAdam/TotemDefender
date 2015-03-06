@@ -1,6 +1,7 @@
 package com.totemdefender.menu;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -34,6 +35,15 @@ public class TextEntry extends Label{
 			public boolean callback(){
 				if(hasFocus())
 					keyTyped(character);
+				return true;
+			}
+		});
+		
+		TotemDefender.Get().getMenuInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, Input.Keys.ENTER){
+			@Override
+			public boolean callback(){
+				if(hasFocus())
+					onKeyboardSelect();
 				return true;
 			}
 		});
@@ -95,6 +105,23 @@ public class TextEntry extends Label{
 			setCursorIndex(worldToLocal(event.mousePosition));			
 		}
 		return true;
+	}
+	
+	@Override
+	public boolean onKeyboardSelect(){
+		if(getParent() instanceof NavigableContainer){
+			((NavigableContainer)getParent()).setKeyboardFocus(getParent());
+			((NavigableContainer)getParent()).moveFocusDown();
+		}
+		
+		return true;
+	}
+	
+	@Override
+	public void onGainFocus(){
+		if(getParent() instanceof NavigableContainer){
+			((NavigableContainer)getParent()).setKeyboardFocus(this);
+		}
 	}
 	
 	@Override

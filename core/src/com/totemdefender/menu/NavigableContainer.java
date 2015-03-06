@@ -40,6 +40,7 @@ public class NavigableContainer extends Container{
 	
 	private ArrayList<Node> graph;
 	private Node			nodeFocus;
+	private Component 			keyboardFocus;
 	protected KeyboardEvent 	upKeyDownListener;
 	protected KeyboardEvent 	upKeyUpListener;
 	protected KeyboardEvent 	downKeyDownListener;
@@ -61,6 +62,7 @@ public class NavigableContainer extends Container{
 		super(parent);
 		
 		graph = new ArrayList<Node>();
+		setKeyboardFocus(this);
 	}
 	
 	@Override
@@ -267,53 +269,89 @@ public class NavigableContainer extends Container{
 	}
 	
 	public boolean onUpKeyDown(){
-		onTraverseUp();
-		traverseUp = true;
-		return true;		
+		if(hasKeyboardFocus()){
+			onTraverseUp();
+			traverseUp = true;
+			return true;	
+		}else{
+			return getKeyboardFocus().onUpKeyDown();
+		}
 	}
 	
 	public boolean onUpKeyUp(){
-		traverseUp = false;
-		return true;		
+		if(hasKeyboardFocus()){
+			traverseUp = false;
+			return true;	
+		}else{
+			return getKeyboardFocus().onUpKeyUp();
+		}
 	}
 	
 	public boolean onDownKeyDown(){
-		onTraverseDown();
-		traverseDown = true;
-		return true;		
+		if(hasKeyboardFocus()){
+			onTraverseDown();
+			traverseDown = true;
+			return true;	
+		}else{
+			return getKeyboardFocus().onDownKeyDown();
+		}
 	}
 	
 	public boolean onDownKeyUp(){
-		traverseDown = false;
-		return true;		
+		if(hasKeyboardFocus()){
+			traverseDown = false;
+			return true;		
+		}else{
+			return getKeyboardFocus().onDownKeyUp();
+		}
 	}
 	
 	public boolean onLeftKeyDown(){
-		onTraverseLeft();
-		traverseLeft = true;
-		return true;
+		if(hasKeyboardFocus()){
+			onTraverseLeft();
+			traverseLeft = true;
+			return true;
+		}else{
+			return getKeyboardFocus().onLeftKeyDown();
+		}
 	}
 	
 	public boolean onLeftKeyUp(){
-		traverseLeft = false;
-		return true;		
+		if(hasKeyboardFocus()){
+			traverseLeft = false;
+			return true;	
+		}else{
+			return getKeyboardFocus().onLeftKeyUp();
+		}
 	}
 	
 	public boolean onRightKeyDown(){
-		onTraverseRight();
-		traverseRight = true;
-		return true;
+		if(hasKeyboardFocus()){
+			onTraverseRight();
+			traverseRight = true;
+			return true;
+		}else{
+			return getKeyboardFocus().onRightKeyDown();
+		}
 	}
 	
 	public boolean onRightKeyUp(){
-		traverseRight = false;
-		return true;
+		if(hasKeyboardFocus()){
+			traverseRight = false;
+			return true;
+		}else{
+			return getKeyboardFocus().onRightKeyUp();
+		}
 	}
 	
 	public boolean onSelectKeyUp(){
-		if(getFocus() != null)
-			getFocus().onKeyboardSelect();
-		return true;
+		if(hasKeyboardFocus()){
+			if(getFocus() != null)
+				getFocus().onKeyboardSelect();
+			return true;
+		}else{
+			return getKeyboardFocus().onSelectKeyUp();
+		}
 	}
 	
 	public void attachKeyboardListeners(Player player){
@@ -396,4 +434,23 @@ public class NavigableContainer extends Container{
 		super.removeComponent(cmp);
 	}
 
+	public Component getKeyboardFocus() {
+		return keyboardFocus;
+	}
+
+	public void setKeyboardFocus(Component keyboardFocus) {
+		this.keyboardFocus = keyboardFocus;
+		if(keyboardFocus == null)
+			this.keyboardFocus = this;
+		if(this.keyboardFocus != this){
+			traverseLeft = false;
+			traverseRight = false;
+			traverseDown = false;
+			traverseUp = false;
+		}
+	}
+	
+	public boolean hasKeyboardFocus(){
+		return keyboardFocus == this;
+	}
 }

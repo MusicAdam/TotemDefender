@@ -96,9 +96,6 @@ public class Container extends Component{
 	public boolean onMouseDown(MouseEvent event){
 		if(pointIsInBounds(event.mousePosition)){
 			for(Component cmp : components){
-				if(cmp instanceof TextEntry){
-					System.out.println(worldToLocal(event.mousePosition));
-				}
 				if(cmp.pointIsInBounds(worldToLocal(event.mousePosition))){
 					setFocus(cmp);
 					return cmp.onMouseDown(event);
