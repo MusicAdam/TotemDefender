@@ -24,8 +24,6 @@ import com.totemdefender.states.StateListener;
 public class HUD extends Container{	
 	private ChargeMeter weapon1ChargeMeter;
 	private ChargeMeter weapon2ChargeMeter;
-	private Grid player1Grid;
-	private Grid player2Grid;
 	private Level level;
 	
 	public HUD(TotemDefender game, Level level){
@@ -34,9 +32,6 @@ public class HUD extends Container{
 		weapon1ChargeMeter = new ChargeMeter(this, level.getPlayer1Weapon());
 		weapon1ChargeMeter.create(game);
 		weapon2ChargeMeter = new ChargeMeter(this, level.getPlayer2Weapon());
-		weapon2ChargeMeter.create(game);
-	//private Label p1Score;
-	//private Label p2Score;
-	
-	}
+		weapon2ChargeMeter.create(game);		
+	}	
 }

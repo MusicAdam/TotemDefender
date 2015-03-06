@@ -1,5 +1,6 @@
 package com.totemdefender.states;
 
+import com.badlogic.gdx.graphics.Color;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.menu.Label;
 import com.totemdefender.menu.hud.HUD;
@@ -19,6 +20,7 @@ public class PostGameState implements State {
 	@Override
 	public void onEnter(TotemDefender game) {
 		Label winner = new Label(hud);
+		winner.setTextColor(new Color(.3f, .3f, .3f, 1));
 		winner.setFont("hud_large.ttf");
 		winner.create(game);
 		

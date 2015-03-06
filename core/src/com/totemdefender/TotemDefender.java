@@ -281,13 +281,13 @@ public class TotemDefender extends ApplicationAdapter {
 			Label player1Score =new Label(new Container());
 			
 			player1Score.setFont("hud_medium.ttf");
-			player1Score.getFont().setColor(Color.valueOf("03893cfe"));
+			player1Score.getFont().setColor(new Color(.3f, .3f, .3f, 1));
 			player1Score.getFont().draw(entityBatch, "Player" + getPlayer1().getID()+ " Score: "+this.getPlayer1().getScore(),-670+player1Score.getWidth(),400-player1Score.getHeight());
 			
 			
 			Label player2Score =new Label(new Container());
 			player2Score.setFont("hud_medium.ttf");
-			
+			player2Score.getFont().setColor(new Color(.3f, .3f, .3f, 1));			
 			player2Score.getFont().draw(entityBatch, "Player" +getPlayer2().getID()+ " Score: "+this.getPlayer2().getScore(),400-player2Score.getWidth(),400-player1Score.getHeight());
 			
 		}
@@ -382,6 +382,12 @@ public class TotemDefender extends ApplicationAdapter {
 		assetManager.load("hud_small.ttf", BitmapFont.class, hud_small);
 		assetManager.load("hud_medium.ttf", BitmapFont.class, hud_medium);
 		assetManager.load("hud_large.ttf", BitmapFont.class, hud_large);
+		//Backgorund
+		assetManager.load("background/bg.png", Texture.class, textureParam);
+		assetManager.load("background/castle.png", Texture.class, textureParam);	
+		assetManager.load("background/sun.png", Texture.class, textureParam);	
+		assetManager.load("background/cloud_1.png", Texture.class, textureParam);
+		assetManager.load("background/cloud_2.png", Texture.class, textureParam);				
 		//BuildMenu shapeButton
 		//assetManager.load("circle blue.png", Texture.class, textureParam);
 		//assetManager.load("triangle.png", Texture.class, textureParam);
