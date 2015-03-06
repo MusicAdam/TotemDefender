@@ -79,6 +79,25 @@ public abstract class Component {
 	
 	public void onLoseFocus(){}
 	
+
+	public boolean onUpKeyDown(){ return false; }
+	
+	public boolean onUpKeyUp(){ return false; }
+	
+	public boolean onDownKeyDown(){ return false; }
+	
+	public boolean onDownKeyUp(){ return false; }
+	
+	public boolean onLeftKeyDown(){ return false; }
+	
+	public boolean onLeftKeyUp(){ return false; }
+	
+	public boolean onRightKeyDown(){ return false; }
+	
+	public boolean onRightKeyUp(){ return false; }
+	
+	public boolean onSelectKeyUp(){ return false; }
+	
 	/** Checks if given point lies within the menu */
 	public boolean pointIsInBounds(Vector2 point){ return rectangle.contains(point); }
 	

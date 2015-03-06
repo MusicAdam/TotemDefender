@@ -1,20 +1,9 @@
 package com.totemdefender.menu;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.totemdefender.Level;
 import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
-import com.totemdefender.input.KeyboardEvent;
-import com.totemdefender.states.MainMenuState;
-import com.totemdefender.states.PreGameState;
 
 public class PreGameMenu extends NavigableContainer {
 	private Player owner;
@@ -27,6 +16,7 @@ public class PreGameMenu extends NavigableContainer {
 	public PreGameMenu(TotemDefender game, Player owner) {
 		super(null);
 		this.owner = owner;
+
 		Vector2 buttonSize = new Vector2((TotemDefender.V_WIDTH/6),(TotemDefender.V_HEIGHT/1.5f)/4.65517f); //4.6.. is the apsect ratio of the button texture
 		float padding = 10;
 		float side = padding;
@@ -96,11 +86,12 @@ public class PreGameMenu extends NavigableContainer {
 		ready.setFont("hud_small.ttf");
 		ready.setTextOffset(buttonSize.x/2 - ready.getTextBounds().width/2, buttonSize.y/2 - ready.getTextBounds().height/2 + 5);
 		ready.create(game);
-		
+
+		connectComponents(userName, weapon1);
 		connectComponents(weapon1, weapon2);
 		connectComponents(weapon2, weapon3);
 		connectComponents(weapon3, ready);
-		connectComponents(ready, weapon1, true);
+		connectComponents(ready, userName, true);
 		
 		attachKeyboardListeners(owner);
 	}
