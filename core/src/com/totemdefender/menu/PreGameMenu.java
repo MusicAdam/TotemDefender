@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.totemdefender.Level;
@@ -25,28 +27,34 @@ public class PreGameMenu extends NavigableContainer {
 	public PreGameMenu(TotemDefender game, Player owner) {
 		super(null);
 		this.owner = owner;
-		Vector2 buttonSize = new Vector2((TotemDefender.V_WIDTH/6),(TotemDefender.V_WIDTH/6)/4.65517f); //4.6.. is the apsect ratio of the button texture
-		float side = 10;
+		Vector2 buttonSize = new Vector2((TotemDefender.V_WIDTH/6),(TotemDefender.V_HEIGHT/1.5f)/4.65517f); //4.6.. is the apsect ratio of the button texture
+		float padding = 10;
+		float side = padding;
 
 		userName = new TextEntry(this);
 		userName.setText("Player 1");
 		
 		if(owner.getID() == 2) {
-			side = TotemDefender.V_WIDTH - buttonSize.x - 10;
+			side = TotemDefender.V_WIDTH - buttonSize.x - padding;
 			
 			userName.setText("Player 2");
-			instruct = new Button(this, "", new Vector2((TotemDefender.V_WIDTH *(2/3)),(TotemDefender.V_WIDTH*(2/3))/4.65517f), 
-					new Vector2(buttonSize.x + 10, 100), Color.WHITE);
-			instruct.setBackgroundTexture(game, "ui/bar_tall.png");
+			instruct = new Button(this, "", 
+					new Vector2(((TotemDefender.V_WIDTH * (2.0f/3.0f)) - 20), buttonSize.y*5), 
+					new Vector2(buttonSize.x + padding, TotemDefender.V_HEIGHT - (buttonSize.y)*5 - padding), null);
+			instruct.setBackgroundTexture(game, "keyboard.png");
+			instruct.setBackgroundHighlightTexture(game, "keyboard.png");
 			instruct.create(game);
+			
+			System.out.print("size x: " + instruct.getSize().x + " size y: " + instruct.getSize().y + "\n"); 
+			System.out.print("pos x: " + instruct.getPosition().x + " pos y: " + instruct.getPosition().y + "\n"); 
 		}
 		userName.setSize(buttonSize);
-		userName.setPosition(new Vector2(side, TotemDefender.V_HEIGHT - buttonSize.y));
+		userName.setPosition(new Vector2(side, TotemDefender.V_HEIGHT - (buttonSize.y + padding)));
 		userName.setFont("hud_small.ttf");
 		userName.setTextOffset(buttonSize.x/2 - userName.getTextBounds().width/2, buttonSize.y/2 - userName.getTextBounds().height/2 + 5);
 		userName.create(game);
 
-		weapon1 = new Button(this, "Player 1 Weapon 1", buttonSize, new Vector2(side, TotemDefender.V_HEIGHT - (buttonSize.y)*2), Color.RED){
+		weapon1 = new Button(this, "Player 1 Weapon 1", buttonSize, new Vector2(side, TotemDefender.V_HEIGHT - (buttonSize.y)*2 - padding), Color.RED){
 			@Override
 			public boolean onClick(){
 				
@@ -56,8 +64,8 @@ public class PreGameMenu extends NavigableContainer {
 		weapon1.setFont("hud_small.ttf");
 		weapon1.setTextOffset(buttonSize.x/2 - weapon1.getTextBounds().width/2, buttonSize.y/2 - weapon1.getTextBounds().height/2 + 5);
 		weapon1.create(game);
-		
-		weapon2 = new Button(this, "Player 1 Weapon 2", buttonSize, new Vector2(side, TotemDefender.V_HEIGHT - (buttonSize.y)*3), Color.BLUE){
+	
+		weapon2 = new Button(this, "Player 1 Weapon 2", buttonSize, new Vector2(side, TotemDefender.V_HEIGHT - (buttonSize.y)*3 - padding), Color.BLUE){
 			@Override
 			public boolean onClick(){
 				
@@ -68,7 +76,7 @@ public class PreGameMenu extends NavigableContainer {
 		weapon2.setTextOffset(buttonSize.x/2 - weapon2.getTextBounds().width/2, buttonSize.y/2 - weapon2.getTextBounds().height/2 + 5);
 		weapon2.create(game);
 		
-		weapon3 = new Button(this, "Player 1 Weapon 3", buttonSize, new Vector2(side, TotemDefender.V_HEIGHT - (buttonSize.y)*4), Color.YELLOW){
+		weapon3 = new Button(this, "Player 1 Weapon 3", buttonSize, new Vector2(side, TotemDefender.V_HEIGHT - (buttonSize.y)*4 - padding), Color.ORANGE){
 			@Override
 			public boolean onClick(){
 				
@@ -76,11 +84,10 @@ public class PreGameMenu extends NavigableContainer {
 			}
 		};
 		weapon3.setFont("hud_small.ttf");
-		weapon3.setTextOffset(buttonSize.x/2 - weapon3.getTextBounds().width/2, buttonSize.y/2 - weapon3.getTextBounds().height/2 + 5);
+		weapon3.setTextOffset(buttonSize.x/2 - weapon3.getTextBounds().width/2, buttonSize.y/2 - weapon3.getTextBounds().height/2 + 5);	
 		weapon3.create(game);
 		
-
-		ready = new Button(this, "READY", buttonSize, new Vector2(side, TotemDefender.V_HEIGHT - (buttonSize.y)*5), Color.GREEN){
+		ready = new Button(this, "READY", buttonSize, new Vector2(side, TotemDefender.V_HEIGHT - (buttonSize.y)*5 - padding), Color.GREEN){
 			@Override
 			public boolean onClick(){
 				weaponSelected = true;
