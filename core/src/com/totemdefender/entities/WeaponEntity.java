@@ -128,15 +128,15 @@ public class WeaponEntity extends Entity {
 		if(owner.getID() == 2){
 			xPos = -xPos; //Put it on the right side if its player 2
 			getSprite().flip(true, false);
-			getSprite().setOrigin(78, 9); //This is based on the logical rotation point on the cannon sprite
+			getSprite().setOrigin(98, 14); //This is based on the logical rotation point on the cannon sprite
 		}else{
-			getSprite().setOrigin(22, 9); //This is based on the logical rotation point on the cannon sprite
+			getSprite().setOrigin(30, 14); //This is based on the logical rotation point on the cannon sprite
 		}
 		
 		getSprite().setPosition(xPos - hw, yPos);
 		
 
-		barrelPos = new Vector2(getSprite().getOriginX() + 75 * flip, getSprite().getOriginY() + 20);
+		barrelPos = new Vector2(getSprite().getOriginX() + 95 * flip, getSprite().getOriginY() + 20);
 		fireDirection = new Vector2(.5f, 0);
 		fireDirection.nor();
 		if(owner.getID() == 2){
