@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
+import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.input.KeyboardEvent;
 import com.totemdefender.input.MouseEvent;
@@ -23,30 +24,44 @@ public class TextEntry extends Label{
 	private boolean drawCursor = false;
 	private float padding = 5;
 	private boolean mouseDown = false;
+	private KeyboardEvent keyTypedListener;
+	private KeyboardEvent selectKeyUpListener;
 	
-	public TextEntry(Container parent) {
+	public TextEntry(Container parent, Player owner) {
 		super(parent);
 		setColor(Color.WHITE);
 		setTextColor(Color.BLACK);
 		setSize(100, 0);
 		
-		TotemDefender.Get().getMenuInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_TYPED){
+		keyTypedListener = TotemDefender.Get().getMenuInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_TYPED){
 			@Override
 			public boolean callback(){
-				if(hasFocus())
+				if(hasFocus() && hasKeyboardFocus()){
 					keyTyped(character);
-				return true;
+					return true;
+				}
+				return false;
 			}
 		});
 		
-		TotemDefender.Get().getMenuInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, Input.Keys.ENTER){
+		selectKeyUpListener = TotemDefender.Get().getMenuInputHandler().addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, Input.Keys.ENTER){
 			@Override
 			public boolean callback(){
-				if(hasFocus())
+				if(hasFocus()){
 					onKeyboardSelect();
-				return true;
+					return true;
+				}
+				return false;
 			}
 		});
+	}
+	
+	@Override
+	public void destroy(TotemDefender game){
+		game.getMenuInputHandler().removeListener(keyTypedListener);
+		game.getMenuInputHandler().removeListener(selectKeyUpListener);
+		if(hasKeyboardFocus())
+			game.setKeyboardFocus(null);
 	}
 	
 	@Override
@@ -109,9 +124,12 @@ public class TextEntry extends Label{
 	
 	@Override
 	public boolean onKeyboardSelect(){
-		if(getParent() instanceof NavigableContainer){
-			((NavigableContainer)getParent()).setKeyboardFocus(getParent());
-			((NavigableContainer)getParent()).moveFocusDown();
+		if(hasFocus()){
+			if(getParent() instanceof NavigableContainer){
+				((NavigableContainer)getParent()).moveFocusDown();
+			}
+		}else{
+			TotemDefender.Get().setKeyboardFocus(getParent());
 		}
 		
 		return true;
@@ -120,12 +138,13 @@ public class TextEntry extends Label{
 	@Override
 	public void onGainFocus(){
 		if(getParent() instanceof NavigableContainer){
-			((NavigableContainer)getParent()).setKeyboardFocus(this);
+			TotemDefender.Get().setKeyboardFocus(this);
 		}
 	}
 	
 	@Override
 	public void onLoseFocus(){
+		TotemDefender.Get().setKeyboardFocus(null);
 		drawCursor = false;
 	}
 	
@@ -161,6 +180,10 @@ public class TextEntry extends Label{
 			cursorIndex++;
 		}
 		setText(text1 + c + text2, false);
+	}
+	
+	public boolean hasKeyboardFocus(){
+		return TotemDefender.Get().getKeyboardFocus() == this;
 	}
 
 }

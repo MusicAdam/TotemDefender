@@ -35,7 +35,7 @@ public class PreGameMenu extends NavigableContainer {
 			System.out.print("pos x: " + instruct.getPosition().x + " pos y: " + instruct.getPosition().y + "\n"); 
 		}
 		
-		userName = new TextEntry(this);
+		userName = new TextEntry(this, owner);
 		userName.setText("Player " + player);
 		userName.setSize(buttonSize);
 		userName.setPosition(new Vector2(side, TotemDefender.V_HEIGHT - (buttonSize.y + padding)));
@@ -87,11 +87,10 @@ public class PreGameMenu extends NavigableContainer {
 		ready.setTextOffset(buttonSize.x/2 - ready.getTextBounds().width/2, buttonSize.y/2 - ready.getTextBounds().height/2 + 5);
 		ready.create(game);
 
-		connectComponents(userName, weapon1);
 		connectComponents(weapon1, weapon2);
 		connectComponents(weapon2, weapon3);
 		connectComponents(weapon3, ready);
-		connectComponents(ready, userName, true);
+		connectComponents(ready, weapon1, true);
 		
 		attachKeyboardListeners(owner);
 	}

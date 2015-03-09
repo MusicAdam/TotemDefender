@@ -1,6 +1,7 @@
 package com.totemdefender.menu;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -16,7 +17,7 @@ import com.totemdefender.input.InputHandler;
 import com.totemdefender.input.MouseEvent;
 
 public class Container extends Component{
-	public static boolean DEBUG_HIGHLIGHT_FOCUS = false;
+	public static boolean DEBUG_HIGHLIGHT_FOCUS = true;
 
 	protected ArrayList<Component> components; 
 	private Component focus;
@@ -24,6 +25,7 @@ public class Container extends Component{
 	private MouseEvent mouseDownListener;
 	private MouseEvent mouseMoveListener;
 	private boolean valid;
+	private boolean iterating;
 	
 	public Container(Container parent){
 		super(parent);
@@ -47,6 +49,14 @@ public class Container extends Component{
 	@Override
 	public void destroy(TotemDefender game){
 		super.destroy(game);
+		
+		iterating = true;
+		Iterator<Component> it = components.iterator();
+		while(it.hasNext()){
+			it.next().destroy(game);
+			it.remove();
+		}
+		iterating = false;
 		
 		if(getParent() == null){
 			game.getMenuInputHandler().removeListener(mouseUpListener);
@@ -210,8 +220,10 @@ public class Container extends Component{
 	}
 	
 	public void removeComponent(Component cmp){
-		components.remove(cmp);
-		invalidate();
+		if(!iterating){
+			components.remove(cmp);
+			invalidate();
+		}
 	}
 	
 	public void setFocus(Component cmp){

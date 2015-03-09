@@ -42,7 +42,6 @@ public class NavigableContainer extends Container{
 	
 	private ArrayList<Node> graph;
 	private Node			nodeFocus;
-	private Component 			keyboardFocus;
 	protected KeyboardEvent 	upKeyDownListener;
 	protected KeyboardEvent 	upKeyUpListener;
 	protected KeyboardEvent 	downKeyDownListener;
@@ -64,7 +63,6 @@ public class NavigableContainer extends Container{
 		super(parent);
 		
 		graph = new ArrayList<Node>();
-		setKeyboardFocus(this);
 	}
 	
 	@Override
@@ -213,7 +211,7 @@ public class NavigableContainer extends Container{
 	}
 	
 	public void moveFocusDown(){
-		//if(!shouldTraverse()) return;
+		if(!shouldTraverse()) return;
 		if(nodeFocus == null){
 			if(!graph.isEmpty())
 				setFocus(graph.get(0));
@@ -227,7 +225,7 @@ public class NavigableContainer extends Container{
 	}
 	
 	public void moveFocusLeft(){
-		//if(!shouldTraverse()) return;
+		if(!shouldTraverse()) return;
 		if(nodeFocus == null){
 			if(!graph.isEmpty())
 				setFocus(graph.get(0));
@@ -241,7 +239,7 @@ public class NavigableContainer extends Container{
 	}
 	
 	public void moveFocusRight(){
-		//if(!shouldTraverse()) return;
+		if(!shouldTraverse()) return;
 		if(nodeFocus == null){
 			if(!graph.isEmpty())
 				setFocus(graph.get(0));
@@ -255,7 +253,7 @@ public class NavigableContainer extends Container{
 	}
 	
 	public void moveFocusUp(){
-		//if(!shouldTraverse()) return;
+		if(!shouldTraverse()) return;
 		if(nodeFocus == null){
 			if(!graph.isEmpty())
 				setFocus(graph.get(0));
@@ -273,89 +271,81 @@ public class NavigableContainer extends Container{
 	}
 	
 	public boolean onUpKeyDown(){
-		if(hasKeyboardFocus()){
+		if(keyboardFocusIsNull()){
 			onTraverseUp();
 			traverseUp = true;
 			return true;	
-		}else{
-			return getKeyboardFocus().onUpKeyDown();
 		}
+		return false;
 	}
 	
 	public boolean onUpKeyUp(){
-		if(hasKeyboardFocus()){
+		if(keyboardFocusIsNull()){
 			traverseUp = false;
 			return true;	
-		}else{
-			return getKeyboardFocus().onUpKeyUp();
 		}
+		return false;
 	}
 	
 	public boolean onDownKeyDown(){
-		if(hasKeyboardFocus()){
+		if(keyboardFocusIsNull()){
 			onTraverseDown();
 			traverseDown = true;
 			return true;	
-		}else{
-			return getKeyboardFocus().onDownKeyDown();
 		}
+		return false;
 	}
 	
 	public boolean onDownKeyUp(){
-		if(hasKeyboardFocus()){
+		if(keyboardFocusIsNull()){
 			traverseDown = false;
 			return true;		
-		}else{
-			return getKeyboardFocus().onDownKeyUp();
 		}
+		return false;
 	}
 	
 	public boolean onLeftKeyDown(){
-		if(hasKeyboardFocus()){
+		if(keyboardFocusIsNull()){
 			onTraverseLeft();
 			traverseLeft = true;
 			return true;
-		}else{
-			return getKeyboardFocus().onLeftKeyDown();
 		}
+		return false;
 	}
 	
 	public boolean onLeftKeyUp(){
-		if(hasKeyboardFocus()){
+		if(keyboardFocusIsNull()){
 			traverseLeft = false;
 			return true;	
-		}else{
-			return getKeyboardFocus().onLeftKeyUp();
 		}
+		return false;
 	}
 	
 	public boolean onRightKeyDown(){
-		if(hasKeyboardFocus()){
+		if(keyboardFocusIsNull()){
 			onTraverseRight();
 			traverseRight = true;
 			return true;
-		}else{
-			return getKeyboardFocus().onRightKeyDown();
 		}
+		return false;
 	}
 	
 	public boolean onRightKeyUp(){
-		if(hasKeyboardFocus()){
+		if(keyboardFocusIsNull()){
 			traverseRight = false;
 			return true;
-		}else{
-			return getKeyboardFocus().onRightKeyUp();
 		}
+		return false;
 	}
 	
 	public boolean onSelectKeyUp(){
-		if(hasKeyboardFocus()){
-			if(getFocus() != null)
+		if(keyboardFocusIsNull()){
+			if(getFocus() != null){
 				getFocus().onKeyboardSelect();
 			return true;
-		}else{
-			return getKeyboardFocus().onSelectKeyUp();
+			}
 		}
+		return false;
 	}
 	
 	public void attachKeyboardListeners(Player player){
@@ -437,24 +427,8 @@ public class NavigableContainer extends Container{
 		graph.remove(findNode(cmp));
 		super.removeComponent(cmp);
 	}
-
-	public Component getKeyboardFocus() {
-		return keyboardFocus;
-	}
-
-	public void setKeyboardFocus(Component keyboardFocus) {
-		this.keyboardFocus = keyboardFocus;
-		if(keyboardFocus == null)
-			this.keyboardFocus = this;
-		if(this.keyboardFocus != this){
-			traverseLeft = false;
-			traverseRight = false;
-			traverseDown = false;
-			traverseUp = false;
-		}
-	}
 	
-	public boolean hasKeyboardFocus(){
-		return keyboardFocus == this;
+	public boolean keyboardFocusIsNull(){
+		return TotemDefender.Get().getKeyboardFocus() == null;
 	}
 }

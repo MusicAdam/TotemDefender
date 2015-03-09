@@ -112,6 +112,7 @@ public class TotemDefender extends ApplicationAdapter {
 	private Queue<Container> 		menuDeleteQueue;
 	private Queue<DepthWrapper<Container>> 		menuAddQueue;
 	private Level level;
+	private Component keyboardFocus;
 	private Boolean drawScores=false;
 	
 	/** Control Variables */
@@ -614,4 +615,10 @@ public class TotemDefender extends ApplicationAdapter {
 	public void setDrawScores(Boolean drawScores) {
 		this.drawScores = drawScores;
 	}
+
+	public void setKeyboardFocus(Component focus) {
+		keyboardFocus = focus;
+	}
+	
+	public Component getKeyboardFocus(){ return keyboardFocus; }
 }

@@ -67,7 +67,7 @@ public class MenuTestState implements State{
 		
 		test.setPosition(10, 10);*/
 		
-		TextEntry entry = new TextEntry(menu);
+		TextEntry entry = new TextEntry(menu, new Player(1));
 		entry.setPosition(210, 210);
 		entry.create(game);
 		//menu.setPosition(TotemDefender.V_WIDTH/2 - menu.getWidth()/2, TotemDefender.V_HEIGHT/2 - menu.getHeight()/2);
