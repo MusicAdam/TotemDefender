@@ -4,7 +4,7 @@ import com.totemdefender.input.InputHandler;
 
 public class Player {
 	private int id; //1 or 2
-	private String nickname; //User entered nickname
+	private String name; //User entered nickname
 	private int budget=1000; //The amount of money the player has to spend on blocks
 	private int score=0;
 	
@@ -55,5 +55,13 @@ public class Player {
 
 	public void setScore(int score) {
 		this.score = score;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 }
