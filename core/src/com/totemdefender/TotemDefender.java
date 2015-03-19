@@ -113,7 +113,6 @@ public class TotemDefender extends ApplicationAdapter {
 	private Queue<DepthWrapper<Container>> 		menuAddQueue;
 	private Level level;
 	private Component keyboardFocus;
-	private Boolean drawScores=false;
 	
 	/** Control Variables */
 	private boolean isDoneBuilding;
@@ -274,26 +273,10 @@ public class TotemDefender extends ApplicationAdapter {
 		
 		
 		
-		entityBatch.begin();
-		if(drawScores==true){
-			
-			
+	
 		
-			Label player1Score =new Label(new Container());
-			
-			player1Score.setFont("hud_medium.ttf");
-			player1Score.getFont().setColor(new Color(.3f, .3f, .3f, 1));
-			player1Score.getFont().draw(entityBatch, "Player" + getPlayer1().getID()+ " Score: "+this.getPlayer1().getScore(),-670+player1Score.getWidth(),400-player1Score.getHeight());
-			
-			
-			Label player2Score =new Label(new Container());
-			player2Score.setFont("hud_medium.ttf");
-			player2Score.getFont().setColor(new Color(.3f, .3f, .3f, 1));			
-			player2Score.getFont().draw(entityBatch, "Player" +getPlayer2().getID()+ " Score: "+this.getPlayer2().getScore(),400-player2Score.getWidth(),400-player1Score.getHeight());
-			
-		}
 		
-		entityBatch.end();
+	
 	}
 	
 	@Override
@@ -608,13 +591,6 @@ public class TotemDefender extends ApplicationAdapter {
 		this.level = level;
 	}
 
-	public Boolean getDrawScores() {
-		return drawScores;
-	}
-
-	public void setDrawScores(Boolean drawScores) {
-		this.drawScores = drawScores;
-	}
 
 	public void setKeyboardFocus(Component focus) {
 		keyboardFocus = focus;

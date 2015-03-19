@@ -174,7 +174,9 @@ public abstract class BlockEntity extends Entity{
 			game.getPlayer2().setScore(game.getPlayer2().getScore()+cost);
 			
 			else
-				game.getPlayer1().setScore(game.getPlayer1().getScore()+cost);	
+				game.getPlayer1().setScore(game.getPlayer1().getScore()+cost);
+			
+			game.getLevel().getHUD().update(game);
 			game.getLevel().removePlacedBlock(this);
 			game.destroyEntity(this);
 		}	
