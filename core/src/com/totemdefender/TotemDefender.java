@@ -383,7 +383,6 @@ public class TotemDefender extends ApplicationAdapter {
 		assetManager.load("hud_small.ttf", BitmapFont.class, hud_small);
 		assetManager.load("hud_medium.ttf", BitmapFont.class, hud_medium);
 		assetManager.load("hud_large.ttf", BitmapFont.class, hud_large);
-		
 		assetManager.load("keyboard.png", Texture.class, textureParam);
 
 		//Backgorund
