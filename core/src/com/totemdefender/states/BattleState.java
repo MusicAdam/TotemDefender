@@ -130,7 +130,7 @@ public class BattleState implements State {
 			}
 		});
 		
-		game.setDrawScores(true);
+		game.getLevel().getHUD().setDrawScores(true);
 	}
 
 	@Override

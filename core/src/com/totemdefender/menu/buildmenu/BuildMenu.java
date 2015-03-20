@@ -9,7 +9,9 @@ import com.totemdefender.entities.blocks.BlockEntity;
 import com.totemdefender.input.InputHandler;
 import com.totemdefender.input.KeyboardEvent;
 import com.totemdefender.input.MouseEvent;
+import com.totemdefender.menu.Label;
 import com.totemdefender.menu.NavigableContainer;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 
 public class BuildMenu extends NavigableContainer {	
@@ -26,6 +28,7 @@ public class BuildMenu extends NavigableContainer {
 	private float buttonPadding = 20;
 	private float fade;
 	private boolean isDone = false;
+	private Label playerBudget;
 	
 	public BuildMenu(TotemDefender game, Level level, Player owner) {
 		super(null);
@@ -55,6 +58,24 @@ public class BuildMenu extends NavigableContainer {
 		connectComponents(readyButton, squareSelector);
 		
 		attachKeyboardListeners(owner);
+		
+		
+		
+	
+		
+	
+		
+		playerBudget=new Label(this);
+		playerBudget.setFont("hud_medium.ttf");
+		playerBudget.setText("Player "+this.owner.getID()+": "+this.owner.getBudget());
+	
+		playerBudget.setPosition(0,775);
+		playerBudget.setTextColor(new Color(0.011765f, 0.541176f, 0.239215f, 1));
+		
+		
+		playerBudget.create(game);
+	
+	
 	};
 	
 	@Override
@@ -88,6 +109,9 @@ public class BuildMenu extends NavigableContainer {
 			readyButton.destroy(game);
 			fade = -1; //So this condition stops firing
 		}
+		
+		
+		playerBudget.setText("Player "+this.owner.getID()+": "+this.owner.getBudget());
 		
 		super.update(game);
 	}

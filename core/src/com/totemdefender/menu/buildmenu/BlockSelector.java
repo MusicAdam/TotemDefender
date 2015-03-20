@@ -111,6 +111,9 @@ public class BlockSelector extends Container{
 				return false;
 			}
 		});
+		 
+		 
+		
 		
 		super.create(game);
 	}
@@ -151,17 +154,7 @@ public class BlockSelector extends Container{
 		batch.draw(barActive, x + centerX - barW/2, y + 15 - barH/2, barW, barH);
 		batch.draw(shadow, x + centerX - shadowW/2, y, shadowW, shadowH);
 		
-		if(this.owner.getID()==1){
-			playerBudget=new Label(this);
-			playerBudget.setFont("hud_medium.ttf");
-			playerBudget.getFont().draw(batch, "Player "+this.owner.getID()+": "+this.owner.getBudget(), -150+getWidth(), 873-getHeight());
-		}
 		
-		if(this.owner.getID()==2){
-			playerBudget=new Label(this);
-			playerBudget.setFont("hud_medium.ttf");
-			playerBudget.getFont().draw(batch, "Player "+this.owner.getID()+": "+this.owner.getBudget(), 200-getWidth(), 873-getHeight());
-		}
 		
 		batch.end();
 		TotemDefender.DisableBlend();
