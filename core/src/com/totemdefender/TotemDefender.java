@@ -389,6 +389,7 @@ public class TotemDefender extends ApplicationAdapter {
 		//Backgorund
 		assetManager.load("background/bg.png", Texture.class, textureParam);
 		assetManager.load("background/castle.png", Texture.class, textureParam);	
+		assetManager.load("background/temple.png", Texture.class, textureParam);	
 		assetManager.load("background/sun.png", Texture.class, textureParam);	
 		assetManager.load("background/cloud_1.png", Texture.class, textureParam);
 		assetManager.load("background/cloud_2.png", Texture.class, textureParam);				

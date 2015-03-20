@@ -39,7 +39,7 @@ public class BackgroundEntity extends Entity{
 	public void spawn(TotemDefender game) {
 		backgroundTexture = game.getAssetManager().get("background/bg.png", Texture.class);
 		sunTexture = game.getAssetManager().get("background/sun.png", Texture.class);
-		castleTexture = game.getAssetManager().get("background/castle.png", Texture.class);
+		castleTexture = game.getAssetManager().get("background/temple.png", Texture.class);
 		castleDrawWidth = TotemDefender.V_WIDTH/5;
 		castleDrawHeight = castleDrawWidth / castleAspectRatio;
 		
