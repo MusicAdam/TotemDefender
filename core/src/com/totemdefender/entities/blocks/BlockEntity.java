@@ -168,15 +168,13 @@ public abstract class BlockEntity extends Entity{
 		isSpawned = true;
 	}
 	
-	public void Delete(TotemDefender game){
+	public void delete(TotemDefender game){
 		if(shouldDelete==true){
 			if(this.getOwner().getID()==1)
-			game.getPlayer2().setScore(game.getPlayer2().getScore()+cost);
-			
+				game.getPlayer2().setScore(game.getPlayer2().getScore()+cost);
 			else
 				game.getPlayer1().setScore(game.getPlayer1().getScore()+cost);
 			
-			game.getLevel().getHUD().update(game);
 			game.getLevel().removePlacedBlock(this);
 			game.destroyEntity(this);
 		}	
@@ -235,6 +233,6 @@ public abstract class BlockEntity extends Entity{
 	
 	public void update(TotemDefender game){
 		super.update(game);
-		Delete(game);
+		delete(game);
 	}
 }
