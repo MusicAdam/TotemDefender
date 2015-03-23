@@ -281,7 +281,6 @@ public class Grid extends Panel {
 	}
 	
 	public boolean placementValid(){
-		/*
 		if(!hasEntity()) return false;
 
 		for(BlockEntity block : getParent().getLevel().getPlacedBlocks()){
@@ -290,7 +289,7 @@ public class Grid extends Panel {
 				return false;
 			}
 		}		
-		*/
+		
 		return true;
 	}
 	
