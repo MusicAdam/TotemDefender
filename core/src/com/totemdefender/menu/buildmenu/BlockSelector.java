@@ -1,5 +1,8 @@
 package com.totemdefender.menu.buildmenu;
 
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -16,79 +19,70 @@ import com.totemdefender.entities.blocks.BlockEntity.Shape;
 import com.totemdefender.entities.blocks.RectangleBlockEntity;
 import com.totemdefender.entities.blocks.SquareBlockEntity;
 import com.totemdefender.input.MouseEvent;
+import com.totemdefender.menu.Animation;
+import com.totemdefender.menu.AnimationBucket;
 import com.totemdefender.menu.Container;
 import com.totemdefender.menu.Label;
 
 public class BlockSelector extends Container{
-	private Player owner;
-	private BlockEntity.Shape shape;
-	private Label cost;
-	private Texture block;
-	private Texture blockHighlight;
-	private Texture blockHighlightHover;
-	private Texture bar;
-	private Texture barHover;
-	private Texture shadow;
 	/** This is the best way to do this without some sort of XML layout system */
 	//Derived these numbers from the illustrator design src file
-	float barW = 135;
-	float barH = 15;
-	float shadowW = 73;
-	float shadowH = 18;
-	float squareHighlightW = 56f;
-	float squareHighlightH = 56f;
-	float rectangleHighlightW = 86;
-	float rectangleHighlightH = 56;
-	
+	private final float barW = 135;
+	private final float barH = 15;
+	private final float shadowW = 73;
+	private final float shadowH = 18;
+	private Player owner;
+	private Label cost;
+	private Texture bar;
+	private Texture barHover;
+	private Texture shadow;	
 	private ArrowButton arrowRight;
 	private ArrowButton arrowLeft;
-	private float blockWidth, blockHeight;	
 	private boolean hovered = false;
 	private BlockEntity mouseSpawned = null;
 	private Vector2 mouseLocation = null;
 	private MouseEvent mouseMoveListener;
 	private float alpha;
+	private PseudoBlock block;
+	private PseudoBlock newBlock;
 	private int materialIndex; //Index of the material in this.materialList
 	private BlockEntity.Material[] materialList; //From BlockEntity.Material enum
+	private AnimationBucket animateInBucket, animateOutBucket;
+	private Animation transitionOutAnimation, transitionInAnimation;
+	private BlockEntity.Shape shape;
+	private Vector2 localPseudoBlockPosition;
+	private long transitionDuration = 1000;
 	
 	public BlockSelector(BuildMenu parent, Player owner, BlockEntity.Shape shape){
 		super(parent);
 		setSize(135, 73);
-		this.shape = shape;
 		this.owner = owner;
-		this.materialList = new BlockEntity.Material[]{
-				BlockEntity.Material.Wood, BlockEntity.Material.Stone, BlockEntity.Material.Jade
-		};
-		this.materialIndex = 0;
-		
-		
-		if(shape == Shape.Rectangle){
-			blockWidth = TotemDefender.BLOCK_SIZE * BlockEntity.RECTANGLE_XSCALE;
-			blockHeight = TotemDefender.BLOCK_SIZE * BlockEntity.RECTANGLE_YSCALE;
-		}else{
-			blockWidth = TotemDefender.BLOCK_SIZE * BlockEntity.SQUARE_XSCALE;
-			blockHeight = TotemDefender.BLOCK_SIZE * BlockEntity.SQUARE_YSCALE;
-		}
+		this.shape = shape;
 		
 		alpha = 1;
-		
-		setBlockMaterial(0);
+
+		materialIndex = 0;
+		materialList = new BlockEntity.Material[]{
+				BlockEntity.Material.Wood,
+				BlockEntity.Material.Stone,
+				BlockEntity.Material.Jade
+		};
+		block = new PseudoBlock(this, owner, shape, materialList[0]);
+		animateInBucket = TotemDefender.Get().getAnimationController().createBucket();
+		animateOutBucket = TotemDefender.Get().getAnimationController().createBucket();
 	}
 	
 	@Override
 	public void create(TotemDefender game){
-		String shapeString 	= shape.toString().toLowerCase();
-		blockHighlight 		= game.getAssetManager().get("ui/"+ shapeString + "_highlight.png", Texture.class);
-		blockHighlightHover = game.getAssetManager().get("ui/"+ shapeString + "_highlight_hover.png", Texture.class);
+		block.create(game);
 		bar 				= game.getAssetManager().get("ui/bar.png", Texture.class);
 		barHover			= game.getAssetManager().get("ui/bar_hover.png", Texture.class);
 		shadow				= game.getAssetManager().get("ui/shadow.png", Texture.class);
 		
-		
 		//Cost label
 		cost = new Label(this);
 		cost.setFont("hud_medium.ttf");
-		if(shape==Shape.Square){
+		if(block.getShape()==Shape.Square){
 			cost.setText("$100", true);
 		}
 		else{
@@ -98,7 +92,8 @@ public class BlockSelector extends Container{
 		cost.setPosition(getWidth()/2 - cost.getWidth()/2, 20 - barH/2);
 		cost.create(game);
 		
-		float yPos = getHeight() - blockHeight/2;
+		float yPos = getHeight() - block.getHeight()/2;
+		
 		//Arrow button left
 		arrowLeft = new ArrowButton(this){
 			@Override
@@ -131,7 +126,10 @@ public class BlockSelector extends Container{
 				return false;
 			}
 		});		
-		
+		 
+		validate();
+		block.setPosition(localPseudoBlockPosition.cpy());
+		 
 		super.create(game);
 	}
 	
@@ -141,6 +139,13 @@ public class BlockSelector extends Container{
 		arrowLeft.destroy(game);
 		arrowRight.destroy(game);
 		super.destroy(game);
+	}
+	
+	@Override
+	public void validate(){
+		if(!isValid())
+			updateBlockPosition();
+		super.validate();
 	}
 	
 	@Override
@@ -154,20 +159,16 @@ public class BlockSelector extends Container{
 		float x = getPosition().x;
 		float y = getPosition().y;
 		
-		Texture blockHighlightActive, barActive;
+		Texture barActive;
 		if(!hovered){
-			blockHighlightActive = blockHighlight;	
 			barActive = bar;
 		}else{
-			blockHighlightActive = blockHighlightHover;	
 			barActive = barHover;
 		}
 		
 		TotemDefender.EnableBlend();		
 		batch.begin();
 		batch.setColor(1, 1, 1, alpha);
-		batch.draw(blockHighlightActive, x + centerX - blockHighlightActive.getWidth()/2, y + getHeight() - blockHighlightActive.getHeight()/2 - 15, blockHighlightActive.getWidth() - 2, blockHighlightActive.getHeight() - 1);
-		batch.draw(block, x + centerX - blockWidth/2, y + getHeight() - blockHeight, blockWidth, blockHeight);
 		batch.draw(barActive, x + centerX - barW/2, y + 15 - barH/2, barW, barH);
 		batch.draw(shadow, x + centerX - shadowW/2, y, shadowW, shadowH);
 		batch.end();
@@ -253,9 +254,9 @@ public class BlockSelector extends Container{
 		if(getParent().getGrid().hasEntity()) return null;
 		
 		BlockEntity blockEntity = null;
-		if(shape == Shape.Square){
+		if(block.getShape() == Shape.Square){
 			blockEntity = new SquareBlockEntity(owner, getCurrentMaterial());
-		}else if(shape == Shape.Rectangle){
+		}else if(block.getShape() == Shape.Rectangle){
 			blockEntity = new RectangleBlockEntity(owner, getCurrentMaterial());
 		}
 
@@ -305,21 +306,43 @@ public class BlockSelector extends Container{
 		materialIndex++;
 		if(materialIndex == materialList.length)
 			materialIndex = 0;
-		updateMaterialTexture();
+		transitionBlocks();
 	}
 	
 	public void previousMaterial(){
 		materialIndex--;
 		if(materialIndex < 0)
 			materialIndex = materialList.length-1;
-		updateMaterialTexture();
+		transitionBlocks();
 	}
 	
-	public void updateMaterialTexture(){
-		setBlockMaterial(materialIndex);
+	public void transitionBlocks(){
+		final BlockSelector finalThis = this;
+		newBlock = new PseudoBlock(this, owner, shape, getCurrentMaterial());
+		newBlock.create(TotemDefender.Get());
+		newBlock.setPosition(localPseudoBlockPosition.cpy().add(getWidth()/2, 0));
+		transitionOutAnimation = animateInBucket.queueAnimation(new Animation(block){
+			@Override
+			public void onComplete(){
+				finalThis.block = finalThis.newBlock;
+			}
+		});
+		transitionOutAnimation.setDestination(localPseudoBlockPosition.cpy().add(-getWidth()/2, 0));
+		transitionOutAnimation.setDuration(transitionDuration);
+		
+		transitionInAnimation = animateInBucket.queueAnimation(new Animation(newBlock){
+			@Override
+			public void onComplete(){
+				finalThis.newBlock.destroy(TotemDefender.Get());
+				finalThis.newBlock = null;
+			}
+		});
+		transitionInAnimation.setDestination(localPseudoBlockPosition.cpy());
+		transitionInAnimation.setDuration(transitionDuration + 1); //Add 1 ms to ensure newBlock != null when outAnim completed.
+		
 	}
 	
-	public void setBlockMaterial(int index){
-		block = TotemDefender.Get().getAssetManager().get(BlockEntity.GetRandomAsset(materialList[index], this.shape), Texture.class);		
+	public void updateBlockPosition(){
+		localPseudoBlockPosition = new Vector2(getWidth()/2 - block.getWidth()/2, getHeight() - block.getHeight()/2);
 	}
 }
