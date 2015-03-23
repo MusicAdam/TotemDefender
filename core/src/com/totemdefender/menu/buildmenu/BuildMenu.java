@@ -174,7 +174,7 @@ public class BuildMenu extends NavigableContainer {
 	
 	@Override
 	public boolean onSelectKeyUp(){
-		if(grid.hasEntity()){
+		if(grid.hasEntity() && grid.placementValid()){
 			addPlacedBlock(getSpawnedBlock());
 			setSpawnedBlock(null);
 		}else{
