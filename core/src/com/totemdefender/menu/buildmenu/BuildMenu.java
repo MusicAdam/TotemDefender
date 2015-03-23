@@ -45,7 +45,6 @@ public class BuildMenu extends NavigableContainer {
 		squareSelector.setBlockMaterial(game, BlockEntity.Material.Stone);
 		squareSelector.create(game);
 		
-		
 		rectangleSelector = new BlockSelector(this, owner, BlockEntity.Shape.Rectangle);
 		rectangleSelector.setBlockMaterial(game, BlockEntity.Material.Stone);
 		rectangleSelector.create(game);
@@ -55,24 +54,15 @@ public class BuildMenu extends NavigableContainer {
 
 		connectComponents(squareSelector, rectangleSelector);
 		connectComponents(rectangleSelector, readyButton);
-		connectComponents(readyButton, squareSelector);
+		connectComponents(readyButton, squareSelector, true);
 		
 		attachKeyboardListeners(owner);
-		
-		
-		
-	
-		
-	
 		
 		playerBudget=new Label(this);
 		playerBudget.setFont("hud_medium.ttf");
 		playerBudget.setText("Player "+this.owner.getID()+": "+this.owner.getBudget());
-	
 		playerBudget.setPosition(0,775);
 		playerBudget.setTextColor(new Color(0.011765f, 0.541176f, 0.239215f, 1));
-		
-		
 		playerBudget.create(game);
 	
 	
