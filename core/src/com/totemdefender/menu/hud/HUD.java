@@ -43,17 +43,7 @@ public class HUD extends Container{
 	}	
 	
 	public void update(TotemDefender game){
-		
-		
 		if(drawScores==true){
-			
-			
-			
-			
-			
-			
-			
-			
 			player1Score.setFont("hud_medium.ttf");
 			player1Score.setPosition(0,750);
 			player1Score.setTextColor(new Color(0.011765f, 0.541176f, 0.239215f, 1));
@@ -68,8 +58,8 @@ public class HUD extends Container{
 			player2Score.create(game);
 			
 			setDrawScores(false);
-			
-	}
+		}
+		
 		player1Score.setText("Player1 Score: " + game.getPlayer1().getScore());
 		player2Score.setText("Player2 Score: " + game.getPlayer2().getScore());
 		super.update(game);

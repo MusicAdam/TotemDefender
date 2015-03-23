@@ -6,7 +6,7 @@ public class RectangleBlockEntity extends BlockEntity {
 
 	public RectangleBlockEntity(Player owner) {
 		
-		super(owner, Material.Stone, Shape.Rectangle);
+		super(owner, Material.Wood, Shape.Rectangle);
 		this.setCost(200);
 	}
 

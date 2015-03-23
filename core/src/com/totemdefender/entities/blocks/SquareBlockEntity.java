@@ -7,7 +7,7 @@ public class SquareBlockEntity extends BlockEntity {
 	public static final float DENSITY = 5.0f;
 	
 	public SquareBlockEntity(Player owner){
-		super(owner, Material.Stone, Shape.Square);
+		super(owner, Material.Wood, Shape.Square);
 		this.setCost(100);
 	}
 	
