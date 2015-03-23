@@ -42,11 +42,9 @@ public class BuildMenu extends NavigableContainer {
 		grid.create(game);
 		
 		squareSelector = new BlockSelector(this, owner, BlockEntity.Shape.Square);
-		squareSelector.setBlockMaterial(game, BlockEntity.Material.Stone);
 		squareSelector.create(game);
 		
 		rectangleSelector = new BlockSelector(this, owner, BlockEntity.Shape.Rectangle);
-		rectangleSelector.setBlockMaterial(game, BlockEntity.Material.Stone);
 		rectangleSelector.create(game);
 		
 		readyButton = new ReadyButton(this, owner);

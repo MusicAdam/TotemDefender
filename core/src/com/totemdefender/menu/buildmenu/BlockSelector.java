@@ -48,13 +48,19 @@ public class BlockSelector extends Container{
 	private Vector2 mouseLocation = null;
 	private MouseEvent mouseMoveListener;
 	private float alpha;
-	private Label playerBudget;
+	private int materialIndex; //Index of the material in this.materialList
+	private BlockEntity.Material[] materialList; //From BlockEntity.Material enum
 	
 	public BlockSelector(BuildMenu parent, Player owner, BlockEntity.Shape shape){
 		super(parent);
 		setSize(135, 73);
 		this.shape = shape;
 		this.owner = owner;
+		this.materialList = new BlockEntity.Material[]{
+				BlockEntity.Material.Wood, BlockEntity.Material.Stone, BlockEntity.Material.Jade
+		};
+		this.materialIndex = 0;
+		
 		
 		if(shape == Shape.Rectangle){
 			blockWidth = TotemDefender.BLOCK_SIZE * BlockEntity.RECTANGLE_XSCALE;
@@ -65,6 +71,8 @@ public class BlockSelector extends Container{
 		}
 		
 		alpha = 1;
+		
+		setBlockMaterial(0);
 	}
 	
 	@Override
@@ -92,12 +100,24 @@ public class BlockSelector extends Container{
 		
 		float yPos = getHeight() - blockHeight/2;
 		//Arrow button left
-		arrowLeft = new ArrowButton(this);
+		arrowLeft = new ArrowButton(this){
+			@Override
+			public boolean onClick(){
+				previousMaterial();
+				return true;
+			}
+		};
 		arrowLeft.setPosition(0, yPos - arrowLeft.getHeight()/2);//getHeight()-TotemDefender.BLOCK_SIZE - arrowLeft.getHeight()/2);
 		arrowLeft.create(game);
 		
 		//Arrow button right
-		arrowRight = new ArrowButton(this);
+		arrowRight = new ArrowButton(this){
+			@Override
+			public boolean onClick(){
+				nextMaterial();
+				return true;
+			}
+		};
 		arrowRight.setPosition(getWidth() - arrowRight.getWidth(), yPos - arrowRight.getHeight()/2);//getHeight()-TotemDefender.BLOCK_SIZE/2 - arrowLeft.getHeight()/2);
 		arrowRight.flip();
 		arrowRight.create(game);
@@ -110,10 +130,7 @@ public class BlockSelector extends Container{
 				mouseLocation = gameRef.screenToWorld(mousePosition);
 				return false;
 			}
-		});
-		 
-		 
-		
+		});		
 		
 		super.create(game);
 	}
@@ -153,17 +170,10 @@ public class BlockSelector extends Container{
 		batch.draw(block, x + centerX - blockWidth/2, y + getHeight() - blockHeight, blockWidth, blockHeight);
 		batch.draw(barActive, x + centerX - barW/2, y + 15 - barH/2, barW, barH);
 		batch.draw(shadow, x + centerX - shadowW/2, y, shadowW, shadowH);
-		
-		
-		
 		batch.end();
 		TotemDefender.DisableBlend();
 		
 		super.render(batch, shapeRenderer);
-	}
-	
-	public void setBlockMaterial(TotemDefender game, BlockEntity.Material material){
-		block = game.getAssetManager().get(BlockEntity.GetRandomAsset(material, this.shape), Texture.class);
 	}
 	
 	@Override
@@ -244,9 +254,9 @@ public class BlockSelector extends Container{
 		
 		BlockEntity blockEntity = null;
 		if(shape == Shape.Square){
-			blockEntity = new SquareBlockEntity(owner);
+			blockEntity = new SquareBlockEntity(owner, getCurrentMaterial());
 		}else if(shape == Shape.Rectangle){
-			blockEntity = new RectangleBlockEntity(owner);
+			blockEntity = new RectangleBlockEntity(owner, getCurrentMaterial());
 		}
 
 		if(blockEntity.getCost()<=blockEntity.getOwner().getBudget()){
@@ -285,5 +295,31 @@ public class BlockSelector extends Container{
 	public void setAlpha(float alpha){
 		this.alpha = alpha;
 		cost.getTextColor().a = alpha;
+	}
+	
+	public BlockEntity.Material getCurrentMaterial(){
+		return materialList[materialIndex];
+	}
+	
+	public void nextMaterial(){
+		materialIndex++;
+		if(materialIndex == materialList.length)
+			materialIndex = 0;
+		updateMaterialTexture();
+	}
+	
+	public void previousMaterial(){
+		materialIndex--;
+		if(materialIndex < 0)
+			materialIndex = materialList.length-1;
+		updateMaterialTexture();
+	}
+	
+	public void updateMaterialTexture(){
+		setBlockMaterial(materialIndex);
+	}
+	
+	public void setBlockMaterial(int index){
+		block = TotemDefender.Get().getAssetManager().get(BlockEntity.GetRandomAsset(materialList[index], this.shape), Texture.class);		
 	}
 }
