@@ -38,7 +38,7 @@ public class Label extends Panel{
 	public BitmapFont getFont() { return font; }
 	public void updateBounds(){
 		font.getBounds(text, bounds);
-		invalidate();
+		//invalidate();
 	}
 	
 	public void setFont(String fontName) {

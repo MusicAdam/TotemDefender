@@ -23,7 +23,6 @@ public class Animation {
 	}
 	
 	public void update(TotemDefender game){
-		System.out.println("StepX: " + stepX + ", StepY: " + stepY);
 		target.setPosition(target.getPosition().add(stepX, stepY));
 		onStep();
 	}
@@ -41,9 +40,9 @@ public class Animation {
 			destination == null) return;
 		
 		float distanceX = destination.x - target.getPosition().x;
-		float distanceY = destination.x - target.getPosition().y;
-		stepX = distanceX/(float)duration;
-		stepY = distanceY/(float)duration;
+		float distanceY = destination.y - target.getPosition().y;
+		stepX = -.5f;//distanceX/(float)duration;
+		stepY = 0;//distanceY/(float)duration;
 		valid = true;
 	}
 	

@@ -73,15 +73,14 @@ public class NavigableContainer extends Container{
 		
 		doTraverse();
 		
-		validate();
+		if(!isValid())
+			validate();
 	}
 	
 	@Override
 	public void validate(){
-		if(!isValid()){
-			for(Node node : graph)
-				node.updateEdges();
-		}
+		for(Node node : graph)
+			node.updateEdges();
 		super.validate();
 	}
 	

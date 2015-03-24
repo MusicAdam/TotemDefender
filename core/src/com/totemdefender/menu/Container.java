@@ -24,7 +24,6 @@ public class Container extends Component{
 	private MouseEvent mouseUpListener;
 	private MouseEvent mouseDownListener;
 	private MouseEvent mouseMoveListener;
-	private boolean valid;
 	private boolean iterating;
 	
 	public Container(Container parent){
@@ -70,15 +69,14 @@ public class Container extends Component{
 		for(Component cmp : components){
 			cmp.update(game);
 		}
-
-		validate();
+		
+		if(!isValid())
+			validate();
 	}
 	
 	public void validate(){
-		if(!isValid()){
-			sizeToContents();
-		}
-		valid = true;
+		sizeToContents();
+		super.validate();
 	}
 
 	@Override
@@ -244,28 +242,21 @@ public class Container extends Component{
 	
 	//Calculates size based on attached components
 	public void sizeToContents(){
+		System.out.println("Size to contents");
+		float width = 0;
+		float height = 0;
 		for(Component cmp : components){
 			//Check if x-bounds exeeds our current width
-			if(cmp.getPosition().x + cmp.getWidth() > getSize().x){
-				rectangle.width = cmp.getPosition().x + cmp.getWidth();
+			if(cmp.getPosition().x + cmp.getWidth() > width){
+				width = cmp.getPosition().x + cmp.getWidth();
 			}
 			
 			//Check if y-bounds exeeds our current width
-			if(cmp.getPosition().y + cmp.getHeight() > getSize().y){
-				rectangle.height = cmp.getPosition().y + cmp.getHeight();
+			if(cmp.getPosition().y + cmp.getHeight() > height){
+				height = cmp.getPosition().y + cmp.getHeight();
 			}
 		}
-	}
-	
-	public boolean isValid(){
-		return valid;
-	}
-	
-	public void invalidate(){
-		valid = false;
-		if(getParent() != null)
-			getParent().invalidate();
-	}
-	
-	
+		
+		setSize(width, height);
+	}	
 }

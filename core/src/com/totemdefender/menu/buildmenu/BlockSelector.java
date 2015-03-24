@@ -325,24 +325,25 @@ public class BlockSelector extends Container{
 			@Override
 			public void onComplete(){
 				finalThis.block = finalThis.newBlock;
+				finalThis.block.setPosition(finalThis.localPseudoBlockPosition.cpy());
 			}
 		});
-		transitionOutAnimation.setDestination(localPseudoBlockPosition.cpy().add(-getWidth()/2, 0));
-		transitionOutAnimation.setDuration(transitionDuration);
+		transitionOutAnimation.setDestination(localPseudoBlockPosition.cpy().add(-block.getWidth()/2, 0));
+		transitionOutAnimation.setDuration(transitionDuration + 1); //+1 ms to ensure this completes after animOut & new block instead deleted instead of old block
 		
-		transitionInAnimation = animateInBucket.queueAnimation(new Animation(newBlock){
+		transitionInAnimation = animateOutBucket.queueAnimation(new Animation(newBlock){
 			@Override
 			public void onComplete(){
-				finalThis.newBlock.destroy(TotemDefender.Get());
-				finalThis.newBlock = null;
+				finalThis.block.destroy(TotemDefender.Get());
+				finalThis.block = null;
 			}
 		});
 		transitionInAnimation.setDestination(localPseudoBlockPosition.cpy());
-		transitionInAnimation.setDuration(transitionDuration + 1); //Add 1 ms to ensure newBlock != null when outAnim completed.
+		transitionInAnimation.setDuration(transitionDuration);
 		
 	}
 	
 	public void updateBlockPosition(){
-		localPseudoBlockPosition = new Vector2(getWidth()/2 - block.getWidth()/2, getHeight() - block.getHeight()/2);
+		localPseudoBlockPosition = new Vector2(rectangle.width/2 - block.getWidth()/2, rectangle.height - block.getHeight()/2);
 	}
 }

@@ -34,7 +34,10 @@ public abstract class Component {
 		invalidate();
 	}
 	
-	public void update(TotemDefender game){doLayout();}
+	public void update(TotemDefender game){
+		if(!isValid())
+			validate();
+	}
 	
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer){
 		if(TotemDefender.DEBUG){
@@ -101,12 +104,14 @@ public abstract class Component {
 	/** Checks if given point lies within the menu */
 	public boolean pointIsInBounds(Vector2 point){ return rectangle.contains(point); }
 	
-	public Vector2 getPosition() { return new Vector2(rectangle.x, rectangle.y); }
+	public Vector2 getPosition() { 
+		if(!isValid())
+			validate();
+		return new Vector2(rectangle.x, rectangle.y); 
+	}
 	
 	public void setPosition(Vector2 position) {
 		rectangle.setPosition(position);
-		if(parent != null)
-			parent.invalidate();
 		invalidate();
 	}
 	
@@ -115,20 +120,18 @@ public abstract class Component {
 	}
 
 	public Vector2 getSize() {
-		doLayout();
+		if(!isValid())
+			validate();
 		return rectangle.getSize(new Vector2());
 	}
 	
 	public void setSize(Vector2 size) {
 		rectangle.setSize(size.x, size.y);
-		if(parent != null)
-			parent.invalidate();
 		invalidate();
 	}
 	
 	public void setSize(float w, float h){
 		setSize(new Vector2(w, h));
-		invalidate();
 	}
 	
 	public void setWidth(float w){ setSize(w, getHeight()); }
@@ -136,16 +139,22 @@ public abstract class Component {
 	public void setHeight(float h) { setSize(getWidth(), h); }
 	
 	public float getWidth(){
-		doLayout();
+		if(!isValid())
+			validate();
 		return rectangle.getWidth();
 	}
 	
 	public float getHeight(){
-		doLayout();
+		if(!isValid())
+			validate();
 		return rectangle.getHeight();
 	}
 	
-	public Rectangle getRectangle(){ return rectangle; }
+	public Rectangle getRectangle(){ 
+		if(!isValid())
+			validate();
+		return rectangle; 
+	}
 	
 	public Container getParent() { return parent;}
 	
@@ -157,7 +166,8 @@ public abstract class Component {
 	
 	//Gets the local point from a world point
 	public Vector2 worldToLocal(Vector2 worldPoint){
-		doLayout();
+		if(!isValid())
+			validate();
 		if(parent == null){
 			return new Vector2(worldPoint.x - rectangle.x, worldPoint.y - rectangle.y);
 		}else{
@@ -168,11 +178,10 @@ public abstract class Component {
 	}
 	
 	public Vector2 getWorldPosition(){
-		//doLayout();
 		if(parent == null){
-			return getPosition();
+			return new Vector2(rectangle.x, rectangle.y);
 		}else{
-			return getPosition().add(parent.getWorldPosition());
+			return new Vector2(rectangle.x, rectangle.y).add(parent.getWorldPosition());
 		}
 	}
 
@@ -184,17 +193,19 @@ public abstract class Component {
 		this.hasFocus = hasFocus;
 	}
 	
-	public void doLayout(){
-		if(parent != null)
-			getParent().invalidate();
+	public void validate(){  
 		valid = true;
+		System.out.println("Validate: valid="+valid);
 	}
 	
 	public void invalidate(){
 		valid = false;
+		if(getParent() != null)
+			getParent().invalidate();
+		System.out.println("Invalidate: valid="+valid);
 	}
 	
-	public boolean shouldLayout(){
-		return !valid;
+	public boolean isValid(){
+		return valid;
 	}
 }

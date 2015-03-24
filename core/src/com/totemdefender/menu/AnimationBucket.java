@@ -28,6 +28,7 @@ public class AnimationBucket {
 				//TODO: Throw error?
 			}else{
 				active.onStart();
+				active.setStart(System.currentTimeMillis());
 			}
 		}
 		if(active != null){
