@@ -62,8 +62,6 @@ public class BuildMenu extends NavigableContainer {
 		playerBudget.setPosition(0,775);
 		playerBudget.setTextColor(new Color(0.011765f, 0.541176f, 0.239215f, 1));
 		playerBudget.create(game);
-	
-	
 	};
 	
 	@Override
@@ -74,11 +72,9 @@ public class BuildMenu extends NavigableContainer {
 	
 	@Override
 	public void validate(){
-		if(!isValid()){
-			squareSelector.setPosition(buttonPosition);
-			rectangleSelector.setPosition(buttonPosition.x, buttonPosition.y - squareSelector.getHeight() - buttonPadding);
-			readyButton.setPosition(buttonPosition.x + 5, buttonPosition.y - rectangleSelector.getHeight() - readyButton.getHeight() - buttonPadding - 20);
-		}
+		squareSelector.setPosition(buttonPosition);
+		rectangleSelector.setPosition(buttonPosition.x, buttonPosition.y - squareSelector.getHeight() - buttonPadding);
+		readyButton.setPosition(buttonPosition.x + 5, buttonPosition.y - rectangleSelector.getHeight() - readyButton.getHeight() - buttonPadding - 20);
 		super.validate();
 	}
 	

@@ -53,7 +53,7 @@ public class BlockSelector extends Container{
 	private BlockEntity.Shape shape;
 	private Vector2 localPseudoBlockPosition;
 	private long transitionDuration = 250;
-	private ScissorRegion blockScissors;
+	private ScissorRegion blockScissors; //These are the scissors that are the width of the visible block area, and are the height of the block
 	
 	public BlockSelector(BuildMenu parent, Player owner, BlockEntity.Shape shape){
 		super(parent);
@@ -143,10 +143,10 @@ public class BlockSelector extends Container{
 		arrowLeft.setPosition(0, yPos - arrowLeft.getHeight());
 		arrowRight.setPosition(getWidth() - arrowRight.getWidth(), yPos - arrowRight.getHeight());
 
-		blockScissors.setSize(getWidth() - arrowLeft.getWidth() * 2, block.getHeight());
-		blockScissors.setPosition(arrowLeft.getWidth(), getHeight() - blockScissors.getHeight());
+		blockScissors.setSize(getWidth() - arrowLeft.getWidth() * 2, block.getHeight() + block.getHighlightHeight());
+		blockScissors.setPosition(arrowLeft.getWidth(), getHeight() - blockScissors.getHeight()/2);
 
-		localPseudoBlockPosition = new Vector2(getWidth()/2 - block.getWidth()/2, 0);
+		localPseudoBlockPosition = new Vector2(blockScissors.getWidth()/2 - block.getWidth()/2, blockScissors.getHeight()/2 - block.getHeight());
 		block.setPosition(localPseudoBlockPosition.cpy());
 		
 		cost.setPosition(getWidth()/2 - cost.getWidth()/2, 20 - barH/2);

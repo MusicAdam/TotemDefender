@@ -3,6 +3,8 @@ package com.totemdefender.menu.buildmenu;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.entities.blocks.BlockEntity;
@@ -59,7 +61,7 @@ public class PseudoBlock extends Component {
 		float y = getPosition().y;
 		Texture blockHighlightActive;
 		float offsetX = 0;
-		if(!getParent().isMouseOver()){
+		if(!getParent().getParent().isMouseOver()){
 			blockHighlightActive = blockHighlight;	
 		}else{
 			blockHighlightActive = blockHighlightHover;	
@@ -67,11 +69,13 @@ public class PseudoBlock extends Component {
 		}
 		
 		batch.begin();
-		batch.draw(blockHighlightActive, x - blockHighlightActive.getWidth()/2 + getWidth()/2 + 1, y - blockHighlightActive.getHeight()/2 + getHeight()/2, blockHighlightActive.getWidth() - 2, blockHighlightActive.getHeight() - 1);
+		batch.draw(blockHighlightActive, x - blockHighlightActive.getWidth()/2 + getWidth()/2 + 1, y - blockHighlightActive.getHeight()/2 + getHeight()/2, blockHighlightActive.getWidth() - 3, blockHighlightActive.getHeight() - 1);
 		batch.draw(block, x, y, getWidth(), getHeight());
 		batch.end();
 	}
 	
 	
 	public BlockEntity.Shape getShape(){ return shape; }	
+	
+	public float getHighlightHeight(){ return blockHighlightHover.getHeight(); }
 }

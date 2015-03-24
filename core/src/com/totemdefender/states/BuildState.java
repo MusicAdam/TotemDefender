@@ -50,8 +50,7 @@ public class BuildState implements State {
 		p2BuildMenu.create(game);
 		
 		p2BuildMenu.getGrid().setPosition(0, TotemDefender.PEDESTAL_HEIGHT/2 + p2PedPos.y);
-		p1BuildMenu.validate();
-		p1BuildMenu.validate();
+		p2BuildMenu.validate();
 	}
 	@Override
 	public void onExit(TotemDefender game) {
