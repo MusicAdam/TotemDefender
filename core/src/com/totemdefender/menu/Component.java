@@ -21,16 +21,12 @@ public abstract class Component {
 	public Component(Container parent){
 		this.parent = parent;
 		rectangle = new Rectangle();
-		if(parent != null)
-			parent.invalidate();
 		invalidate();
 	}
 	
 	public Component(){
 		this.parent = null;
 		rectangle = new Rectangle();
-		if(parent != null)
-			parent.invalidate();
 		invalidate();
 	}
 	
@@ -49,7 +45,6 @@ public abstract class Component {
 	}
 	
 	public void create(TotemDefender game){
-		invalidate();
 		if(this instanceof Container && parent == null){
 			game.addMenu((Container)this);
 		}else if(parent != null){
@@ -112,7 +107,6 @@ public abstract class Component {
 	
 	public void setPosition(Vector2 position) {
 		rectangle.setPosition(position);
-		invalidate();
 	}
 	
 	public void setPosition(float x, float y){
@@ -127,7 +121,6 @@ public abstract class Component {
 	
 	public void setSize(Vector2 size) {
 		rectangle.setSize(size.x, size.y);
-		invalidate();
 	}
 	
 	public void setSize(float w, float h){
@@ -158,7 +151,9 @@ public abstract class Component {
 	
 	public Container getParent() { return parent;}
 	
-	public void setParent(Container parent) { this.parent = parent; }
+	public void setParent(Container parent) { 
+		this.parent = parent;
+	}
 	
 	public boolean isMouseOver(){ return mouseOver; }
 	
@@ -195,14 +190,18 @@ public abstract class Component {
 	
 	public void validate(){  
 		valid = true;
-		System.out.println("Validate: valid="+valid);
 	}
 	
 	public void invalidate(){
-		valid = false;
+		invalidate(false);
+	}
+	
+	public void invalidate(boolean parentOnly){
 		if(getParent() != null)
-			getParent().invalidate();
-		System.out.println("Invalidate: valid="+valid);
+			getParent().invalidate(true);
+		
+		if(!parentOnly)
+			valid = false;
 	}
 	
 	public boolean isValid(){

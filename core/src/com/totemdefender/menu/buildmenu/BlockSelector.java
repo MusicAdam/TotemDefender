@@ -56,6 +56,7 @@ public class BlockSelector extends Container{
 	public BlockSelector(BuildMenu parent, Player owner, BlockEntity.Shape shape){
 		super(parent);
 		setSize(135, 73);
+		shouldSizeToContents(false);
 		this.owner = owner;
 		this.shape = shape;
 		
@@ -75,6 +76,8 @@ public class BlockSelector extends Container{
 	@Override
 	public void create(TotemDefender game){
 		block.create(game);
+		localPseudoBlockPosition = new Vector2(getWidth()/2 - block.getWidth()/2, getHeight() - block.getHeight());
+		
 		bar 				= game.getAssetManager().get("ui/bar.png", Texture.class);
 		barHover			= game.getAssetManager().get("ui/bar_hover.png", Texture.class);
 		shadow				= game.getAssetManager().get("ui/shadow.png", Texture.class);
@@ -92,7 +95,7 @@ public class BlockSelector extends Container{
 		cost.setPosition(getWidth()/2 - cost.getWidth()/2, 20 - barH/2);
 		cost.create(game);
 		
-		float yPos = getHeight() - block.getHeight()/2;
+		float yPos = getHeight();// - block.getHeight()/2;
 		
 		//Arrow button left
 		arrowLeft = new ArrowButton(this){
@@ -102,8 +105,9 @@ public class BlockSelector extends Container{
 				return true;
 			}
 		};
-		arrowLeft.setPosition(0, yPos - arrowLeft.getHeight()/2);//getHeight()-TotemDefender.BLOCK_SIZE - arrowLeft.getHeight()/2);
+		System.out.println(arrowLeft.getHeight());
 		arrowLeft.create(game);
+		arrowLeft.setPosition(0, yPos - arrowLeft.getHeight());
 		
 		//Arrow button right
 		arrowRight = new ArrowButton(this){
@@ -113,9 +117,9 @@ public class BlockSelector extends Container{
 				return true;
 			}
 		};
-		arrowRight.setPosition(getWidth() - arrowRight.getWidth(), yPos - arrowRight.getHeight()/2);//getHeight()-TotemDefender.BLOCK_SIZE/2 - arrowLeft.getHeight()/2);
-		arrowRight.flip();
 		arrowRight.create(game);
+		arrowRight.setPosition(getWidth() - arrowRight.getWidth(), yPos - arrowRight.getHeight());
+		arrowRight.flip();
 		
 		//We need to add out own handler because we need to detect the mouse movement even when the mouse moves outside of the container.
 		final TotemDefender gameRef = game;
@@ -127,7 +131,7 @@ public class BlockSelector extends Container{
 			}
 		});		
 		 
-		validate();
+		//validate();
 		block.setPosition(localPseudoBlockPosition.cpy());
 		 
 		super.create(game);
@@ -139,13 +143,6 @@ public class BlockSelector extends Container{
 		arrowLeft.destroy(game);
 		arrowRight.destroy(game);
 		super.destroy(game);
-	}
-	
-	@Override
-	public void validate(){
-		if(!isValid())
-			updateBlockPosition();
-		super.validate();
 	}
 	
 	@Override
@@ -335,15 +332,11 @@ public class BlockSelector extends Container{
 			@Override
 			public void onComplete(){
 				finalThis.block.destroy(TotemDefender.Get());
-				finalThis.block = null;
+				//finalThis.block = null;
 			}
 		});
 		transitionInAnimation.setDestination(localPseudoBlockPosition.cpy());
 		transitionInAnimation.setDuration(transitionDuration);
 		
-	}
-	
-	public void updateBlockPosition(){
-		localPseudoBlockPosition = new Vector2(rectangle.width/2 - block.getWidth()/2, rectangle.height - block.getHeight()/2);
 	}
 }

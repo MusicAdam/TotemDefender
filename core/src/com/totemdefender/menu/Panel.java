@@ -38,16 +38,6 @@ public class Panel extends Component{
 	}
 	
 	@Override
-	public void create(TotemDefender game){
-		super.create(game);
-	}
-
-	@Override
-	public void destroy(TotemDefender game){
-		super.destroy(game);		
-	}
-	
-	@Override
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer){
 		if(!shouldRender) return;
 

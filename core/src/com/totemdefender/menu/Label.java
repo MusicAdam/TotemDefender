@@ -23,7 +23,6 @@ public class Label extends Panel{
 		textColor = Color.WHITE;
 		textOffset = new Vector2();
 		setText("Default");
-		invalidate();
 	}
 	
 	@Override

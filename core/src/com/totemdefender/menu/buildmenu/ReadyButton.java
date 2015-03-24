@@ -38,7 +38,7 @@ public class ReadyButton extends Button{
 		setTextColor(new Color(0.960784f, 0.858824f, 0.866667f, 1));
 		setText("Ready");
 		setTextOffset(TotemDefender.BLOCK_SIZE + 13, getSize().y/2 - getTextBounds().height/2 + 5);		
-		getParent().invalidate();
+		
 		super.create(game);
 	}
 	

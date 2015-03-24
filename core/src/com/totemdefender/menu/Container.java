@@ -25,6 +25,7 @@ public class Container extends Component{
 	private MouseEvent mouseDownListener;
 	private MouseEvent mouseMoveListener;
 	private boolean iterating;
+	private boolean sizeToContents = true;
 	
 	public Container(Container parent){
 		super(parent);
@@ -242,7 +243,8 @@ public class Container extends Component{
 	
 	//Calculates size based on attached components
 	public void sizeToContents(){
-		System.out.println("Size to contents");
+		if(!sizeToContents) return;
+		
 		float width = 0;
 		float height = 0;
 		for(Component cmp : components){
@@ -257,6 +259,15 @@ public class Container extends Component{
 			}
 		}
 		
-		setSize(width, height);
+		rectangle.width = width;
+		rectangle.height = height;
 	}	
+	
+	public boolean shouldSizeToContents(){
+		return sizeToContents;
+	}
+	
+	public void shouldSizeToContents(boolean t){
+		sizeToContents = t;
+	}
 }
