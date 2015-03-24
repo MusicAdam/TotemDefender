@@ -10,9 +10,8 @@ import com.totemdefender.input.MouseEvent;
 
 public abstract class Component {
 	protected Rectangle rectangle; //Mathematical representation of the component
-	
 	protected boolean mouseOver;
-	
+	private boolean shouldRender = true;	
 	private Container parent;
 	
 	private boolean hasFocus;
@@ -36,6 +35,8 @@ public abstract class Component {
 	}
 	
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer){
+		if(!shouldRender()) return;
+		
 		if(TotemDefender.DEBUG){
 			shapeRenderer.begin(ShapeType.Line);
 			shapeRenderer.setColor(Color.RED);
@@ -100,8 +101,8 @@ public abstract class Component {
 	public boolean pointIsInBounds(Vector2 point){ return rectangle.contains(point); }
 	
 	public Vector2 getPosition() { 
-		if(!isValid())
-			validate();
+		/*if(!isValid())
+		validate();*/
 		return new Vector2(rectangle.x, rectangle.y); 
 	}
 	
@@ -114,8 +115,8 @@ public abstract class Component {
 	}
 
 	public Vector2 getSize() {
-		if(!isValid())
-			validate();
+		/*if(!isValid())
+		validate();*/
 		return rectangle.getSize(new Vector2());
 	}
 	
@@ -132,20 +133,20 @@ public abstract class Component {
 	public void setHeight(float h) { setSize(getWidth(), h); }
 	
 	public float getWidth(){
-		if(!isValid())
-			validate();
+		/*if(!isValid())
+		validate();*/
 		return rectangle.getWidth();
 	}
 	
 	public float getHeight(){
-		if(!isValid())
-			validate();
+		/*if(!isValid())
+			validate();*/
 		return rectangle.getHeight();
 	}
 	
 	public Rectangle getRectangle(){ 
-		if(!isValid())
-			validate();
+		/*if(!isValid())
+		validate();*/
 		return rectangle; 
 	}
 	
@@ -161,8 +162,8 @@ public abstract class Component {
 	
 	//Gets the local point from a world point
 	public Vector2 worldToLocal(Vector2 worldPoint){
-		if(!isValid())
-			validate();
+		/*if(!isValid())
+		validate();*/
 		if(parent == null){
 			return new Vector2(worldPoint.x - rectangle.x, worldPoint.y - rectangle.y);
 		}else{
@@ -207,4 +208,16 @@ public abstract class Component {
 	public boolean isValid(){
 		return valid;
 	}
+	
+	public void show()
+	{ setShouldRender(true); }
+	
+	public void hide()
+	{ setShouldRender(false); }
+	
+	public boolean shouldRender() 
+	{ return shouldRender; }
+
+	public void setShouldRender(boolean shouldRender) 
+	{ this.shouldRender = shouldRender; }
 }

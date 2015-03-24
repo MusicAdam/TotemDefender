@@ -20,7 +20,6 @@ import com.totemdefender.input.MouseEvent;
 
 public class Panel extends Component{
 	private InputHandler inputHandler; 
-	private boolean shouldRender;
 	private MouseEvent mouseUpListener;
 	private MouseEvent mouseDownListener;
 	private MouseEvent mouseMoveListener;
@@ -34,12 +33,11 @@ public class Panel extends Component{
 		super(parent);
 		
 		if(parent == null) throw new NullPointerException("Parent may not be null");
-		shouldRender = true;
 	}
 	
 	@Override
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer){
-		if(!shouldRender) return;
+		if(!shouldRender()) return;
 
 		if(color != null){
 			shapeRenderer.begin(ShapeType.Filled);
@@ -58,20 +56,6 @@ public class Panel extends Component{
 
 		super.render(batch, shapeRenderer);
 	}
-	
-	//Allows menu to be rendered
-	public void show()
-	{ setShouldRender(true); }
-	
-	//Stops menu rendering
-	public void hide()
-	{ setShouldRender(false); }
-	
-	public boolean shouldRender() 
-	{ return shouldRender; }
-
-	public void setShouldRender(boolean shouldRender) 
-	{ this.shouldRender = shouldRender; }
 	
 	@Override
 	public boolean onMouseMove(MouseEvent event){

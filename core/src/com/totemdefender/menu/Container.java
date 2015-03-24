@@ -67,12 +67,12 @@ public class Container extends Component{
 	
 	@Override
 	public void update(TotemDefender game) {
+		if(!isValid())
+			validate();
+		
 		for(Component cmp : components){
 			cmp.update(game);
 		}
-		
-		if(!isValid())
-			validate();
 	}
 	
 	public void validate(){
@@ -82,6 +82,8 @@ public class Container extends Component{
 
 	@Override
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer) {
+		if(!shouldRender()) return;
+		
 		batch.getTransformMatrix().translate(getPosition().x, getPosition().y, 0); //Positon relative to container position
 		shapeRenderer.translate(getPosition().x, getPosition().y, 0);
 		for(Component cmp : components){

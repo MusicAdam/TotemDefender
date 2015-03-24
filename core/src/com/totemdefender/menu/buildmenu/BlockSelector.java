@@ -23,6 +23,7 @@ import com.totemdefender.menu.Animation;
 import com.totemdefender.menu.AnimationBucket;
 import com.totemdefender.menu.Container;
 import com.totemdefender.menu.Label;
+import com.totemdefender.menu.ScissorRegion;
 
 public class BlockSelector extends Container{
 	/** This is the best way to do this without some sort of XML layout system */
@@ -51,7 +52,8 @@ public class BlockSelector extends Container{
 	private Animation transitionOutAnimation, transitionInAnimation;
 	private BlockEntity.Shape shape;
 	private Vector2 localPseudoBlockPosition;
-	private long transitionDuration = 1000;
+	private long transitionDuration = 250;
+	private ScissorRegion blockScissors;
 	
 	public BlockSelector(BuildMenu parent, Player owner, BlockEntity.Shape shape){
 		super(parent);
@@ -68,19 +70,42 @@ public class BlockSelector extends Container{
 				BlockEntity.Material.Stone,
 				BlockEntity.Material.Jade
 		};
-		block = new PseudoBlock(this, owner, shape, materialList[0]);
 		animateInBucket = TotemDefender.Get().getAnimationController().createBucket();
 		animateOutBucket = TotemDefender.Get().getAnimationController().createBucket();
 	}
 	
 	@Override
-	public void create(TotemDefender game){
-		block.create(game);
-		localPseudoBlockPosition = new Vector2(getWidth()/2 - block.getWidth()/2, getHeight() - block.getHeight());
-		
+	public void create(TotemDefender game){//Arrow button left
 		bar 				= game.getAssetManager().get("ui/bar.png", Texture.class);
 		barHover			= game.getAssetManager().get("ui/bar_hover.png", Texture.class);
 		shadow				= game.getAssetManager().get("ui/shadow.png", Texture.class);
+
+		arrowLeft = new ArrowButton(this){
+			@Override
+			public boolean onClick(){
+				previousMaterial();
+				return true;
+			}
+		};
+		arrowLeft.create(game);
+		
+		//Arrow button right
+		arrowRight = new ArrowButton(this){
+			@Override
+			public boolean onClick(){
+				nextMaterial();
+				return true;
+			}
+		};
+		arrowRight.create(game);
+		arrowRight.flip();
+		
+		blockScissors = new ScissorRegion(this);
+		blockScissors.shouldSizeToContents(false);
+		blockScissors.create(game);
+
+		block = new PseudoBlock(blockScissors, owner, shape, materialList[0]);	
+		block.create(game);
 		
 		//Cost label
 		cost = new Label(this);
@@ -92,34 +117,10 @@ public class BlockSelector extends Container{
 			cost.setText("$200",true);
 		}
 		cost.setTextColor(new Color(0.011765f, 0.541176f, 0.239215f, 1));
-		cost.setPosition(getWidth()/2 - cost.getWidth()/2, 20 - barH/2);
 		cost.create(game);
 		
-		float yPos = getHeight();// - block.getHeight()/2;
 		
-		//Arrow button left
-		arrowLeft = new ArrowButton(this){
-			@Override
-			public boolean onClick(){
-				previousMaterial();
-				return true;
-			}
-		};
-		System.out.println(arrowLeft.getHeight());
-		arrowLeft.create(game);
-		arrowLeft.setPosition(0, yPos - arrowLeft.getHeight());
 		
-		//Arrow button right
-		arrowRight = new ArrowButton(this){
-			@Override
-			public boolean onClick(){
-				nextMaterial();
-				return true;
-			}
-		};
-		arrowRight.create(game);
-		arrowRight.setPosition(getWidth() - arrowRight.getWidth(), yPos - arrowRight.getHeight());
-		arrowRight.flip();
 		
 		//We need to add out own handler because we need to detect the mouse movement even when the mouse moves outside of the container.
 		final TotemDefender gameRef = game;
@@ -131,10 +132,25 @@ public class BlockSelector extends Container{
 			}
 		});		
 		 
-		//validate();
-		block.setPosition(localPseudoBlockPosition.cpy());
-		 
 		super.create(game);
+	}
+	
+	@Override
+	public void validate(){
+		if(isValid()) return;
+
+		float yPos = getHeight();
+		arrowLeft.setPosition(0, yPos - arrowLeft.getHeight());
+		arrowRight.setPosition(getWidth() - arrowRight.getWidth(), yPos - arrowRight.getHeight());
+
+		blockScissors.setSize(getWidth() - arrowLeft.getWidth() * 2, block.getHeight());
+		blockScissors.setPosition(arrowLeft.getWidth(), getHeight() - blockScissors.getHeight());
+
+		localPseudoBlockPosition = new Vector2(getWidth()/2 - block.getWidth()/2, 0);
+		block.setPosition(localPseudoBlockPosition.cpy());
+		
+		cost.setPosition(getWidth()/2 - cost.getWidth()/2, 20 - barH/2);
+		super.validate();
 	}
 	
 	@Override
@@ -152,6 +168,7 @@ public class BlockSelector extends Container{
 	
 	@Override
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer){
+		if(!shouldRender()) return;
 		float centerX = getWidth()/2;
 		float x = getPosition().x;
 		float y = getPosition().y;
@@ -315,24 +332,28 @@ public class BlockSelector extends Container{
 	
 	public void transitionBlocks(){
 		final BlockSelector finalThis = this;
-		newBlock = new PseudoBlock(this, owner, shape, getCurrentMaterial());
+		newBlock = new PseudoBlock(blockScissors, owner, shape, getCurrentMaterial());
+		newBlock.setShouldRender(false);
 		newBlock.create(TotemDefender.Get());
 		newBlock.setPosition(localPseudoBlockPosition.cpy().add(getWidth()/2, 0));
 		transitionOutAnimation = animateInBucket.queueAnimation(new Animation(block){
 			@Override
 			public void onComplete(){
-				finalThis.block = finalThis.newBlock;
-				finalThis.block.setPosition(finalThis.localPseudoBlockPosition.cpy());
+				target.destroy(TotemDefender.Get());
 			}
 		});
-		transitionOutAnimation.setDestination(localPseudoBlockPosition.cpy().add(-block.getWidth()/2, 0));
+		transitionOutAnimation.setDestination(new Vector2(-block.getWidth(), localPseudoBlockPosition.y));
 		transitionOutAnimation.setDuration(transitionDuration + 1); //+1 ms to ensure this completes after animOut & new block instead deleted instead of old block
 		
 		transitionInAnimation = animateOutBucket.queueAnimation(new Animation(newBlock){
 			@Override
+			public void onStart(){
+				target.setShouldRender(true);
+			}
+			@Override
 			public void onComplete(){
-				finalThis.block.destroy(TotemDefender.Get());
-				//finalThis.block = null;
+				finalThis.block = (PseudoBlock) target;
+				finalThis.block.setPosition(finalThis.localPseudoBlockPosition.cpy());				
 			}
 		});
 		transitionInAnimation.setDestination(localPseudoBlockPosition.cpy());

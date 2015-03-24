@@ -10,7 +10,7 @@ public class Animation {
 		None
 	}
 	
-	private Component target; //The components to be animated
+	protected Component target; //The components to be animated
 	private Vector2 destination; //The location we will animate to 
 	private long duration = 200; //Time in MS given to animate to target
 	private Easing easing  = Easing.None; //The algorithm used for easing
@@ -41,8 +41,9 @@ public class Animation {
 		
 		float distanceX = destination.x - target.getPosition().x;
 		float distanceY = destination.y - target.getPosition().y;
-		stepX = -.5f;//distanceX/(float)duration;
-		stepY = 0;//distanceY/(float)duration;
+		int steps = Math.round((float)duration/(TotemDefender.STEP * 1000));
+		stepX = distanceX/steps;
+		stepY = distanceY/steps;
 		valid = true;
 	}
 	

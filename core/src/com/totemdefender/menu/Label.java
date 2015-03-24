@@ -27,6 +27,7 @@ public class Label extends Panel{
 	
 	@Override
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer) {
+		if(!shouldRender()) return;
 		super.render(batch, shapeRenderer);
 		batch.begin();
 		font.setColor(textColor);

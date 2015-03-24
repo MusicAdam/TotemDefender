@@ -44,6 +44,7 @@ public class ReadyButton extends Button{
 	
 	@Override
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer){		
+		if(!shouldRender()) return;
 		Texture barActive;
 		if(isHighlighted()){
 			barActive = barTallHover;

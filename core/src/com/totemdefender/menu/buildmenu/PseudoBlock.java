@@ -51,6 +51,7 @@ public class PseudoBlock extends Component {
 	
 	@Override
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer){
+		if(!shouldRender()) return;
 		super.render(batch, shapeRenderer);
 		
 		float centerX = getWidth()/2;
