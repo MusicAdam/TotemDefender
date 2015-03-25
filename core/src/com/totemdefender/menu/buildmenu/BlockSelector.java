@@ -320,17 +320,17 @@ public class BlockSelector extends Container{
 		materialIndex++;
 		if(materialIndex == materialList.length)
 			materialIndex = 0;
-		transitionBlocks();
+		transitionLeft();
 	}
 	
 	public void previousMaterial(){
 		materialIndex--;
 		if(materialIndex < 0)
 			materialIndex = materialList.length-1;
-		transitionBlocks();
+		transitionRight();
 	}
 	
-	public void transitionBlocks(){
+	public void transitionLeft(){
 		final BlockSelector finalThis = this;
 		newBlock = new PseudoBlock(blockScissors, owner, shape, getCurrentMaterial());
 		newBlock.setShouldRender(false);
@@ -358,6 +358,37 @@ public class BlockSelector extends Container{
 		});
 		transitionInAnimation.setDestination(localPseudoBlockPosition.cpy());
 		transitionInAnimation.setDuration(transitionDuration);
+		transitionInAnimation.setEasing(Animation.Easing.QuadraticIn);
+	}
+	
+	public void transitionRight(){
+		final BlockSelector finalThis = this;
+		newBlock = new PseudoBlock(blockScissors, owner, shape, getCurrentMaterial());
+		newBlock.setShouldRender(false);
+		newBlock.create(TotemDefender.Get());
+		newBlock.setPosition(localPseudoBlockPosition.cpy().add(-getWidth()/2 - newBlock.getWidth(), 0));
+		transitionOutAnimation = animateInBucket.queueAnimation(new Animation(newBlock){
+			@Override
+			public void onComplete(){
+				finalThis.block = (PseudoBlock) target;
+				finalThis.block.setPosition(finalThis.localPseudoBlockPosition.cpy());		
+			}
+		});
+		transitionOutAnimation.setDestination(localPseudoBlockPosition.cpy());
+		transitionOutAnimation.setDuration(transitionDuration); //+1 ms to ensure this completes after animOut & new block instead deleted instead of old block
 		
+		transitionInAnimation = animateOutBucket.queueAnimation(new Animation(block){
+			@Override
+			public void onStart(){
+				target.setShouldRender(true);
+			}
+			@Override
+			public void onComplete(){
+				target.destroy(TotemDefender.Get());		
+			}
+		});
+		transitionInAnimation.setDestination(new Vector2(-block.getWidth(), localPseudoBlockPosition.y));
+		transitionInAnimation.setDuration(transitionDuration + 1);
+		transitionInAnimation.setEasing(Animation.Easing.QuadraticIn);
 	}
 }
