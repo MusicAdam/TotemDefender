@@ -43,7 +43,7 @@ public class PreGameMenu extends NavigableContainer {
 		userName.setTextOffset(buttonSize.x/2 - userName.getTextBounds().width/2, buttonSize.y/2 - userName.getTextBounds().height/2 + 5);
 		userName.create(game);
 
-		weapon1 = new Button(this, "Player " + player + " Weapon 1", buttonSize, new Vector2(side, TotemDefender.V_HEIGHT - (buttonSize.y)*2 - padding), Color.RED){
+		weapon1 = new Button(this, "Weapon 1", buttonSize, new Vector2(side, TotemDefender.V_HEIGHT - (buttonSize.y)*2 - padding), Color.RED){
 			@Override
 			public boolean onClick(){
 				
@@ -54,7 +54,7 @@ public class PreGameMenu extends NavigableContainer {
 		weapon1.setTextOffset(buttonSize.x/2 - weapon1.getTextBounds().width/2, buttonSize.y/2 - weapon1.getTextBounds().height/2 + 5);
 		weapon1.create(game);
 	
-		weapon2 = new Button(this, "Player " + player + " Weapon 2", buttonSize, new Vector2(side, TotemDefender.V_HEIGHT - (buttonSize.y)*3 - padding), Color.BLUE){
+		weapon2 = new Button(this, "Weapon 2", buttonSize, new Vector2(side, TotemDefender.V_HEIGHT - (buttonSize.y)*3 - padding), Color.BLUE){
 			@Override
 			public boolean onClick(){
 				
@@ -65,7 +65,7 @@ public class PreGameMenu extends NavigableContainer {
 		weapon2.setTextOffset(buttonSize.x/2 - weapon2.getTextBounds().width/2, buttonSize.y/2 - weapon2.getTextBounds().height/2 + 5);
 		weapon2.create(game);
 		
-		weapon3 = new Button(this, "Player " + player + " Weapon 3", buttonSize, new Vector2(side, TotemDefender.V_HEIGHT - (buttonSize.y)*4 - padding), Color.ORANGE){
+		weapon3 = new Button(this, "Weapon 3", buttonSize, new Vector2(side, TotemDefender.V_HEIGHT - (buttonSize.y)*4 - padding), Color.ORANGE){
 			@Override
 			public boolean onClick(){
 				

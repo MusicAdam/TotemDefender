@@ -34,7 +34,7 @@ public class MainMenu extends NavigableContainer{
 		float centerScreenHeight = TotemDefender.V_HEIGHT/2;
 		
 		start = new Button(this, "Start Game", buttonSize, 
-				new Vector2(areaWidth, centerScreenHeight + buttonSize.y + (buttonSize.y * 3/40)), null){
+				new Vector2(areaWidth, centerScreenHeight + (buttonSize.y * 18.5f/35f)), null){
 			@Override
 			public boolean onClick(){
 				state.startButtonPressed(true);
@@ -48,7 +48,7 @@ public class MainMenu extends NavigableContainer{
 		start.create(game);
 		
 		leaderboard = new Button(this, "Leaderboard", buttonSize, 
-					  new Vector2(areaWidth, centerScreenHeight + buttonSize.y/40), null){
+					  new Vector2(areaWidth, centerScreenHeight - buttonSize.y/2), null){
 			@Override
 			public boolean onClick(){
 				return true;
@@ -61,7 +61,7 @@ public class MainMenu extends NavigableContainer{
 		leaderboard.create(game);
 		
 		option = new Button(this, "Options", buttonSize, 
-				 new Vector2(areaWidth, centerScreenHeight - (buttonSize.y + buttonSize.y/40)), null){
+				 new Vector2(areaWidth, centerScreenHeight - (buttonSize.y * (53.5f/35f))), null){
 			@Override
 			public boolean onClick(){
 			return true;
@@ -73,23 +73,9 @@ public class MainMenu extends NavigableContainer{
 		option.setBackgroundHighlightTexture(game, "ui/bar_tall_hover.png");
 		option.create(game);
 		
-		instruction = new Button(this, "Instructions", buttonSize, 
-					  new Vector2(areaWidth, centerScreenHeight - (buttonSize.y*2) - (buttonSize.y * 3/40)), null){
-			@Override
-			public boolean onClick(){
-				return true;
-			}
-		};
-		instruction.setFont("hud_large.ttf");
-		instruction.setTextOffset(buttonSize.x/2 - start.getTextBounds().width/2, buttonSize.y/2 - start.getTextBounds().height/2 + 5);
-		instruction.setBackgroundTexture(game, "ui/bar_tall.png");
-		instruction.setBackgroundHighlightTexture(game, "ui/bar_tall_hover.png");
-		instruction.create(game);
-		
 		connectComponents(start, leaderboard);
 		connectComponents(leaderboard, option);
-		connectComponents(option, instruction);
-		connectComponents(instruction, start, true);
+		connectComponents(option, start, true);
 		
 		attachKeyboardListeners(game.getPlayer2());
 		super.create(game);
