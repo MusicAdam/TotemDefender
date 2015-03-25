@@ -13,7 +13,7 @@ public class PreGameMenu extends NavigableContainer {
 	private Button weapon1, weapon2, weapon3;
 	private Boolean weaponSelected=false;
 	
-	public PreGameMenu(TotemDefender game, Player owner) {
+	public PreGameMenu(TotemDefender game, final Player owner) {
 		super(null);
 		this.owner = owner;
 
@@ -47,6 +47,7 @@ public class PreGameMenu extends NavigableContainer {
 			@Override
 			public boolean onClick(){
 				
+				owner.setWeaponType(1);
 				return true;
 			}
 		};
@@ -58,6 +59,7 @@ public class PreGameMenu extends NavigableContainer {
 			@Override
 			public boolean onClick(){
 				
+				owner.setWeaponType(2);
 				return true;
 			}
 		};
@@ -69,6 +71,7 @@ public class PreGameMenu extends NavigableContainer {
 			@Override
 			public boolean onClick(){
 				
+				owner.setWeaponType(3);
 				return true;
 			}
 		};

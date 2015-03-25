@@ -111,7 +111,22 @@ public class WeaponEntity extends Entity {
 	
 	@Override
 	public void spawn(TotemDefender game) {
-		Texture weaponTexture = game.getAssetManager().get("cannon.png", Texture.class);
+		
+		String weaponSprite="cannon.png";
+		
+			if(owner.getWeaponType()==2){
+				weaponSprite="cannon.png";
+				
+			}
+			
+			
+if(owner.getWeaponType()==3){
+				weaponSprite="cannon.png";
+				
+			}
+System.out.println("Player " + owner.getID() + " Picked weapon " + owner.getWeaponType()); //for testing purposes
+
+		Texture weaponTexture = game.getAssetManager().get(weaponSprite, Texture.class);
 		setSprite(new Sprite(weaponTexture));
 		
 		float aspectRatio = getSprite().getWidth()/getSprite().getHeight(); //Get aspect ratio to maintain for scaling
@@ -142,29 +157,7 @@ public class WeaponEntity extends Entity {
 		if(owner.getID() == 2){
 			fireDirection.x *= -1;
 		}
-		/*
-		BodyDef weaponDef = new BodyDef();
-		weaponDef.type = BodyType.StaticBody;
-		weaponDef.position.set(xPos * TotemDefender.WORLD_TO_BOX, yPos * TotemDefender.WORLD_TO_BOX);
 		
-		Body body = game.getWorld().createBody(weaponDef);
-		
-		PolygonShape cannonShape = new PolygonShape();
-		cannonShape.setAsBox((hw - 1) * TotemDefender.WORLD_TO_BOX, hh * TotemDefender.WORLD_TO_BOX);
-		
-
-		short categoryBits 	= (getOwner() == game.getPlayer1()) ? Entity.PLAYER1 : Entity.PLAYER2;
-		short maskBits 			= (categoryBits == Entity.PLAYER1) ? Entity.PLAYER2 : Entity.PLAYER1;
-		Fixture fix = body.createFixture(cannonShape, 0.0f);
-		Filter filter = fix.getFilterData();
-		filter.categoryBits = categoryBits;
-		filter.maskBits = (short) (maskBits | Entity.GROUND);
-		fix.setFilterData(filter);
-		
-		cannonShape.dispose();
-		
-		setBody(body);
-		*/
 		isSpawned = true;
 	}
 	
