@@ -117,10 +117,7 @@ public class BlockSelector extends Container{
 			cost.setText("$200",true);
 		}
 		cost.setTextColor(new Color(0.011765f, 0.541176f, 0.239215f, 1));
-		cost.create(game);
-		
-		
-		
+		cost.create(game);		
 		
 		//We need to add out own handler because we need to detect the mouse movement even when the mouse moves outside of the container.
 		final TotemDefender gameRef = game;
@@ -341,9 +338,16 @@ public class BlockSelector extends Container{
 			public void onComplete(){
 				target.destroy(TotemDefender.Get());
 			}
+			
+			@Override
+			public void onStep(){
+				float alpha = 1 - ((float)getElapsedTime()/(float)getDuration());
+				((PseudoBlock)target).setHighlightAlpha(alpha);
+			}
 		});
 		transitionOutAnimation.setDestination(new Vector2(-block.getWidth(), localPseudoBlockPosition.y));
 		transitionOutAnimation.setDuration(transitionDuration + 1); //+1 ms to ensure this completes after animOut & new block instead deleted instead of old block
+		transitionOutAnimation.setEasing(Animation.Easing.QuadraticOut);
 		
 		transitionInAnimation = animateOutBucket.queueAnimation(new Animation(newBlock){
 			@Override
@@ -353,7 +357,14 @@ public class BlockSelector extends Container{
 			@Override
 			public void onComplete(){
 				finalThis.block = (PseudoBlock) target;
-				finalThis.block.setPosition(finalThis.localPseudoBlockPosition.cpy());				
+				finalThis.block.setPosition(finalThis.localPseudoBlockPosition.cpy());	
+				finalThis.block.setHighlightAlpha(1);
+			}
+			
+			@Override
+			public void onStep(){
+				float alpha = ((float)getElapsedTime()/(float)getDuration());
+				((PseudoBlock)target).setHighlightAlpha(alpha);
 			}
 		});
 		transitionInAnimation.setDestination(localPseudoBlockPosition.cpy());
@@ -376,6 +387,7 @@ public class BlockSelector extends Container{
 		});
 		transitionOutAnimation.setDestination(localPseudoBlockPosition.cpy());
 		transitionOutAnimation.setDuration(transitionDuration); //+1 ms to ensure this completes after animOut & new block instead deleted instead of old block
+		transitionOutAnimation.setEasing(Animation.Easing.QuadraticIn);
 		
 		transitionInAnimation = animateOutBucket.queueAnimation(new Animation(block){
 			@Override
@@ -389,6 +401,6 @@ public class BlockSelector extends Container{
 		});
 		transitionInAnimation.setDestination(new Vector2(-block.getWidth(), localPseudoBlockPosition.y));
 		transitionInAnimation.setDuration(transitionDuration + 1);
-		transitionInAnimation.setEasing(Animation.Easing.QuadraticIn);
+		transitionInAnimation.setEasing(Animation.Easing.QuadraticOut);
 	}
 }

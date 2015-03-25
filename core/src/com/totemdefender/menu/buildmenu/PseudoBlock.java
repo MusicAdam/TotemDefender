@@ -25,6 +25,7 @@ public class PseudoBlock extends Component {
 	private Texture block;
 	private Texture blockHighlight;
 	private Texture blockHighlightHover;
+	private float highlightAlpha = 1;
 	
 	public PseudoBlock(Container parent, Player owner, BlockEntity.Shape shape, BlockEntity.Material material){
 		super(parent);
@@ -67,9 +68,11 @@ public class PseudoBlock extends Component {
 			blockHighlightActive = blockHighlightHover;	
 			offsetX = squareHighlightW;
 		}
-		
+	
 		batch.begin();
+		batch.setColor(1, 1, 1, highlightAlpha);
 		batch.draw(blockHighlightActive, x - blockHighlightActive.getWidth()/2 + getWidth()/2 + 1, y - blockHighlightActive.getHeight()/2 + getHeight()/2, blockHighlightActive.getWidth() - 3, blockHighlightActive.getHeight() - 1);
+		batch.setColor(1, 1, 1, 1);
 		batch.draw(block, x, y, getWidth(), getHeight());
 		batch.end();
 	}
@@ -78,4 +81,7 @@ public class PseudoBlock extends Component {
 	public BlockEntity.Shape getShape(){ return shape; }	
 	
 	public float getHighlightHeight(){ return blockHighlightHover.getHeight(); }
+	public void setHighlightAlpha(float alpha){
+		highlightAlpha = alpha;
+	}
 }

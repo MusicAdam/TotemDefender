@@ -8,7 +8,8 @@ import com.totemdefender.TotemDefender;
 public class Animation {
 	public enum Easing{
 		Linear,
-		QuadraticIn
+		QuadraticIn,
+		QuadraticOut
 	}
 	
 	public static Vector2 EaseLinear(float duration, Vector2 destination, Vector2 position){
@@ -16,10 +17,21 @@ public class Animation {
 		float step = Math.round(duration/(TotemDefender.STEP * 1000));
 		return distance.scl(1/step);
 	}
-	//t = current time, b = start value, c = change in value, d = duration
-	public static Vector2 EaseQuadraticIn(float currentTime, Vector2 initial, Vector2 step, float duration){
+	//Accelerating from 0 velocity
+	public static Vector2 EaseQuadraticIn(float currentTime, float duration, Vector2 currentPosition, Vector2 destination){
+		Vector2 distance = destination.cpy().sub(currentPosition);
 		currentTime /= duration;
-		return step.scl(currentTime * currentTime).add(initial);
+		return distance.scl(currentTime * currentTime);
+	}
+	
+	
+	//Accelerate until halfway, then decelerate
+	public static Vector2 EaseQuadraticOut(float currentTime, float duration, Vector2 currentPosition, Vector2 destination){
+		Vector2 distance = destination.cpy().sub(currentPosition);
+		currentTime /= duration/2;
+		if(currentTime < 1) return distance.scl(.5f).scl(currentTime * currentTime);
+		currentTime--;
+		return distance.scl(-.5f).scl(currentTime * (currentTime-2) -1);
 	}
 	
 	protected Component target; //The components to be animated
@@ -64,10 +76,10 @@ public class Animation {
 					step = EaseLinear(duration, destination, target.getPosition());
 				break;
 			case QuadraticIn:
-				if(step == null)
-					step = new Vector2();
-				step = EaseQuadraticIn(getElapsedTime(), initialPosition, step, duration);
-				System.out.println(step);
+				step = EaseQuadraticIn(getElapsedTime(), duration, target.getPosition(), destination);
+				break;
+			case QuadraticOut:
+				step = EaseQuadraticIn(getElapsedTime(), duration, target.getPosition(), destination);
 				break;
 		}
 	}
@@ -102,7 +114,6 @@ public class Animation {
 	}
 
 	public void setEasing(Easing easing) {
-		System.out.println("Set easing to " + easing);
 		this.easing = easing;
 	}
 
