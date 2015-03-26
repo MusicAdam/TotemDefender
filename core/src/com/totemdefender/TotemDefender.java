@@ -13,6 +13,7 @@ import com.totemdefender.menu.Component;
 import com.totemdefender.menu.Container;
 import com.totemdefender.menu.Label;
 import com.totemdefender.menu.Panel;
+import com.totemdefender.states.AnimationController;
 import com.totemdefender.states.BuildState;
 import com.totemdefender.states.DepthTestState;
 import com.totemdefender.states.MainMenuState;
@@ -113,6 +114,7 @@ public class TotemDefender extends ApplicationAdapter {
 	private Queue<DepthWrapper<Container>> 		menuAddQueue;
 	private Level level;
 	private Component keyboardFocus;
+	private AnimationController animationController;
 	
 	/** Control Variables */
 	private boolean isDoneBuilding;
@@ -164,13 +166,12 @@ public class TotemDefender extends ApplicationAdapter {
 		
 		loadResources();
 		assetManager.finishLoading(); //Block until finished loading for now.
-		
 
 		//Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode()); //Default to fullscreen desktop mode
-		////		DEBUG STUFF	 /////	 
+		animationController = new AnimationController();
+		stateManager.attachState(animationController);
 		stateManager.attachState(new MainMenuState());
-		//stateManager.attachState(new ResolutionTestState());
-		//stateManager.attachState(new MenuTestState());
+
 		//Add an exit function
 		gameInputHandler.addListener(new KeyboardEvent(KeyboardEvent.KEY_UP, Input.Keys.ESCAPE){
 			@Override
@@ -178,10 +179,7 @@ public class TotemDefender extends ApplicationAdapter {
 				Gdx.app.exit();
 				return true;
 			}
-		});
-
-		
-		
+		});		
 	}
 
 	@Override
@@ -270,13 +268,6 @@ public class TotemDefender extends ApplicationAdapter {
 		
 		worldCamera.update();
 		menuCamera.update();
-		
-		
-		
-	
-		
-		
-	
 	}
 	
 	@Override
@@ -609,4 +600,6 @@ public class TotemDefender extends ApplicationAdapter {
 	}
 	
 	public Component getKeyboardFocus(){ return keyboardFocus; }
+	
+	public AnimationController getAnimationController(){ return animationController; }
 }

@@ -39,6 +39,7 @@ public class BuildState implements State {
 		Vector2 p1PedPos = game.worldToScreen(level.getPlayer1Pedestal().getPosition());
 		p1PedPos.add(-(p1BuildMenu.getGrid().getWidth()/2) - 8, TotemDefender.PEDESTAL_HEIGHT/2); //-8 for some reason because it doesn't line up correctly.
 		p1BuildMenu.getGrid().setPosition(p1PedPos);
+		p1BuildMenu.validate();
 		
 		Vector2 p2PedPos = game.worldToScreen(level.getPlayer2Pedestal().getPosition());
 		
@@ -49,6 +50,7 @@ public class BuildState implements State {
 		p2BuildMenu.create(game);
 		
 		p2BuildMenu.getGrid().setPosition(0, TotemDefender.PEDESTAL_HEIGHT/2 + p2PedPos.y);
+		p2BuildMenu.validate();
 	}
 	@Override
 	public void onExit(TotemDefender game) {
