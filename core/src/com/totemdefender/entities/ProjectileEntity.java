@@ -16,7 +16,7 @@ import com.totemdefender.TotemDefender;
 
 public class ProjectileEntity extends Entity{
 	public static final long LIFESPAN = 3000; //Lifespan in ms until projectile is marked for deletion
-	public static final float RADIUS = 7;
+	public static final float RADIUS = 7.5f;
 	private Vector2 barrelPos;
 	private boolean shouldDelete;
 	private long startTime;
@@ -42,8 +42,8 @@ public class ProjectileEntity extends Entity{
 		
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = shape;
-		fixtureDef.density = 1.0f; 
-		fixtureDef.friction = 0.4f;
+		fixtureDef.density = 1.2f; 
+		fixtureDef.friction = 0.6f;
 		fixtureDef.restitution = 0.4f;
 		fixtureDef.filter.categoryBits = (getOwner().getID() == 1) ? Entity.PLAYER1_PROJECTILE : Entity.PLAYER2_PROJECTILE;
 		fixtureDef.filter.maskBits = Entity.GROUND | Entity.BLOCK;

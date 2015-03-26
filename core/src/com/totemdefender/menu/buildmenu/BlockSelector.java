@@ -110,12 +110,7 @@ public class BlockSelector extends Container{
 		//Cost label
 		cost = new Label(this);
 		cost.setFont("hud_medium.ttf");
-		if(block.getShape()==Shape.Square){
-			cost.setText("$100", true);
-		}
-		else{
-			cost.setText("$200",true);
-		}
+		cost.setText("$" + BlockEntity.GetCost(block.getMaterial(), block.getShape()), true);
 		cost.setTextColor(new Color(0.011765f, 0.541176f, 0.239215f, 1));
 		cost.create(game);		
 		
@@ -375,6 +370,7 @@ public class BlockSelector extends Container{
 				finalThis.block = (PseudoBlock) target;
 				finalThis.block.setPosition(finalThis.localPseudoBlockPosition.cpy());	
 				finalThis.block.setHighlightAlpha(1);
+				updateCostLabel();
 			}
 		});
 		transitionInAnimation.setDestination(localPseudoBlockPosition.cpy());
@@ -417,6 +413,7 @@ public class BlockSelector extends Container{
 				finalThis.block = (PseudoBlock) target;
 				finalThis.block.setPosition(finalThis.localPseudoBlockPosition.cpy());	
 				finalThis.block.setHighlightAlpha(1);
+				updateCostLabel();
 			}
 		});
 		transitionOutAnimation.setDestination(localPseudoBlockPosition.cpy());
@@ -447,5 +444,9 @@ public class BlockSelector extends Container{
 		transitionInAnimation.setDestination(new Vector2(getWidth() + block.getWidth(), localPseudoBlockPosition.y));
 		transitionInAnimation.setDuration(transitionDuration + 1);
 		transitionInAnimation.setEasing(Animation.Easing.QuadraticOut);
+	}
+	
+	public void updateCostLabel(){
+		cost.setText("$" + BlockEntity.GetCost(block.getMaterial(), block.getShape()), true);
 	}
 }

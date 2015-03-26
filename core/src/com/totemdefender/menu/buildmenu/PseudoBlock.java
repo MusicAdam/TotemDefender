@@ -79,6 +79,7 @@ public class PseudoBlock extends Component {
 	
 	
 	public BlockEntity.Shape getShape(){ return shape; }	
+	public BlockEntity.Material getMaterial(){ return material; }
 	
 	public float getHighlightHeight(){ return blockHighlightHover.getHeight(); }
 	public void setHighlightAlpha(float alpha){
