@@ -91,6 +91,7 @@ public class Animation {
 	public void onComplete(){}//Called by bucket
 	public void onStep(){}//Called by update
 	public void onStart(){} //Called by bucket
+	public void onAbort(){} //Called by bucket
 	
 	public Component getTarget() {
 		return target;

@@ -218,26 +218,6 @@ public class BlockSelector extends Container{
 		super.onMouseExit(event);
 	}
 	
-	/*
-	@Override
-	public boolean onMouseDown(MouseEvent event){
-		if(!arrowLeft.isMouseOver() && !arrowRight.isMouseOver() && !getParent().isKeyboardMode()){ 
-			mouseSpawned = spawnBlock(TotemDefender.Get());
-			getParent().setPlacementMode(BuildMenu.PlacementMode.Mouse);
-		}
-		return super.onMouseDown(event);
-	}
-	
-	@Override
-	public boolean onMouseUp(MouseEvent event){
-		super.onMouseUp(event);
-		if(getParent().isMouseMode()){
-			getParent().destroySpawnedBlock(TotemDefender.Get());
-			mouseSpawned = null;
-		}
-		return false;
-	}*/
-	
 	@Override
 	public boolean onKeyboardSelect(){
 		if(getParent().getGrid().hasEntity()) return false;
@@ -287,6 +267,12 @@ public class BlockSelector extends Container{
 		
 	}
 	
+	@Override
+	public boolean onLeftKeyUp(){
+		System.out.println("Left");
+		return true;
+	}
+	
 	public boolean isMouseMode(){
 		return mouseSpawned != null;
 	}
@@ -328,12 +314,15 @@ public class BlockSelector extends Container{
 	}
 	
 	public void transitionLeft(){
+		animateOutBucket.abortCurrentAnimation();
+		animateInBucket.abortCurrentAnimation();
+		
 		final BlockSelector finalThis = this;
 		newBlock = new PseudoBlock(blockScissors, owner, shape, getCurrentMaterial());
 		newBlock.setShouldRender(false);
 		newBlock.create(TotemDefender.Get());
 		newBlock.setPosition(localPseudoBlockPosition.cpy().add(getWidth()/2, 0));
-		transitionOutAnimation = animateInBucket.queueAnimation(new Animation(block){
+		transitionOutAnimation = animateOutBucket.queueAnimation(new Animation(block){
 			@Override
 			public void onComplete(){
 				target.destroy(TotemDefender.Get());
@@ -344,27 +333,42 @@ public class BlockSelector extends Container{
 				float alpha = 1 - ((float)getElapsedTime()/(float)getDuration());
 				((PseudoBlock)target).setHighlightAlpha(alpha);
 			}
+			
+			@Override
+			public void onAbort(){
+				target.destroy(TotemDefender.Get());
+			}
 		});
 		transitionOutAnimation.setDestination(new Vector2(-block.getWidth(), localPseudoBlockPosition.y));
 		transitionOutAnimation.setDuration(transitionDuration + 1); //+1 ms to ensure this completes after animOut & new block instead deleted instead of old block
 		transitionOutAnimation.setEasing(Animation.Easing.QuadraticOut);
 		
-		transitionInAnimation = animateOutBucket.queueAnimation(new Animation(newBlock){
+		transitionInAnimation = animateInBucket.queueAnimation(new Animation(newBlock){
 			@Override
 			public void onStart(){
 				target.setShouldRender(true);
 			}
+			
 			@Override
 			public void onComplete(){
-				finalThis.block = (PseudoBlock) target;
-				finalThis.block.setPosition(finalThis.localPseudoBlockPosition.cpy());	
-				finalThis.block.setHighlightAlpha(1);
+				clean();
 			}
 			
 			@Override
 			public void onStep(){
 				float alpha = ((float)getElapsedTime()/(float)getDuration());
 				((PseudoBlock)target).setHighlightAlpha(alpha);
+			}
+			
+			@Override
+			public void onAbort(){
+				clean();
+			}
+			
+			private void clean(){
+				finalThis.block = (PseudoBlock) target;
+				finalThis.block.setPosition(finalThis.localPseudoBlockPosition.cpy());	
+				finalThis.block.setHighlightAlpha(1);
 			}
 		});
 		transitionInAnimation.setDestination(localPseudoBlockPosition.cpy());
@@ -373,6 +377,9 @@ public class BlockSelector extends Container{
 	}
 	
 	public void transitionRight(){
+		animateOutBucket.abortCurrentAnimation();
+		animateInBucket.abortCurrentAnimation();
+		
 		final BlockSelector finalThis = this;
 		newBlock = new PseudoBlock(blockScissors, owner, shape, getCurrentMaterial());
 		newBlock.setShouldRender(false);
@@ -380,9 +387,30 @@ public class BlockSelector extends Container{
 		newBlock.setPosition(localPseudoBlockPosition.cpy().add(-getWidth()/2 - newBlock.getWidth(), 0));
 		transitionOutAnimation = animateInBucket.queueAnimation(new Animation(newBlock){
 			@Override
+			public void onStart(){
+				target.setShouldRender(true);
+			}
+			
+			@Override
 			public void onComplete(){
+				clean();
+			}
+			
+			@Override
+			public void onStep(){
+				float alpha = 1 - ((float)getElapsedTime()/(float)getDuration());
+				((PseudoBlock)target).setHighlightAlpha(alpha);
+			}
+			
+			@Override
+			public void onAbort(){
+				clean();
+			}
+
+			private void clean(){
 				finalThis.block = (PseudoBlock) target;
-				finalThis.block.setPosition(finalThis.localPseudoBlockPosition.cpy());		
+				finalThis.block.setPosition(finalThis.localPseudoBlockPosition.cpy());	
+				finalThis.block.setHighlightAlpha(1);
 			}
 		});
 		transitionOutAnimation.setDestination(localPseudoBlockPosition.cpy());
@@ -391,15 +419,26 @@ public class BlockSelector extends Container{
 		
 		transitionInAnimation = animateOutBucket.queueAnimation(new Animation(block){
 			@Override
-			public void onStart(){
-				target.setShouldRender(true);
+			public void onComplete(){	
+				clean();
 			}
+			
 			@Override
-			public void onComplete(){
-				target.destroy(TotemDefender.Get());		
+			public void onStep(){
+				float alpha = ((float)getElapsedTime()/(float)getDuration());
+				((PseudoBlock)target).setHighlightAlpha(alpha);
+			}
+			
+			@Override
+			public void onAbort(){
+				clean();
+			}
+			
+			private void clean(){
+				target.destroy(TotemDefender.Get());	
 			}
 		});
-		transitionInAnimation.setDestination(new Vector2(-block.getWidth(), localPseudoBlockPosition.y));
+		transitionInAnimation.setDestination(new Vector2(getWidth() + block.getWidth(), localPseudoBlockPosition.y));
 		transitionInAnimation.setDuration(transitionDuration + 1);
 		transitionInAnimation.setEasing(Animation.Easing.QuadraticOut);
 	}

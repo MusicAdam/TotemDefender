@@ -7,6 +7,7 @@ import com.totemdefender.TotemDefender;
 import com.totemdefender.input.InputHandler;
 import com.totemdefender.input.KeyboardEvent;
 import com.totemdefender.input.MouseEvent;
+import com.totemdefender.menu.buildmenu.ReadyButton;
 
 public class NavigableContainer extends Container{
 	public class Edge{
@@ -19,8 +20,15 @@ public class NavigableContainer extends Container{
 		public void updateDirection(){
 			float xDist = node2.component.getPosition().x - node1.component.getPosition().x;
 			float yDist = node2.component.getPosition().y - node1.component.getPosition().y;
-			this.xDir =(int)(xDist / (float)Math.abs(xDist));
-			this.yDir =(int)(yDist / (float)Math.abs(yDist));
+			float absXDist = Math.abs(xDist);
+			float absYDist = Math.abs(yDist);
+			
+			if(node1.component.getWidth() > absXDist || node2.component.getWidth() > absXDist)
+				xDist = 0;
+			if(node1.component.getHeight() > absYDist || node2.component.getHeight() > absYDist)
+				yDist = 0;
+			this.xDir =(int)(xDist / absXDist);
+			this.yDir =(int)(yDist / absYDist);
 			if(isWrapper){
 				xDir *= -1;
 				yDir *= -1;
@@ -102,20 +110,24 @@ public class NavigableContainer extends Container{
 		return (System.currentTimeMillis() - lastTraversalTime > traversalTime) && !disableTraverse;
 	}
 	
-	public void onTraverseDown(){
-		moveFocusDown();		
+	public boolean onTraverseDown(){
+		resetTraversalTime();
+		return moveFocusDown();		
 	}
 	
-	public void onTraverseUp(){
-		moveFocusUp();			
+	public boolean onTraverseUp(){
+		resetTraversalTime();
+		return moveFocusUp();			
 	}
 	
-	public void onTraverseLeft(){
-		moveFocusLeft();		
+	public boolean onTraverseLeft(){
+		resetTraversalTime();
+		return moveFocusLeft();		
 	}
 	
-	public void onTraverseRight(){
-		moveFocusRight();			
+	public boolean onTraverseRight(){
+		resetTraversalTime();
+		return moveFocusRight();			
 	}
 	
 	public void connectComponents(Component cmp1, Component cmp2, boolean isWrapper){
@@ -196,7 +208,8 @@ public class NavigableContainer extends Container{
 	
 	private Node findClosestNode(Node node, int xDir, int yDir){
 		for(Edge edge : node.edges){
-			if(	edge.yDir == xDir ||
+			System.out.println(xDir + ", " + yDir + " : " + edge.xDir + ", " + edge.yDir);
+			if(	edge.xDir == xDir &&
 				edge.yDir == yDir){
 				if(edge.node1 == node){
 					return edge.node2;
@@ -209,60 +222,72 @@ public class NavigableContainer extends Container{
 		return null;
 	}
 	
-	public void moveFocusDown(){
-		if(!shouldTraverse()) return;
+	public boolean moveFocusDown(){
 		if(nodeFocus == null){
-			if(!graph.isEmpty())
+			if(!graph.isEmpty()){
 				setFocus(graph.get(0));
+				return true;
+			}
 		}else{
 			Node found = findClosestNode(nodeFocus, 0, -1);
-			if(found != null)
+			if(found != null){
 				setFocus(found);
+				return true;
+			}
 		}
 
-		resetTraversalTime();
+		return false;
 	}
 	
-	public void moveFocusLeft(){
-		if(!shouldTraverse()) return;
+	public boolean moveFocusLeft(){
 		if(nodeFocus == null){
-			if(!graph.isEmpty())
+			if(!graph.isEmpty()){
 				setFocus(graph.get(0));
+				return true;
+			}
 		}else{
 			Node found = findClosestNode(nodeFocus, -1, 0);
-			if(found != null)
+			if(found != null){
 				setFocus(found);
+				return true;
+			}
 		}
 
-		resetTraversalTime();
+		return false;
 	}
 	
-	public void moveFocusRight(){
-		if(!shouldTraverse()) return;
+	public boolean moveFocusRight(){
 		if(nodeFocus == null){
-			if(!graph.isEmpty())
+			if(!graph.isEmpty()){
 				setFocus(graph.get(0));
+				return true;
+			}
 		}else{
 			Node found = findClosestNode(nodeFocus, 1, 0);
-			if(found != null)
+			if(found != null){
 				setFocus(found);
+				return true;
+			}
 		}
 
-		resetTraversalTime();
+		return false;
 	}
 	
-	public void moveFocusUp(){
-		if(!shouldTraverse()) return;
+	public boolean moveFocusUp(){
 		if(nodeFocus == null){
-			if(!graph.isEmpty())
+			if(!graph.isEmpty()){
 				setFocus(graph.get(0));
+				return true;
+			}
 		}else{
 			Node found = findClosestNode(nodeFocus, 0, 1);
-			if(found != null)
+			if(found != null){
 				setFocus(found);
+				return true;
+			}
 		}
 		
-		resetTraversalTime();
+		return false;
 	}
 	
 	public void resetTraversalTime(){
@@ -271,9 +296,17 @@ public class NavigableContainer extends Container{
 	
 	public boolean onUpKeyDown(){
 		if(keyboardFocusIsNull()){
-			onTraverseUp();
-			traverseUp = true;
-			return true;	
+			if(moveFocusUp()){
+				resetTraversalTime();
+				traverseUp = true;
+				return true;
+			}else{
+				for(Component cmp : components){
+					if(cmp.onUpKeyDown()){
+						return true;
+					}
+				}
+			}
 		}
 		return false;
 	}
@@ -281,6 +314,13 @@ public class NavigableContainer extends Container{
 	public boolean onUpKeyUp(){
 		if(keyboardFocusIsNull()){
 			traverseUp = false;
+			
+			for(Component cmp : components){
+				if(cmp.onUpKeyUp()){
+					return true;
+				}
+			}
+			
 			return true;	
 		}
 		return false;
@@ -288,9 +328,17 @@ public class NavigableContainer extends Container{
 	
 	public boolean onDownKeyDown(){
 		if(keyboardFocusIsNull()){
-			onTraverseDown();
-			traverseDown = true;
-			return true;	
+			if(moveFocusDown()){
+				resetTraversalTime();
+				traverseDown = true;
+				return true;
+			}else{
+				for(Component cmp : components){
+					if(cmp.onDownKeyDown()){
+						return true;
+					}
+				}
+			}
 		}
 		return false;
 	}
@@ -298,6 +346,13 @@ public class NavigableContainer extends Container{
 	public boolean onDownKeyUp(){
 		if(keyboardFocusIsNull()){
 			traverseDown = false;
+			
+			for(Component cmp : components){
+				if(cmp.onDownKeyDown()){
+					return true;
+				}
+			}
+			
 			return true;		
 		}
 		return false;
@@ -305,9 +360,17 @@ public class NavigableContainer extends Container{
 	
 	public boolean onLeftKeyDown(){
 		if(keyboardFocusIsNull()){
-			onTraverseLeft();
-			traverseLeft = true;
-			return true;
+			if(moveFocusLeft()){
+				resetTraversalTime();
+				traverseLeft = true;
+				return true;
+			}else{
+				for(Component cmp : components){
+					if(cmp.onLeftKeyDown()){
+						return true;
+					}
+				}
+			}
 		}
 		return false;
 	}
@@ -315,6 +378,13 @@ public class NavigableContainer extends Container{
 	public boolean onLeftKeyUp(){
 		if(keyboardFocusIsNull()){
 			traverseLeft = false;
+			
+			for(Component cmp : components){
+				if(cmp.onLeftKeyUp()){
+					return true;
+				}
+			}
+			
 			return true;	
 		}
 		return false;
@@ -322,9 +392,17 @@ public class NavigableContainer extends Container{
 	
 	public boolean onRightKeyDown(){
 		if(keyboardFocusIsNull()){
-			onTraverseRight();
-			traverseRight = true;
-			return true;
+			if(moveFocusRight()){
+				resetTraversalTime();
+				traverseRight = true;
+				return true;
+			}else{
+				for(Component cmp : components){
+					if(cmp.onRightKeyDown()){
+						return true;
+					}
+				}
+			}
 		}
 		return false;
 	}
@@ -332,6 +410,13 @@ public class NavigableContainer extends Container{
 	public boolean onRightKeyUp(){
 		if(keyboardFocusIsNull()){
 			traverseRight = false;
+			
+			for(Component cmp : components){
+				if(cmp.onRightKeyUp()){
+					return true;
+				}
+			}
+			
 			return true;
 		}
 		return false;

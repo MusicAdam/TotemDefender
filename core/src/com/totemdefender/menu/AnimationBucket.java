@@ -39,4 +39,12 @@ public class AnimationBucket {
 			}
 		}
 	}
+	
+	public Animation abortCurrentAnimation(){
+		if(active == null) return null;
+		Animation tmp = active;
+		active.onAbort();
+		active = null;
+		return tmp;
+	}
 }

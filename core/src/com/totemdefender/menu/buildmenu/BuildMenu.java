@@ -49,10 +49,6 @@ public class BuildMenu extends NavigableContainer {
 		
 		readyButton = new ReadyButton(this, owner);
 		readyButton.create(game);
-
-		connectComponents(squareSelector, rectangleSelector);
-		connectComponents(rectangleSelector, readyButton);
-		connectComponents(readyButton, squareSelector, true);
 		
 		attachKeyboardListeners(owner);
 		
@@ -62,6 +58,10 @@ public class BuildMenu extends NavigableContainer {
 		playerBudget.setPosition(0,775);
 		playerBudget.setTextColor(new Color(0.011765f, 0.541176f, 0.239215f, 1));
 		playerBudget.create(game);
+
+		connectComponents(squareSelector, rectangleSelector);
+		connectComponents(rectangleSelector, readyButton);
+		connectComponents(readyButton, squareSelector, true);
 	};
 	
 	@Override
@@ -180,42 +180,46 @@ public class BuildMenu extends NavigableContainer {
 	}
 	
 	@Override
-	public void onTraverseDown(){
+	public boolean onTraverseDown(){
 		if(grid.hasEntity()){
 			grid.shiftIndexDown();
 			resetTraversalTime();
+			return true;
 		}else{
-			super.onTraverseDown();
+			return super.onTraverseDown();
 		}
 	}
 	
 	@Override
-	public void onTraverseUp(){
+	public boolean onTraverseUp(){
 		if(grid.hasEntity()){
 			grid.shiftIndexUp();
 			resetTraversalTime();
+			return true;
 		}else{
-			super.onTraverseUp();
+			return super.onTraverseUp();
 		}
 	}
 	
 	@Override
-	public void onTraverseLeft(){
+	public boolean onTraverseLeft(){
 		if(grid.hasEntity()){
 			grid.shiftIndexLeft();
 			resetTraversalTime();
+			return true;
 		}else{
-			super.onTraverseLeft();
+			return super.onTraverseLeft();
 		}
 	}
 	
 	@Override
-	public void onTraverseRight(){
+	public boolean onTraverseRight(){
 		if(grid.hasEntity()){
 			grid.shiftIndexRight();
 			resetTraversalTime();
+			return true;
 		}else{
-			super.onTraverseRight();
+			return super.onTraverseRight();
 		}
 	}
 	
