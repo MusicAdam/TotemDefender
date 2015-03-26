@@ -10,42 +10,44 @@ import com.totemdefender.input.MouseEvent;
 import com.totemdefender.menu.buildmenu.ReadyButton;
 
 public class NavigableContainer extends Container{
+	public enum ConnectionType{
+		Horizontal, Vertical
+	}
 	public class Edge{
 		public Node node1;
 		public Node node2;
-		public int yDir;
-		public int xDir;
-		public boolean isWrapper = false;
+		public ConnectionType connection;
+		private int dir;
+		private float dist;
 		
-		public void updateDirection(){
-			float xDist = node2.component.getPosition().x - node1.component.getPosition().x;
-			float yDist = node2.component.getPosition().y - node1.component.getPosition().y;
-			float absXDist = Math.abs(xDist);
-			float absYDist = Math.abs(yDist);
-			
-			if(node1.component.getWidth() > absXDist || node2.component.getWidth() > absXDist)
-				xDist = 0;
-			if(node1.component.getHeight() > absYDist || node2.component.getHeight() > absYDist)
-				yDist = 0;
-			this.xDir =(int)(xDist / absXDist);
-			this.yDir =(int)(yDist / absYDist);
-			if(isWrapper){
-				xDir *= -1;
-				yDir *= -1;
+		public void update(){
+			if(connection == ConnectionType.Horizontal){
+				dist = node2.component.getPosition().x - node1.component.getPosition().x;
+				dir = (int)(dist/Math.abs(dist));
+			}else{
+				dist = node2.component.getPosition().y - node1.component.getPosition().y;
+				dir = (int)(dist/Math.abs(dist));
 			}
+		}
+		
+		public int getDir(){
+			return dir;
+		}
+		
+		public float getDistance(){
+			return dist;
 		}
 	}
 	
 	public class Node{
 		public ArrayList<Edge> edges = new ArrayList<Edge>();
 		public Component component;
-		public Node(){}
-		public void updateEdges(){
-			for(Edge edge : edges){
-				edge.updateDirection();
+		public Node(){}	
+		public void update(){
+			for(Edge e : edges){
+				e.update();
 			}
 		}
-		
 	}
 	
 	private ArrayList<Node> graph;
@@ -59,18 +61,20 @@ public class NavigableContainer extends Container{
 	protected KeyboardEvent 	rightKeyDownListener;
 	protected KeyboardEvent 	rightKeyUpListener;
 	protected KeyboardEvent 	selectKeyUpListener;
-	private boolean traverseDown;
-	private boolean traverseUp;
-	private boolean traverseLeft;
-	private boolean traverseRight;
+	protected boolean traverseDown;
+	protected boolean traverseUp;
+	protected boolean traverseLeft;
+	protected boolean traverseRight;
 	private boolean disableTraverse;
 	private long lastTraversalTime = 0;
-	private long traversalTime = 250; //Time between movement (miliseconds)
+	private long traversalTime = 150; //Time between movement (miliseconds)
+	private ConnectionType orientation;
 	
-	public NavigableContainer(Container parent) {
+	public NavigableContainer(Container parent, ConnectionType orientation) {
 		super(parent);
 		
 		graph = new ArrayList<Node>();
+		this.orientation = orientation;
 	}
 	
 	@Override
@@ -87,8 +91,8 @@ public class NavigableContainer extends Container{
 	
 	@Override
 	public void validate(){
-		for(Node node : graph)
-			node.updateEdges();
+		for(Node n : graph)
+			n.update();
 		super.validate();
 	}
 	
@@ -130,7 +134,7 @@ public class NavigableContainer extends Container{
 		return moveFocusRight();			
 	}
 	
-	public void connectComponents(Component cmp1, Component cmp2, boolean isWrapper){
+	public void connectComponents(Component cmp1, Component cmp2, ConnectionType connectionType, boolean isWrapper){
 		Edge edge1 = new Edge();
 		Edge edge2 = new Edge();
 
@@ -151,18 +155,24 @@ public class NavigableContainer extends Container{
 		
 		edge1.node1 = node1;
 		edge1.node2 = node2;
-		edge1.isWrapper = isWrapper;
-		edge1.updateDirection();
-		node1.edges.add(edge1);
+		edge1.connection = connectionType;
 		edge2.node1 = node2;
 		edge2.node2 = node1;
-		edge2.isWrapper = isWrapper;
-		edge2.updateDirection();
+		edge2.connection = connectionType;
+		node1.edges.add(edge1);
 		node2.edges.add(edge2);
 	}
 	
-	public void connectComponents(Component cmp1, Component cmp2){
-		connectComponents(cmp1, cmp2, false);
+	public void connectComponents(Component cmp1, Component cmp2, ConnectionType connectionType){
+		connectComponents(cmp1, cmp2, connectionType, false);
+	}
+	
+	public void connectComponentsHorizontally(Component cmp1, Component cmp2){
+		connectComponents(cmp1, cmp2, ConnectionType.Horizontal);
+	}
+	
+	public void connectComponentsVertically(Component cmp1, Component cmp2){
+		connectComponents(cmp1, cmp2, ConnectionType.Vertical);
 	}
 	
 	public Node findNode(Component cmp){
@@ -206,87 +216,93 @@ public class NavigableContainer extends Container{
 		nodeFocus = node;
 	}
 	
-	private Node findClosestNode(Node node, int xDir, int yDir){
+	private Node findClosestNode(Node node, ConnectionType connectionType, int dir){
+		if(node == null) return null;
+		
+		Node closestNode = null;
+		float closestDist = Float.MAX_VALUE;
 		for(Edge edge : node.edges){
-			System.out.println(xDir + ", " + yDir + " : " + edge.xDir + ", " + edge.yDir);
-			if(	edge.xDir == xDir &&
-				edge.yDir == yDir){
-				if(edge.node1 == node){
-					return edge.node2;
-				}else{
-					return edge.node1;
+			if(edge.getDir() == dir && edge.connection == connectionType){
+				if(closestNode == null){	
+					closestDist = edge.getDistance();
+					if(edge.node1 == node){
+						closestNode = edge.node2;
+					}else{
+						closestNode = edge.node1;
+					}
+				}else if(edge.getDistance() < closestDist){
+					closestDist = edge.getDistance();
+					if(edge.node1 == node){
+						closestNode = edge.node2;
+					}else{
+						closestNode = edge.node1;
+					}					
 				}
 			}
 		}
 		
-		return null;
+		return closestNode;
 	}
 	
 	public boolean moveFocusDown(){
-		if(nodeFocus == null){
+		Node found = findClosestNode(nodeFocus, ConnectionType.Vertical, -1);
+		if(found != null){
+			setFocus(found);
+			return true;
+		}
+		if(orientation == ConnectionType.Vertical){
 			if(!graph.isEmpty()){
 				setFocus(graph.get(0));
 				return true;
 			}
-		}else{
-			Node found = findClosestNode(nodeFocus, 0, -1);
-			if(found != null){
-				setFocus(found);
-				return true;
-			}
 		}
-
 		return false;
 	}
 	
 	public boolean moveFocusLeft(){
-		if(nodeFocus == null){
+		Node found = findClosestNode(nodeFocus, ConnectionType.Horizontal, -1);
+		if(found != null){
+			setFocus(found);
+			return true;
+		}
+		if(orientation == ConnectionType.Horizontal){
 			if(!graph.isEmpty()){
-				setFocus(graph.get(0));
-				return true;
-			}
-		}else{
-			Node found = findClosestNode(nodeFocus, -1, 0);
-			if(found != null){
-				setFocus(found);
+				setFocus(graph.get(graph.size() - 1));
 				return true;
 			}
 		}
-
 		return false;
 	}
 	
 	public boolean moveFocusRight(){
-		if(nodeFocus == null){
+		Node found = findClosestNode(nodeFocus, ConnectionType.Horizontal, 1);
+		if(found != null){
+			setFocus(found);
+			return true;
+		}
+		
+		if(orientation == ConnectionType.Horizontal){
 			if(!graph.isEmpty()){
 				setFocus(graph.get(0));
 				return true;
 			}
-		}else{
-			Node found = findClosestNode(nodeFocus, 1, 0);
-			if(found != null){
-				setFocus(found);
-				return true;
-			}
 		}
-
 		return false;
 	}
 	
 	public boolean moveFocusUp(){
-		if(nodeFocus == null){
+		Node found = findClosestNode(nodeFocus, ConnectionType.Vertical, 1);
+		if(found != null){
+			setFocus(found);
+			return true;
+		}
+		
+		if(orientation == ConnectionType.Vertical){
 			if(!graph.isEmpty()){
-				setFocus(graph.get(0));
-				return true;
-			}
-		}else{
-			Node found = findClosestNode(nodeFocus, 0, 1);
-			if(found != null){
-				setFocus(found);
+				setFocus(graph.get(graph.size() - 1));
 				return true;
 			}
 		}
-		
 		return false;
 	}
 	
@@ -302,6 +318,7 @@ public class NavigableContainer extends Container{
 				return true;
 			}else{
 				for(Component cmp : components){
+					if(!cmp.hasFocus()) continue;
 					if(cmp.onUpKeyDown()){
 						return true;
 					}
@@ -316,6 +333,7 @@ public class NavigableContainer extends Container{
 			traverseUp = false;
 			
 			for(Component cmp : components){
+				if(!cmp.hasFocus()) continue;
 				if(cmp.onUpKeyUp()){
 					return true;
 				}
@@ -334,6 +352,7 @@ public class NavigableContainer extends Container{
 				return true;
 			}else{
 				for(Component cmp : components){
+					if(!cmp.hasFocus()) continue;
 					if(cmp.onDownKeyDown()){
 						return true;
 					}
@@ -348,6 +367,7 @@ public class NavigableContainer extends Container{
 			traverseDown = false;
 			
 			for(Component cmp : components){
+				if(!cmp.hasFocus()) continue;
 				if(cmp.onDownKeyDown()){
 					return true;
 				}
@@ -380,6 +400,7 @@ public class NavigableContainer extends Container{
 			traverseLeft = false;
 			
 			for(Component cmp : components){
+				if(!cmp.hasFocus()) continue;
 				if(cmp.onLeftKeyUp()){
 					return true;
 				}
@@ -398,6 +419,7 @@ public class NavigableContainer extends Container{
 				return true;
 			}else{
 				for(Component cmp : components){
+					if(!cmp.hasFocus()) continue;
 					if(cmp.onRightKeyDown()){
 						return true;
 					}
@@ -412,6 +434,7 @@ public class NavigableContainer extends Container{
 			traverseRight = false;
 			
 			for(Component cmp : components){
+				if(!cmp.hasFocus()) continue;
 				if(cmp.onRightKeyUp()){
 					return true;
 				}

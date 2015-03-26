@@ -269,7 +269,13 @@ public class BlockSelector extends Container{
 	
 	@Override
 	public boolean onLeftKeyUp(){
-		System.out.println("Left");
+		previousMaterial();
+		return true;
+	}
+	
+	@Override
+	public boolean onRightKeyUp(){
+		nextMaterial();
 		return true;
 	}
 	

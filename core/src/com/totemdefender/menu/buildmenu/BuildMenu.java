@@ -31,7 +31,7 @@ public class BuildMenu extends NavigableContainer {
 	private Label playerBudget;
 	
 	public BuildMenu(TotemDefender game, Level level, Player owner) {
-		super(null);
+		super(null, ConnectionType.Vertical);
 		
 		this.owner = owner;
 		this.level = level;
@@ -59,9 +59,8 @@ public class BuildMenu extends NavigableContainer {
 		playerBudget.setTextColor(new Color(0.011765f, 0.541176f, 0.239215f, 1));
 		playerBudget.create(game);
 
-		connectComponents(squareSelector, rectangleSelector);
-		connectComponents(rectangleSelector, readyButton);
-		connectComponents(readyButton, squareSelector, true);
+		connectComponentsVertically(squareSelector, rectangleSelector);
+		connectComponentsVertically(rectangleSelector, readyButton);
 	};
 	
 	@Override
@@ -220,6 +219,54 @@ public class BuildMenu extends NavigableContainer {
 			return true;
 		}else{
 			return super.onTraverseRight();
+		}
+	}
+	
+	@Override
+	public boolean onLeftKeyDown(){
+		if(grid.hasEntity()){
+			grid.shiftIndexLeft();
+			traverseLeft = true;
+			resetTraversalTime();
+			return true;
+		}else{
+			return super.onLeftKeyDown();
+		}
+	}
+	
+	@Override
+	public boolean onRightKeyDown(){
+		if(grid.hasEntity()){
+			grid.shiftIndexRight();
+			traverseRight = true;
+			resetTraversalTime();
+			return true;
+		}else{
+			return super.onRightKeyDown();
+		}
+	}
+	
+	@Override
+	public boolean onUpKeyDown(){
+		if(grid.hasEntity()){
+			grid.shiftIndexUp();
+			traverseUp = true;
+			resetTraversalTime();
+			return true;
+		}else{
+			return super.onUpKeyDown();
+		}
+	}
+	
+	@Override
+	public boolean onDownKeyDown(){
+		if(grid.hasEntity()){
+			grid.shiftIndexDown();
+			traverseDown = true;
+			resetTraversalTime();
+			return true;
+		}else{
+			return super.onDownKeyDown();
 		}
 	}
 	
