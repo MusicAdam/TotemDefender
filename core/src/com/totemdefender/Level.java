@@ -3,6 +3,9 @@ package com.totemdefender;
 import java.util.ArrayList;
 
 import com.totemdefender.entities.BackgroundEntity;
+import com.totemdefender.entities.BalistaWeapon;
+import com.totemdefender.entities.CannonWeapon;
+import com.totemdefender.entities.CatapultWeapon;
 import com.totemdefender.entities.GroundEntity;
 import com.totemdefender.entities.PedestalEntity;
 import com.totemdefender.entities.TotemEntity;
@@ -36,12 +39,28 @@ public class Level {
 		ground.spawn(game);
 		game.addEntity(ground, TotemDefender.GROUND_DEPTH);
 		
-		player1Weapon = new WeaponEntity(game.getPlayer1());
+		if(game.getPlayer1().getWeaponType()==1)
+		player1Weapon = new CannonWeapon(game.getPlayer1());
+		
+		if(game.getPlayer1().getWeaponType()==2)
+			player1Weapon = new CatapultWeapon(game.getPlayer1());
+		
+		if(game.getPlayer1().getWeaponType()==3)
+			player1Weapon = new BalistaWeapon(game.getPlayer1());
+		
 		player1Weapon.setName("Weapon 1");
 		player1Weapon.spawn(game);
 		game.addEntity(player1Weapon, TotemDefender.WEAPON_DEPTH);
 		
-		player2Weapon = new WeaponEntity(game.getPlayer2());
+		if(game.getPlayer2().getWeaponType()==1)
+		player2Weapon = new CannonWeapon(game.getPlayer2());
+		
+		if(game.getPlayer2().getWeaponType()==2)
+			player2Weapon = new CatapultWeapon(game.getPlayer2());
+		
+		if(game.getPlayer2().getWeaponType()==3)
+			player2Weapon = new BalistaWeapon(game.getPlayer2());
+		
 		player2Weapon.setName("Weapon 2");
 		player2Weapon.spawn(game);
 		game.addEntity(player2Weapon, TotemDefender.WEAPON_DEPTH);
