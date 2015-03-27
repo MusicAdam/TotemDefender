@@ -3,7 +3,6 @@ package com.totemdefender.states;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.totemdefender.Level;
-import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.entities.GroundEntity;
 import com.totemdefender.entities.WeaponEntity;
@@ -13,6 +12,7 @@ import com.totemdefender.entities.blocks.SquareBlockEntity;
 import com.totemdefender.input.InputHandler;
 import com.totemdefender.input.KeyboardEvent;
 import com.totemdefender.menu.hud.HUD;
+import com.totemdefender.player.Player;
 
 
 public class BattleState implements State {

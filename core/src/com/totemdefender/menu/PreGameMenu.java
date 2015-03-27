@@ -2,9 +2,9 @@ package com.totemdefender.menu;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
-import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.menu.NavigableContainer.ConnectionType;
+import com.totemdefender.player.Player;
 
 public class PreGameMenu extends NavigableContainer {
 	private Player owner;

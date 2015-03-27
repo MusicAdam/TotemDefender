@@ -5,12 +5,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.entities.TotemEntity;
 import com.totemdefender.input.MouseEvent;
 import com.totemdefender.menu.Button;
 import com.totemdefender.menu.Container;
+import com.totemdefender.player.Player;
 
 public class ReadyButton extends Button{
 	private Player owner;

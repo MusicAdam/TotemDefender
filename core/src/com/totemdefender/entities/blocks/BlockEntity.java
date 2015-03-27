@@ -16,10 +16,11 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.totemdefender.CollisionListener;
-import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.entities.Entity;
 import com.totemdefender.entities.GroundEntity;
+import com.totemdefender.player.Player;
+import com.totemdefender.player.ScoreLine;
 
 public abstract class BlockEntity extends Entity{
 	public static final int RECTANGLE_XSCALE 	= 2;
@@ -134,14 +135,9 @@ public abstract class BlockEntity extends Entity{
 		fixtureDef.restitution = 0.4f;
 		fixtureDef.filter.categoryBits = Entity.BLOCK;
 		fixtureDef.filter.maskBits = (short) (Entity.GROUND | Entity.PEDESTAL | projectileMask | Entity.BLOCK);
-
-		// Create our fixture and attach it to the body
-		
-		
 		
 		//deletion of blocks
 		final BlockEntity thisRef=this;
-		final TotemDefender gameRef=game;
 		
 	
 		getBody().createFixture(fixtureDef).setUserData(new CollisionListener(){
@@ -160,8 +156,7 @@ public abstract class BlockEntity extends Entity{
 				
 			}
 		});
-		
-		//end of deletion code
+		getBody().setUserData(this);
 
 		shape.dispose();	
 		
@@ -170,11 +165,9 @@ public abstract class BlockEntity extends Entity{
 	
 	public void delete(TotemDefender game){
 		if(shouldDelete==true){
-			if(this.getOwner().getID()==1)
-				game.getPlayer2().setScore(game.getPlayer2().getScore()+cost);
-			else
-				game.getPlayer1().setScore(game.getPlayer1().getScore()+cost);
-			
+			Player pl = (getOwner().getID() == 1) ? game.getPlayer2() : game.getPlayer1();
+			pl.addScore(ScoreLine.ScoreType.Destruction, getCost() * pl.getScoreMultiplier());
+			pl.incrementScoreMultiplier();
 			game.getLevel().removePlacedBlock(this);
 			game.destroyEntity(this);
 		}	

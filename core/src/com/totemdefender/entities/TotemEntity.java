@@ -13,9 +13,9 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.totemdefender.CollisionListener;
-import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.entities.blocks.BlockEntity;
+import com.totemdefender.player.Player;
 
 public class TotemEntity extends BlockEntity {
 	private boolean onGround = false;

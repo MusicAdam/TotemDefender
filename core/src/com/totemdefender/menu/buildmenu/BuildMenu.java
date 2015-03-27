@@ -2,7 +2,6 @@ package com.totemdefender.menu.buildmenu;
 import java.util.ArrayList;
 
 import com.totemdefender.Level;
-import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.entities.TotemEntity;
 import com.totemdefender.entities.blocks.BlockEntity;
@@ -11,6 +10,7 @@ import com.totemdefender.input.KeyboardEvent;
 import com.totemdefender.input.MouseEvent;
 import com.totemdefender.menu.Label;
 import com.totemdefender.menu.NavigableContainer;
+import com.totemdefender.player.Player;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 

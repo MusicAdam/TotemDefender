@@ -9,6 +9,7 @@ import com.totemdefender.entities.TotemEntity;
 import com.totemdefender.entities.WeaponEntity;
 import com.totemdefender.entities.blocks.BlockEntity;
 import com.totemdefender.menu.hud.HUD;
+import com.totemdefender.player.Player;
 
 /** Provides easy way to maintain references to placed blocks and other game entities */
 public class Level {

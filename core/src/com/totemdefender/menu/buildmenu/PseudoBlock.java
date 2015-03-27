@@ -5,12 +5,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
-import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.entities.blocks.BlockEntity;
 import com.totemdefender.entities.blocks.BlockEntity.Shape;
 import com.totemdefender.menu.Component;
 import com.totemdefender.menu.Container;
+import com.totemdefender.player.Player;
 
 public class PseudoBlock extends Component {
 	private final float squareHighlightW = 56f;

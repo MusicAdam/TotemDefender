@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
-import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.entities.TotemEntity;
 import com.totemdefender.entities.blocks.BlockEntity;
@@ -14,6 +13,7 @@ import com.totemdefender.input.MouseEvent;
 import com.totemdefender.menu.Component;
 import com.totemdefender.menu.Container;
 import com.totemdefender.menu.Panel;
+import com.totemdefender.player.Player;
 
 public class Grid extends Panel {
 	public static final int WIDTH = 6;

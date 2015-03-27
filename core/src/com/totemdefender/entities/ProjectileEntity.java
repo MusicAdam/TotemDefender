@@ -11,14 +11,16 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.totemdefender.CollisionListener;
-import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
+import com.totemdefender.entities.blocks.BlockEntity;
+import com.totemdefender.player.Player;
+import com.totemdefender.player.ScoreLine;
 
 public class ProjectileEntity extends Entity{
 	public static final long LIFESPAN = 3000; //Lifespan in ms until projectile is marked for deletion
 	public static final float RADIUS = 7;
 	private Vector2 barrelPos;
-	private boolean shouldDelete;
+	private boolean shouldDelete, contactedBlock;
 	private long startTime;
 	
 	public ProjectileEntity(Player owner, Vector2 barrelPos) {
@@ -54,7 +56,13 @@ public class ProjectileEntity extends Entity{
 			@Override
 			public void beginContact(Fixture other, Contact contact) {
 				if(other.getBody().getUserData() instanceof GroundEntity){
+					if(!thisRef.contactedBlock){
+						thisRef.owner.addScore(ScoreLine.ScoreType.Miss, Player.MISS_SCORE);
+						thisRef.owner.resetScoreMultiplier();
+					}
 					thisRef.shouldDelete = true;					
+				}else if(other.getBody().getUserData() instanceof BlockEntity){
+						thisRef.contactedBlock = true;	
 				}
 			}
 

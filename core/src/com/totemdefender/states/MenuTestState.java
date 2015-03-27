@@ -2,7 +2,6 @@ package com.totemdefender.states;
 
 import com.badlogic.gdx.graphics.Color;
 import com.totemdefender.Level;
-import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.input.MouseEvent;
 import com.totemdefender.menu.Button;
@@ -12,6 +11,7 @@ import com.totemdefender.menu.Label;
 import com.totemdefender.menu.NavigableContainer;
 import com.totemdefender.menu.Panel;
 import com.totemdefender.menu.TextEntry;
+import com.totemdefender.player.Player;
 
 public class MenuTestState implements State{
 	Container menu;

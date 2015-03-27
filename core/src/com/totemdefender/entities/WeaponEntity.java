@@ -13,8 +13,8 @@ import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
+import com.totemdefender.player.Player;
 import com.totemdefender.states.BattleState;
 
 public class WeaponEntity extends Entity {	
