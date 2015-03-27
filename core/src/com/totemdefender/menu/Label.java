@@ -23,11 +23,11 @@ public class Label extends Panel{
 		textColor = Color.WHITE;
 		textOffset = new Vector2();
 		setText("Default");
-		invalidate();
 	}
 	
 	@Override
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer) {
+		if(!shouldRender()) return;
 		super.render(batch, shapeRenderer);
 		batch.begin();
 		font.setColor(textColor);
@@ -38,7 +38,7 @@ public class Label extends Panel{
 	public BitmapFont getFont() { return font; }
 	public void updateBounds(){
 		font.getBounds(text, bounds);
-		invalidate();
+		//invalidate();
 	}
 	
 	public void setFont(String fontName) {

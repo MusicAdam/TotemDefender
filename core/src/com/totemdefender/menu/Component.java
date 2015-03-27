@@ -10,9 +10,8 @@ import com.totemdefender.input.MouseEvent;
 
 public abstract class Component {
 	protected Rectangle rectangle; //Mathematical representation of the component
-	
 	protected boolean mouseOver;
-	
+	private boolean shouldRender = true;	
 	private Container parent;
 	
 	private boolean hasFocus;
@@ -21,22 +20,23 @@ public abstract class Component {
 	public Component(Container parent){
 		this.parent = parent;
 		rectangle = new Rectangle();
-		if(parent != null)
-			parent.invalidate();
 		invalidate();
 	}
 	
 	public Component(){
 		this.parent = null;
 		rectangle = new Rectangle();
-		if(parent != null)
-			parent.invalidate();
 		invalidate();
 	}
 	
-	public void update(TotemDefender game){doLayout();}
+	public void update(TotemDefender game){
+		if(!isValid())
+			validate();
+	}
 	
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer){
+		if(!shouldRender()) return;
+		
 		if(TotemDefender.DEBUG){
 			shapeRenderer.begin(ShapeType.Line);
 			shapeRenderer.setColor(Color.RED);
@@ -46,7 +46,6 @@ public abstract class Component {
 	}
 	
 	public void create(TotemDefender game){
-		invalidate();
 		if(this instanceof Container && parent == null){
 			game.addMenu((Container)this);
 		}else if(parent != null){
@@ -101,13 +100,14 @@ public abstract class Component {
 	/** Checks if given point lies within the menu */
 	public boolean pointIsInBounds(Vector2 point){ return rectangle.contains(point); }
 	
-	public Vector2 getPosition() { return new Vector2(rectangle.x, rectangle.y); }
+	public Vector2 getPosition() { 
+		/*if(!isValid())
+		validate();*/
+		return new Vector2(rectangle.x, rectangle.y); 
+	}
 	
 	public void setPosition(Vector2 position) {
 		rectangle.setPosition(position);
-		if(parent != null)
-			parent.invalidate();
-		invalidate();
 	}
 	
 	public void setPosition(float x, float y){
@@ -115,20 +115,17 @@ public abstract class Component {
 	}
 
 	public Vector2 getSize() {
-		doLayout();
+		/*if(!isValid())
+		validate();*/
 		return rectangle.getSize(new Vector2());
 	}
 	
 	public void setSize(Vector2 size) {
 		rectangle.setSize(size.x, size.y);
-		if(parent != null)
-			parent.invalidate();
-		invalidate();
 	}
 	
 	public void setSize(float w, float h){
 		setSize(new Vector2(w, h));
-		invalidate();
 	}
 	
 	public void setWidth(float w){ setSize(w, getHeight()); }
@@ -136,20 +133,28 @@ public abstract class Component {
 	public void setHeight(float h) { setSize(getWidth(), h); }
 	
 	public float getWidth(){
-		doLayout();
+		/*if(!isValid())
+		validate();*/
 		return rectangle.getWidth();
 	}
 	
 	public float getHeight(){
-		doLayout();
+		/*if(!isValid())
+			validate();*/
 		return rectangle.getHeight();
 	}
 	
-	public Rectangle getRectangle(){ return rectangle; }
+	public Rectangle getRectangle(){ 
+		/*if(!isValid())
+		validate();*/
+		return rectangle; 
+	}
 	
 	public Container getParent() { return parent;}
 	
-	public void setParent(Container parent) { this.parent = parent; }
+	public void setParent(Container parent) { 
+		this.parent = parent;
+	}
 	
 	public boolean isMouseOver(){ return mouseOver; }
 	
@@ -157,7 +162,8 @@ public abstract class Component {
 	
 	//Gets the local point from a world point
 	public Vector2 worldToLocal(Vector2 worldPoint){
-		doLayout();
+		/*if(!isValid())
+		validate();*/
 		if(parent == null){
 			return new Vector2(worldPoint.x - rectangle.x, worldPoint.y - rectangle.y);
 		}else{
@@ -168,11 +174,10 @@ public abstract class Component {
 	}
 	
 	public Vector2 getWorldPosition(){
-		//doLayout();
 		if(parent == null){
-			return getPosition();
+			return new Vector2(rectangle.x, rectangle.y);
 		}else{
-			return getPosition().add(parent.getWorldPosition());
+			return new Vector2(rectangle.x, rectangle.y).add(parent.getWorldPosition());
 		}
 	}
 
@@ -184,17 +189,35 @@ public abstract class Component {
 		this.hasFocus = hasFocus;
 	}
 	
-	public void doLayout(){
-		if(parent != null)
-			getParent().invalidate();
+	public void validate(){  
 		valid = true;
 	}
 	
 	public void invalidate(){
-		valid = false;
+		invalidate(false);
 	}
 	
-	public boolean shouldLayout(){
-		return !valid;
+	public void invalidate(boolean parentOnly){
+		if(getParent() != null)
+			getParent().invalidate(true);
+		
+		if(!parentOnly)
+			valid = false;
 	}
+	
+	public boolean isValid(){
+		return valid;
+	}
+	
+	public void show()
+	{ setShouldRender(true); }
+	
+	public void hide()
+	{ setShouldRender(false); }
+	
+	public boolean shouldRender() 
+	{ return shouldRender; }
+
+	public void setShouldRender(boolean shouldRender) 
+	{ this.shouldRender = shouldRender; }
 }

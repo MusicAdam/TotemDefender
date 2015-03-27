@@ -20,7 +20,7 @@ import com.totemdefender.states.BattleState;
 public class WeaponEntity extends Entity {	
 	public static final float CHARGE_RATE = 1/1000f;     //Speed at which the charge meter increases
 	public static final float ROTATION = 1f;  //Degrees the weapon will rotate
-	public static final float VELOCITY = 1500f;
+	public static final float VELOCITY = 1600f;
 	
 	private final float projectileVelocity;
 	private float currentRate = CHARGE_RATE; //Current charge rate as it will change as charge changes.

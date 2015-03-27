@@ -24,8 +24,8 @@ public class Container extends Component{
 	private MouseEvent mouseUpListener;
 	private MouseEvent mouseDownListener;
 	private MouseEvent mouseMoveListener;
-	private boolean valid;
 	private boolean iterating;
+	private boolean sizeToContents = true;
 	
 	public Container(Container parent){
 		super(parent);
@@ -67,22 +67,23 @@ public class Container extends Component{
 	
 	@Override
 	public void update(TotemDefender game) {
+		if(!isValid())
+			validate();
+		
 		for(Component cmp : components){
 			cmp.update(game);
 		}
-
-		validate();
 	}
 	
 	public void validate(){
-		if(!isValid()){
-			sizeToContents();
-		}
-		valid = true;
+		sizeToContents();
+		super.validate();
 	}
 
 	@Override
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer) {
+		if(!shouldRender()) return;
+		
 		batch.getTransformMatrix().translate(getPosition().x, getPosition().y, 0); //Positon relative to container position
 		shapeRenderer.translate(getPosition().x, getPosition().y, 0);
 		for(Component cmp : components){
@@ -244,28 +245,31 @@ public class Container extends Component{
 	
 	//Calculates size based on attached components
 	public void sizeToContents(){
+		if(!sizeToContents) return;
+		
+		float width = 0;
+		float height = 0;
 		for(Component cmp : components){
 			//Check if x-bounds exeeds our current width
-			if(cmp.getPosition().x + cmp.getWidth() > getSize().x){
-				rectangle.width = cmp.getPosition().x + cmp.getWidth();
+			if(cmp.getPosition().x + cmp.getWidth() > width){
+				width = cmp.getPosition().x + cmp.getWidth();
 			}
 			
 			//Check if y-bounds exeeds our current width
-			if(cmp.getPosition().y + cmp.getHeight() > getSize().y){
-				rectangle.height = cmp.getPosition().y + cmp.getHeight();
+			if(cmp.getPosition().y + cmp.getHeight() > height){
+				height = cmp.getPosition().y + cmp.getHeight();
 			}
 		}
+		
+		rectangle.width = width;
+		rectangle.height = height;
+	}	
+	
+	public boolean shouldSizeToContents(){
+		return sizeToContents;
 	}
 	
-	public boolean isValid(){
-		return valid;
+	public void shouldSizeToContents(boolean t){
+		sizeToContents = t;
 	}
-	
-	public void invalidate(){
-		valid = false;
-		if(getParent() != null)
-			getParent().invalidate();
-	}
-	
-	
 }

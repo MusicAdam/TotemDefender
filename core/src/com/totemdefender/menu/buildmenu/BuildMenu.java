@@ -31,7 +31,7 @@ public class BuildMenu extends NavigableContainer {
 	private Label playerBudget;
 	
 	public BuildMenu(TotemDefender game, Level level, Player owner) {
-		super(null);
+		super(null, ConnectionType.Vertical);
 		
 		this.owner = owner;
 		this.level = level;
@@ -49,10 +49,6 @@ public class BuildMenu extends NavigableContainer {
 		
 		readyButton = new ReadyButton(this, owner);
 		readyButton.create(game);
-
-		connectComponents(squareSelector, rectangleSelector);
-		connectComponents(rectangleSelector, readyButton);
-		connectComponents(readyButton, squareSelector, true);
 		
 		attachKeyboardListeners(owner);
 		
@@ -62,8 +58,9 @@ public class BuildMenu extends NavigableContainer {
 		playerBudget.setPosition(0,775);
 		playerBudget.setTextColor(new Color(0.011765f, 0.541176f, 0.239215f, 1));
 		playerBudget.create(game);
-	
-	
+
+		connectComponentsVertically(squareSelector, rectangleSelector);
+		connectComponentsVertically(rectangleSelector, readyButton);
 	};
 	
 	@Override
@@ -74,11 +71,9 @@ public class BuildMenu extends NavigableContainer {
 	
 	@Override
 	public void validate(){
-		if(!isValid()){
-			squareSelector.setPosition(buttonPosition);
-			rectangleSelector.setPosition(buttonPosition.x, buttonPosition.y - squareSelector.getHeight() - buttonPadding);
-			readyButton.setPosition(buttonPosition.x + 5, buttonPosition.y - rectangleSelector.getHeight() - readyButton.getHeight() - buttonPadding - 20);
-		}
+		squareSelector.setPosition(buttonPosition);
+		rectangleSelector.setPosition(buttonPosition.x, buttonPosition.y - squareSelector.getHeight() - buttonPadding);
+		readyButton.setPosition(buttonPosition.x + 5, buttonPosition.y - rectangleSelector.getHeight() - readyButton.getHeight() - buttonPadding - 20);
 		super.validate();
 	}
 	
@@ -184,42 +179,94 @@ public class BuildMenu extends NavigableContainer {
 	}
 	
 	@Override
-	public void onTraverseDown(){
+	public boolean onTraverseDown(){
 		if(grid.hasEntity()){
 			grid.shiftIndexDown();
 			resetTraversalTime();
+			return true;
 		}else{
-			super.onTraverseDown();
+			return super.onTraverseDown();
 		}
 	}
 	
 	@Override
-	public void onTraverseUp(){
+	public boolean onTraverseUp(){
 		if(grid.hasEntity()){
 			grid.shiftIndexUp();
 			resetTraversalTime();
+			return true;
 		}else{
-			super.onTraverseUp();
+			return super.onTraverseUp();
 		}
 	}
 	
 	@Override
-	public void onTraverseLeft(){
+	public boolean onTraverseLeft(){
 		if(grid.hasEntity()){
 			grid.shiftIndexLeft();
 			resetTraversalTime();
+			return true;
 		}else{
-			super.onTraverseLeft();
+			return super.onTraverseLeft();
 		}
 	}
 	
 	@Override
-	public void onTraverseRight(){
+	public boolean onTraverseRight(){
 		if(grid.hasEntity()){
 			grid.shiftIndexRight();
 			resetTraversalTime();
+			return true;
 		}else{
-			super.onTraverseRight();
+			return super.onTraverseRight();
+		}
+	}
+	
+	@Override
+	public boolean onLeftKeyDown(){
+		if(grid.hasEntity()){
+			grid.shiftIndexLeft();
+			traverseLeft = true;
+			resetTraversalTime();
+			return true;
+		}else{
+			return super.onLeftKeyDown();
+		}
+	}
+	
+	@Override
+	public boolean onRightKeyDown(){
+		if(grid.hasEntity()){
+			grid.shiftIndexRight();
+			traverseRight = true;
+			resetTraversalTime();
+			return true;
+		}else{
+			return super.onRightKeyDown();
+		}
+	}
+	
+	@Override
+	public boolean onUpKeyDown(){
+		if(grid.hasEntity()){
+			grid.shiftIndexUp();
+			traverseUp = true;
+			resetTraversalTime();
+			return true;
+		}else{
+			return super.onUpKeyDown();
+		}
+	}
+	
+	@Override
+	public boolean onDownKeyDown(){
+		if(grid.hasEntity()){
+			grid.shiftIndexDown();
+			traverseDown = true;
+			resetTraversalTime();
+			return true;
+		}else{
+			return super.onDownKeyDown();
 		}
 	}
 	

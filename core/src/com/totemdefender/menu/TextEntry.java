@@ -91,14 +91,12 @@ public class TextEntry extends Label{
 	}
 	
 	@Override
-	public void doLayout(){
-		if(shouldLayout()){
-			setSize(rectangle.width, bounds.height + padding);
-			textOffset = new Vector2(padding, bounds.height/2 - padding/2);
-			ScissorStack.calculateScissors(TotemDefender.Get().getMenuCamera(), new Matrix4(), new Rectangle(getRectangle()), scissors);
-			scissors.setPosition(getWorldPosition());
-			super.doLayout();
-		}
+	public void validate(){
+		rectangle.height = bounds.height + padding;
+		textOffset = new Vector2(padding, bounds.height/2 - padding/2);
+		ScissorStack.calculateScissors(TotemDefender.Get().getMenuCamera(), new Matrix4(), new Rectangle(rectangle), scissors);
+		scissors.setPosition(getWorldPosition());
+		super.validate();
 	}
 	
 	@Override

@@ -11,6 +11,6 @@ public class OptionMenu extends NavigableContainer{
 	 */
 	
 	public OptionMenu(TotemDefender game) {
-		super(null);
+		super(null, ConnectionType.Vertical);
 	}
 }

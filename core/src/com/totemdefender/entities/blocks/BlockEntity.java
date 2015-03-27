@@ -28,6 +28,17 @@ public abstract class BlockEntity extends Entity{
 	public static final int SQUARE_YSCALE 		= 1;
 	public static final int TOTEM_XSCALE 		= 1;
 	public static final int TOTEM_YSCALE 		= 2;
+	public static final int WOOD_SQUARE_COST			= 25;
+	public static final int WOOD_RECTANGLE_COST			= 50;
+	public static final int STONE_SQUARE_COST			= 75;
+	public static final int STONE_RECTANGLE_COST		= 100;
+	public static final int JADE_SQUARE_COST			= 200;
+	public static final int JADE_RECTANGLE_COST			= 300;
+	public static final float BASE_DENSITY = .8f;
+	public static final float WOOD_DENSITY_MODIFIER = .9f;
+	public static final float STONE_DENSITY_MODIFIER = 1.2f;
+	public static final float JADE_DENSITY_MODIFIER = 1.35f;
+	
 	public enum Material{
 		Wood,
 		Stone,
@@ -36,20 +47,51 @@ public abstract class BlockEntity extends Entity{
 	}
 	
 	public enum Shape{
-		Triangle,
 		Rectangle, 
 		Square,
 		Totem
 	}
 	
-	protected int cost=0;
 	protected float xScale, yScale; //This is the scale of the block in multiples of TotemDefender.BlockSize in each direction
+	private int cost;
 	private Fixture fixture;
 	private boolean rotated = false;
 	private boolean rotatable = true;
 	private Material material;
 	private Shape	shape;
 	private boolean shouldDelete=false;
+	
+	public static int GetCost(Material material, Shape shape){
+		if(material == Material.Wood && shape == Shape.Square){
+			return WOOD_SQUARE_COST;
+		}else if(material == Material.Wood && shape == Shape.Rectangle){
+			return WOOD_RECTANGLE_COST;
+		}else if(material == Material.Stone && shape == Shape.Square){
+			return STONE_SQUARE_COST;			
+		}else if(material == Material.Stone && shape == Shape.Rectangle){
+			return STONE_RECTANGLE_COST;						
+		}else if(material == Material.Jade && shape == Shape.Square){
+			return JADE_SQUARE_COST;
+		}else if(material == Material.Jade && shape == Shape.Rectangle){
+			return JADE_RECTANGLE_COST;
+		}
+		
+		return 0;
+	}
+	
+	public static float GetDensity(Material material){
+		switch(material){
+			case Wood:
+				return BASE_DENSITY * WOOD_DENSITY_MODIFIER;
+			case Stone:
+				return BASE_DENSITY * STONE_DENSITY_MODIFIER;
+			case Jade:
+				return BASE_DENSITY * JADE_DENSITY_MODIFIER;
+			default:
+				break;
+		}
+		return BASE_DENSITY;
+	}
 	
 	public BlockEntity(Player owner, Material material, Shape shape){
 		super(owner);
@@ -65,7 +107,7 @@ public abstract class BlockEntity extends Entity{
 			yScale = SQUARE_YSCALE;
 		}
 		
-		this.cost = 0;
+		this.cost = GetCost(material, shape);
 		this.material = material;
 		this.shape = shape;
 	}
@@ -94,9 +136,6 @@ public abstract class BlockEntity extends Entity{
 				break;
 			case Rectangle:
 				shapeId = "rectangle";
-				break;
-			case Triangle:
-				shapeId = "triangle";
 				break;
 			case Totem:
 				shapeId = "totem";
@@ -129,9 +168,9 @@ public abstract class BlockEntity extends Entity{
 		short projectileMask = (getOwner().getID() == 1) ? Entity.PLAYER2_PROJECTILE : Entity.PLAYER1_PROJECTILE;
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = shape;
-		fixtureDef.density = 1.0f; 
-		fixtureDef.friction = 0.4f;
-		fixtureDef.restitution = 0.4f;
+		fixtureDef.density = GetDensity(material); 
+		fixtureDef.friction = 0.6f;
+		fixtureDef.restitution = 0.2f;
 		fixtureDef.filter.categoryBits = Entity.BLOCK;
 		fixtureDef.filter.maskBits = (short) (Entity.GROUND | Entity.PEDESTAL | projectileMask | Entity.BLOCK);
 
@@ -149,22 +188,16 @@ public abstract class BlockEntity extends Entity{
 			public void beginContact(Fixture other, Contact contact) {
 				if(other.getBody().getUserData() instanceof GroundEntity){
 					thisRef.shouldDelete=true;
-					
-					
 				}
 			}
 
 			@Override
 			public void endContact(Fixture other, Contact contact) {
-				
-				
 			}
 		});
-		
-		//end of deletion code
 
 		shape.dispose();	
-		
+
 		isSpawned = true;
 	}
 	

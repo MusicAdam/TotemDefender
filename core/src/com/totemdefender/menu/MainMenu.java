@@ -1,6 +1,7 @@
 package com.totemdefender.menu;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.entities.TotemEntity;
 import com.totemdefender.input.KeyboardEvent;
+import com.totemdefender.menu.NavigableContainer.ConnectionType;
 import com.totemdefender.menu.buildmenu.BuildMenu;
 import com.totemdefender.states.BattleState;
 import com.totemdefender.states.MainMenuState;
@@ -23,7 +25,7 @@ public class MainMenu extends NavigableContainer{
 	private MainMenuState state;
 	
 	public MainMenu(MainMenuState state){
-		super(null);
+		super(null, ConnectionType.Vertical);
 		this.state = state;
 	}
 	
@@ -86,10 +88,9 @@ public class MainMenu extends NavigableContainer{
 		instruction.setBackgroundHighlightTexture(game, "ui/bar_tall_hover.png");
 		instruction.create(game);
 		
-		connectComponents(start, leaderboard);
-		connectComponents(leaderboard, option);
-		connectComponents(option, instruction);
-		connectComponents(instruction, start, true);
+		connectComponentsVertically(start, leaderboard);
+		connectComponentsVertically(leaderboard, option);
+		connectComponentsVertically(option, instruction);
 		
 		attachKeyboardListeners(game.getPlayer2());
 		super.create(game);
