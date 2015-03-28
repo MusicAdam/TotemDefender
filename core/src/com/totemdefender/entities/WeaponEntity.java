@@ -167,7 +167,7 @@ System.out.println("Player " + owner.getID() + " Picked weapon " + owner.getWeap
 	
 	
 	
-public void spawn(TotemDefender game,String weaponSprite,int barrelPosX,int barrelPosY) {
+public void spawn(TotemDefender game,String weaponSprite,int originX,int originY,int barrelPosX,int barrelPosY) {
 		
 		
 		
@@ -194,10 +194,10 @@ System.out.println("Player " + owner.getID() + " Picked weapon " + owner.getWeap
 		if(owner.getID() == 2){
 			xPos = -xPos; //Put it on the right side if its player 2
 			getSprite().flip(true, false);
-			getSprite().setOrigin(98, 14); //This is based on the logical rotation point on the cannon sprite
-		}else{
-			getSprite().setOrigin(30, 14); //This is based on the logical rotation point on the cannon sprite
+			
 		}
+			getSprite().setOrigin(originX, originY); //This is based on the logical rotation point on the cannon sprite
+		
 		
 		getSprite().setPosition(xPos - hw, yPos);
 		

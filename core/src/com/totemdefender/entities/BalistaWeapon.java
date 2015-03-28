@@ -10,9 +10,19 @@ public class BalistaWeapon extends WeaponEntity {
 		// TODO Auto-generated constructor stub
 	}
 	
-public void Spawn(TotemDefender game){
+public void spawn(TotemDefender game){
 		
-		super.spawn(game,"cannon.png",95,20);
+		int originX;
+		int originY=14;
+		
+		if(owner.getID()==1){
+			originX=98;
+		}
+		else
+			originX=30;
+		
+		super.spawn(game,"cannon.png",originX,originY,95,20);
+		System.out.println("Balista Weapon was Spawned");
 		
 	}
 
