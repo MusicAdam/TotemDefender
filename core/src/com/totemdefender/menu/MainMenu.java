@@ -75,28 +75,9 @@ public class MainMenu extends NavigableContainer{
 		option.setBackgroundHighlightTexture(game, "ui/bar_tall_hover.png");
 		option.create(game);
 		
-<<<<<<< HEAD
-		connectComponents(start, leaderboard);
-		connectComponents(leaderboard, option);
-		connectComponents(option, start, true);
-=======
-		instruction = new Button(this, "Instructions", buttonSize, 
-					  new Vector2(areaWidth, centerScreenHeight - (buttonSize.y*2) - (buttonSize.y * 3/40)), null){
-			@Override
-			public boolean onClick(){
-				return true;
-			}
-		};
-		instruction.setFont("hud_large.ttf");
-		instruction.setTextOffset(buttonSize.x/2 - start.getTextBounds().width/2, buttonSize.y/2 - start.getTextBounds().height/2 + 5);
-		instruction.setBackgroundTexture(game, "ui/bar_tall.png");
-		instruction.setBackgroundHighlightTexture(game, "ui/bar_tall_hover.png");
-		instruction.create(game);
-		
 		connectComponentsVertically(start, leaderboard);
 		connectComponentsVertically(leaderboard, option);
-		connectComponentsVertically(option, instruction);
->>>>>>> a412d5f09bd28ac80a9017f185dd6637d45f52f3
+		connectComponentsVertically(option, start);
 		
 		attachKeyboardListeners(game.getPlayer2());
 		super.create(game);
