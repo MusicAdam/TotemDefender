@@ -19,8 +19,8 @@ import com.totemdefender.CollisionListener;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.entities.Entity;
 import com.totemdefender.entities.GroundEntity;
+import com.totemdefender.menu.ScoreLine;
 import com.totemdefender.player.Player;
-import com.totemdefender.player.ScoreLine;
 
 public abstract class BlockEntity extends Entity{
 	public static final int RECTANGLE_XSCALE 	= 2;

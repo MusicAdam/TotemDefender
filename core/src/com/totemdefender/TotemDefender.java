@@ -67,7 +67,7 @@ public class TotemDefender extends ApplicationAdapter {
 	public static final Vector2 GRAVITY				= new Vector2(0, -9.8f); //Gravity for physics simulation
 	public static final int 	POSITION_ITERATIONS = 6; 		//Position iterations for box2d
 	public static final int 	VELOCITY_ITERATIONS = 8; 		//Velocity iterations for box2d
-	public static final boolean DEBUG				= true;		//Debug rendering and output when true 
+	public static final boolean DEBUG				= false;		//Debug rendering and output when true 
 	public static final float	BLOCK_SIZE			= 30f;     //The default size of a block
 	public static final float 	STACK_LOCATION	 	= 3/4f; 	//The "stack" (player's weapon, pedastal, and build area) will be this proportion away from the center of the screen.
 	public static final	float	PEDESTAL_WIDTH		= BLOCK_SIZE * 4;
@@ -164,11 +164,11 @@ public class TotemDefender extends ApplicationAdapter {
 		Gdx.input.setInputProcessor(inputMultiplexer);
 		
 		world.setContactListener(new ContactHandler());
-		
+
+		//Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode()); //Default to fullscreen desktop mode
 		loadResources();
 		assetManager.finishLoading(); //Block until finished loading for now.
 
-		//Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode()); //Default to fullscreen desktop mode
 		animationController = new AnimationController();
 		stateManager.attachState(animationController);
 		stateManager.attachState(new MainMenuState());
@@ -320,6 +320,11 @@ public class TotemDefender extends ApplicationAdapter {
 		FreeTypeFontLoaderParameter hud_large = new FreeTypeFontLoaderParameter();
 		hud_large.fontFileName = hudFontName;
 		hud_large.fontParameters.size = 16;
+		hud_large.fontParameters.kerning = true;
+		//hud_large.fontParameters.minFilter = TextureFilter.Linear;
+		FreeTypeFontLoaderParameter hud_huge = new FreeTypeFontLoaderParameter();
+		hud_huge.fontFileName = hudFontName;
+		hud_huge.fontParameters.size = 24;
 		
 
 		/** Set special loaders for fonts */
@@ -370,6 +375,7 @@ public class TotemDefender extends ApplicationAdapter {
 		assetManager.load("hud_small.ttf", BitmapFont.class, hud_small);
 		assetManager.load("hud_medium.ttf", BitmapFont.class, hud_medium);
 		assetManager.load("hud_large.ttf", BitmapFont.class, hud_large);
+		assetManager.load("hud_huge.ttf", BitmapFont.class, hud_huge);
 		assetManager.load("keyboard.png", Texture.class, textureParam);
 
 		//Backgorund
@@ -554,6 +560,7 @@ public class TotemDefender extends ApplicationAdapter {
 	
 	public Player getPlayer1(){ return player1; }
 	public Player getPlayer2(){ return player2; }
+	public Player getPlayer(int id){ if(id == 1) return player1; return player2; }
 	public void setPlayer1(Player pl){ player1 = pl; }
 	public void setPlayer2(Player pl){ player2 = pl; }
 

@@ -60,6 +60,23 @@ public class Level {
 		hud = new HUD(game, this);
 		hud.create(game);
 	}
+	
+	public void destroy(TotemDefender game){
+		game.destroyEntity(background);
+		game.destroyEntity(ground);
+		game.destroyEntity(player1Weapon);
+		game.destroyEntity(player2Weapon);
+		game.destroyEntity(player1Pedestal);
+		game.destroyEntity(player2Pedestal);
+		game.destroyEntity(player1Totem);
+		game.destroyEntity(player2Totem);
+		hud.destroy(game);
+		
+		for(BlockEntity ent : placedBlocks){
+			game.destroyEntity(ent);
+		}
+		placedBlocks.clear();
+	}
 
 	public GroundEntity getGround() {
 		return ground;

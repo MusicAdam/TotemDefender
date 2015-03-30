@@ -3,6 +3,8 @@ package com.totemdefender.player;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.totemdefender.menu.ScoreLine;
+
 public class PlayerScore {
 	private Player owner;
 	private HashMap<ScoreLine.ScoreType, ArrayList<ScoreLine> > scoreLines; 
@@ -18,6 +20,7 @@ public class PlayerScore {
 		ArrayList<ScoreLine> lines;
 		if(!scoreLines.containsKey(type)){
 			lines = new ArrayList<ScoreLine>();
+			scoreLines.put(type, lines);
 		}else{
 			lines = scoreLines.get(type);
 		}
@@ -37,5 +40,12 @@ public class PlayerScore {
 	
 	public int getTotalScore(){
 		return totalScore;
+	}
+	
+	public ArrayList<ScoreLine> getScoreLines(ScoreLine.ScoreType type){
+		ArrayList<ScoreLine> results = scoreLines.get(type);
+		if(results == null)
+			results = new ArrayList<ScoreLine>();
+		return results;
 	}
 }

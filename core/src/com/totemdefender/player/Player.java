@@ -1,10 +1,12 @@
 package com.totemdefender.player;
 
 import com.totemdefender.input.InputHandler;
+import com.totemdefender.menu.ScoreLine;
 
 public class Player {
 	public static final int MAX_SCORE_MULTIPLIER 	= 10; //The maximum possible score multiplier
-	public static final int MISS_SCORE  			= -100;
+	public static final int MISS_SCORE  			= -10;
+	public static final int WIN_SCORE  				= 500;
 	
 	private int id; //1 or 2
 	private String name; //User entered nickname
@@ -54,8 +56,12 @@ public class Player {
 		this.budget=budget;
 	}
 
-	public int getScore() {
+	public int getTotalScore() {
 		return score.getTotalScore();
+	}
+	
+	public PlayerScore getScore(){ 
+		return score;
 	}
 
 	public void addScore(ScoreLine.ScoreType type, int value) {

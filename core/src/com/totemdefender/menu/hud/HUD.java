@@ -60,8 +60,8 @@ public class HUD extends Container{
 			setDrawScores(false);
 		}
 		
-		player1Score.setText("Player1 Score: " + game.getPlayer1().getScore());
-		player2Score.setText("Player2 Score: " + game.getPlayer2().getScore());
+		player1Score.setText("Player1 Score: " + game.getPlayer1().getTotalScore());
+		player2Score.setText("Player2 Score: " + game.getPlayer2().getTotalScore());
 		super.update(game);
 		
 	}

@@ -13,8 +13,8 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.totemdefender.CollisionListener;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.entities.blocks.BlockEntity;
+import com.totemdefender.menu.ScoreLine;
 import com.totemdefender.player.Player;
-import com.totemdefender.player.ScoreLine;
 
 public class ProjectileEntity extends Entity{
 	public static final long LIFESPAN = 3000; //Lifespan in ms until projectile is marked for deletion
