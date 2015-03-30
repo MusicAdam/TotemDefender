@@ -1,15 +1,22 @@
-package com.totemdefender;
+package com.totemdefender.player;
 
 import com.totemdefender.input.InputHandler;
+import com.totemdefender.menu.ScoreLine;
 
 public class Player {
+	public static final int MAX_SCORE_MULTIPLIER 	= 10; //The maximum possible score multiplier
+	public static final int MISS_SCORE  			= -10;
+	public static final int WIN_SCORE  				= 500;
+	
 	private int id; //1 or 2
 	private String name; //User entered nickname
 	private int budget=1000; //The amount of money the player has to spend on blocks
-	private int score=0;
+	private PlayerScore score;
+	private int scoreMultiplier = 1; //Resets after a miss, maintianed through turns
 	
 	public Player(int id){
 		this.id = id;
+		score = new PlayerScore(this);
 	}
 	
 	public int getID(){
@@ -49,12 +56,16 @@ public class Player {
 		this.budget=budget;
 	}
 
-	public int getScore() {
+	public int getTotalScore() {
+		return score.getTotalScore();
+	}
+	
+	public PlayerScore getScore(){ 
 		return score;
 	}
 
-	public void setScore(int score) {
-		this.score = score;
+	public void addScore(ScoreLine.ScoreType type, int value) {
+		this.score.insertScore(type, value);
 	}
 
 	public String getName() {
@@ -63,5 +74,19 @@ public class Player {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public int getScoreMultiplier(){
+		return scoreMultiplier;
+	}
+	
+	public void incrementScoreMultiplier(){
+		if(scoreMultiplier < MAX_SCORE_MULTIPLIER){
+			scoreMultiplier++;
+		}
+	}
+	
+	public void resetScoreMultiplier(){
+		scoreMultiplier = 1;
 	}
 }

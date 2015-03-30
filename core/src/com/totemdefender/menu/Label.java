@@ -62,7 +62,10 @@ public class Label extends Panel{
 	
 	public Color getTextColor() { return textColor; }
 	
-	public void setTextColor(Color textColor) { this.textColor = textColor; }
+	public void setTextColor(Color textColor) { 
+		if(textColor == null) return;
+		this.textColor = textColor; 
+	}
 	
 	public void setTextOffset(Vector2 offset){ textOffset = offset; }
 	

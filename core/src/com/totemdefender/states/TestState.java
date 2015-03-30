@@ -12,12 +12,12 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.totemdefender.CollisionListener;
 import com.totemdefender.Level;
-import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.entities.TestEntity;
 import com.totemdefender.entities.WeaponEntity;
 import com.totemdefender.input.KeyboardEvent;
 import com.totemdefender.menu.buildmenu.BuildMenu;
+import com.totemdefender.player.Player;
 
 public class TestState implements State {
 	int count = 0;

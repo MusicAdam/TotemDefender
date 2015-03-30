@@ -11,10 +11,10 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
-import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.input.KeyboardEvent;
 import com.totemdefender.input.MouseEvent;
+import com.totemdefender.player.Player;
 
 public class TextEntry extends Label{
 	private Rectangle scissors = new Rectangle();

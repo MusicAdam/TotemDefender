@@ -12,7 +12,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
-import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.entities.blocks.BlockEntity;
 import com.totemdefender.entities.blocks.BlockEntity.Shape;
@@ -24,6 +23,7 @@ import com.totemdefender.menu.AnimationBucket;
 import com.totemdefender.menu.Container;
 import com.totemdefender.menu.Label;
 import com.totemdefender.menu.ScissorRegion;
+import com.totemdefender.player.Player;
 
 public class BlockSelector extends Container{
 	/** This is the best way to do this without some sort of XML layout system */

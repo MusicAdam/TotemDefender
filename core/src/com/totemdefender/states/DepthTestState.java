@@ -2,13 +2,13 @@ package com.totemdefender.states;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
-import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.entities.TotemEntity;
 import com.totemdefender.entities.blocks.BlockEntity;
 import com.totemdefender.entities.blocks.SquareBlockEntity;
 import com.totemdefender.menu.Component;
 import com.totemdefender.menu.Panel;
+import com.totemdefender.player.Player;
 
 public class DepthTestState implements State{
 	TotemEntity totem;

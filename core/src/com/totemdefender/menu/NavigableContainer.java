@@ -2,12 +2,12 @@ package com.totemdefender.menu;
 
 import java.util.ArrayList;
 
-import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.input.InputHandler;
 import com.totemdefender.input.KeyboardEvent;
 import com.totemdefender.input.MouseEvent;
 import com.totemdefender.menu.buildmenu.ReadyButton;
+import com.totemdefender.player.Player;
 
 public class NavigableContainer extends Container{
 	public enum ConnectionType{

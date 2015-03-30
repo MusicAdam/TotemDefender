@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.totemdefender.Level;
-import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.entities.WeaponEntity;
 import com.totemdefender.entities.blocks.SquareBlockEntity;
@@ -15,6 +14,7 @@ import com.totemdefender.menu.Panel;
 import com.totemdefender.menu.Label;
 import com.totemdefender.menu.Button;
 import com.totemdefender.menu.buildmenu.Grid;
+import com.totemdefender.player.Player;
 import com.totemdefender.states.BattleState;
 import com.totemdefender.states.BuildState;
 import com.totemdefender.states.State;
@@ -60,8 +60,8 @@ public class HUD extends Container{
 			setDrawScores(false);
 		}
 		
-		player1Score.setText("Player1 Score: " + game.getPlayer1().getScore());
-		player2Score.setText("Player2 Score: " + game.getPlayer2().getScore());
+		player1Score.setText("Player1 Score: " + game.getPlayer1().getTotalScore());
+		player2Score.setText("Player2 Score: " + game.getPlayer2().getTotalScore());
 		super.update(game);
 		
 	}

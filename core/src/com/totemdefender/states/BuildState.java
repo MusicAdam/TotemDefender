@@ -4,12 +4,12 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.totemdefender.Level;
-import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.input.InputHandler;
 import com.totemdefender.input.KeyboardEvent;
 import com.totemdefender.menu.buildmenu.BuildMenu;
 import com.totemdefender.menu.hud.HUD;
+import com.totemdefender.player.Player;
 
 
 public class BuildState implements State {

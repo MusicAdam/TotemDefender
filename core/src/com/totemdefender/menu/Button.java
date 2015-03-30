@@ -39,13 +39,18 @@ public class Button extends Label {
 	@Override
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer){
 		if(!shouldRender()) return;
+		
 		batch.begin();
 		if(isHighlighted() && backgroundHighlightTexture != null){
+			batch.setColor(1, 1, 1, 1);
 			batch.draw(backgroundHighlightTexture, getPosition().x, getPosition().y, getWidth(), getHeight());
 		}else if(backgroundTexture != null){
+			batch.setColor(1, 1, 1, 1);
 			batch.draw(backgroundTexture, getPosition().x, getPosition().y, getWidth(), getHeight());
 		}
 		batch.end();
+		
+
 		super.render(batch, shapeRenderer);
 	}
 	
