@@ -17,12 +17,12 @@ public void spawn(TotemDefender game){
 		int originY=14;
 		
 		if(owner.getID()==1){
-			originX=98;
+			originX=38;
 		}
 		else
 			originX=30;
 		
-		super.spawn(game,"cannon.png",originX,originY,95,20);
+		super.spawn(game,"catapult.png",originX,originY,15,20);
 		System.out.println("Catapult Weapon was Spawned");
 		
 	}
