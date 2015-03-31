@@ -52,7 +52,6 @@ public class HUD extends Container{
 			player2Score.setPosition(1000,750);
 			player2Score.setTextColor(new Color(0.011765f, 0.541176f, 0.239215f, 1));
 			
-			
 			player1Score.create(game);
 			player2Score.create(game);
 			
@@ -60,7 +59,7 @@ public class HUD extends Container{
 		}
 		
 		player1Score.setText(game.getPlayer1().getName() + " Score: " + game.getPlayer1().getTotalScore());
-		player2Score.setText(game.getPlayer1().getName() + " Score: " + game.getPlayer2().getTotalScore());
+		player2Score.setText(game.getPlayer2().getName() + " Score: " + game.getPlayer2().getTotalScore());
 		super.update(game);
 		
 	}

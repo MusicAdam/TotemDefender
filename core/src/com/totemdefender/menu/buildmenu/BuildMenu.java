@@ -93,8 +93,7 @@ public class BuildMenu extends NavigableContainer {
 			fade = -1; //So this condition stops firing
 		}
 		
-		
-		playerBudget.setText("Player "+this.owner.getID()+": "+this.owner.getBudget());
+		playerBudget.setText(this.owner.getName() + ": "+this.owner.getBudget());
 		
 		super.update(game);
 	}
