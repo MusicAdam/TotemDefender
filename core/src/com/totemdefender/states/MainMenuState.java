@@ -9,6 +9,7 @@ public class MainMenuState implements State {
 
 	private MainMenu menu;
 	protected boolean startButtonPressed=false;
+	protected boolean leaderButtonPressed=false;
 	
 	@Override
 	public boolean canEnter(TotemDefender game) {
@@ -31,11 +32,19 @@ public class MainMenuState implements State {
 		if(startButtonPressed){
 			game.getStateManager().attachState(new PreGameState());
 		}
+		else if(leaderButtonPressed) {
+			game.getStateManager().attachState(new LeaderBoardState());
+		}
 	}
 
 	@Override
 	public boolean canExit(TotemDefender game) {
-		return startButtonPressed;
+		if(startButtonPressed || leaderButtonPressed) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 
 	@Override
@@ -45,4 +54,8 @@ public class MainMenuState implements State {
 	public void startButtonPressed(boolean t){
 		startButtonPressed = t;
 	}
+	public void leaderButtonPressed(boolean t){
+		leaderButtonPressed = t;
+	}
+
 }

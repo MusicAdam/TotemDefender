@@ -20,8 +20,7 @@ import com.totemdefender.states.PreGameState;
 public class MainMenu extends NavigableContainer{
 	private Button start;
 	private Button leaderboard;
-	private Button option;
-	private Button instruction;
+	private Button quit;
 	private MainMenuState state;
 	
 	public MainMenu(MainMenuState state){
@@ -36,7 +35,7 @@ public class MainMenu extends NavigableContainer{
 		float centerScreenHeight = TotemDefender.V_HEIGHT/2;
 		
 		start = new Button(this, "Start Game", buttonSize, 
-				new Vector2(areaWidth, centerScreenHeight + buttonSize.y + (buttonSize.y * 3/40)), null){
+				new Vector2(areaWidth, centerScreenHeight + (buttonSize.y * 20.5f/35f)), null){
 			@Override
 			public boolean onClick(){
 				state.startButtonPressed(true);
@@ -50,9 +49,10 @@ public class MainMenu extends NavigableContainer{
 		start.create(game);
 		
 		leaderboard = new Button(this, "Leaderboard", buttonSize, 
-					  new Vector2(areaWidth, centerScreenHeight + buttonSize.y/40), null){
+					  new Vector2(areaWidth, centerScreenHeight - buttonSize.y/2), null){
 			@Override
 			public boolean onClick(){
+				state.leaderButtonPressed(true);
 				return true;
 			}
 		};
@@ -62,35 +62,22 @@ public class MainMenu extends NavigableContainer{
 		leaderboard.setBackgroundHighlightTexture(game, "ui/bar_tall_hover.png");
 		leaderboard.create(game);
 		
-		option = new Button(this, "Options", buttonSize, 
-				 new Vector2(areaWidth, centerScreenHeight - (buttonSize.y + buttonSize.y/40)), null){
+		quit = new Button(this, "Quit", buttonSize, 
+				 new Vector2(areaWidth, centerScreenHeight - (buttonSize.y * (55.5f/35f))), null){
 			@Override
 			public boolean onClick(){
-			return true;
-			}
-		};
-		option.setFont("hud_large.ttf");
-		option.setTextOffset(buttonSize.x/2 - start.getTextBounds().width/2, buttonSize.y/2 - start.getTextBounds().height/2 + 5);
-		option.setBackgroundTexture(game, "ui/bar_tall.png");
-		option.setBackgroundHighlightTexture(game, "ui/bar_tall_hover.png");
-		option.create(game);
-		
-		instruction = new Button(this, "Instructions", buttonSize, 
-					  new Vector2(areaWidth, centerScreenHeight - (buttonSize.y*2) - (buttonSize.y * 3/40)), null){
-			@Override
-			public boolean onClick(){
+				System.exit(0);
 				return true;
 			}
 		};
-		instruction.setFont("hud_large.ttf");
-		instruction.setTextOffset(buttonSize.x/2 - start.getTextBounds().width/2, buttonSize.y/2 - start.getTextBounds().height/2 + 5);
-		instruction.setBackgroundTexture(game, "ui/bar_tall.png");
-		instruction.setBackgroundHighlightTexture(game, "ui/bar_tall_hover.png");
-		instruction.create(game);
+		quit.setFont("hud_large.ttf");
+		quit.setTextOffset(buttonSize.x/2 - start.getTextBounds().width/2, buttonSize.y/2 - start.getTextBounds().height/2 + 5);
+		quit.setBackgroundTexture(game, "ui/bar_tall.png");
+		quit.setBackgroundHighlightTexture(game, "ui/bar_tall_hover.png");
+		quit.create(game);
 		
 		connectComponentsVertically(start, leaderboard);
-		connectComponentsVertically(leaderboard, option);
-		connectComponentsVertically(option, instruction);
+		connectComponentsVertically(leaderboard, quit);
 		
 		attachKeyboardListeners(game.getPlayer2());
 		super.create(game);
