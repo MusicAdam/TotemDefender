@@ -13,6 +13,7 @@ import com.totemdefender.menu.Component;
 import com.totemdefender.menu.Container;
 import com.totemdefender.menu.Label;
 import com.totemdefender.menu.Panel;
+import com.totemdefender.player.Player;
 import com.totemdefender.states.AnimationController;
 import com.totemdefender.states.BuildState;
 import com.totemdefender.states.DepthTestState;
@@ -163,11 +164,11 @@ public class TotemDefender extends ApplicationAdapter {
 		Gdx.input.setInputProcessor(inputMultiplexer);
 		
 		world.setContactListener(new ContactHandler());
-		
+
+		//Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode()); //Default to fullscreen desktop mode
 		loadResources();
 		assetManager.finishLoading(); //Block until finished loading for now.
 
-		//Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode()); //Default to fullscreen desktop mode
 		animationController = new AnimationController();
 		stateManager.attachState(animationController);
 		stateManager.attachState(new MainMenuState());
@@ -319,6 +320,11 @@ public class TotemDefender extends ApplicationAdapter {
 		FreeTypeFontLoaderParameter hud_large = new FreeTypeFontLoaderParameter();
 		hud_large.fontFileName = hudFontName;
 		hud_large.fontParameters.size = 16;
+		hud_large.fontParameters.kerning = true;
+		//hud_large.fontParameters.minFilter = TextureFilter.Linear;
+		FreeTypeFontLoaderParameter hud_huge = new FreeTypeFontLoaderParameter();
+		hud_huge.fontFileName = hudFontName;
+		hud_huge.fontParameters.size = 24;
 		
 
 		/** Set special loaders for fonts */
@@ -369,6 +375,7 @@ public class TotemDefender extends ApplicationAdapter {
 		assetManager.load("hud_small.ttf", BitmapFont.class, hud_small);
 		assetManager.load("hud_medium.ttf", BitmapFont.class, hud_medium);
 		assetManager.load("hud_large.ttf", BitmapFont.class, hud_large);
+		assetManager.load("hud_huge.ttf", BitmapFont.class, hud_huge);
 		assetManager.load("keyboard.png", Texture.class, textureParam);
 
 		//Backgorund
@@ -553,6 +560,7 @@ public class TotemDefender extends ApplicationAdapter {
 	
 	public Player getPlayer1(){ return player1; }
 	public Player getPlayer2(){ return player2; }
+	public Player getPlayer(int id){ if(id == 1) return player1; return player2; }
 	public void setPlayer1(Player pl){ player1 = pl; }
 	public void setPlayer2(Player pl){ player2 = pl; }
 

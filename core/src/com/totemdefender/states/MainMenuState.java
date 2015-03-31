@@ -1,8 +1,8 @@
 package com.totemdefender.states;
 
-import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.menu.MainMenu;
+import com.totemdefender.player.Player;
 import com.totemdefender.states.PreGameState;
 
 public class MainMenuState implements State {

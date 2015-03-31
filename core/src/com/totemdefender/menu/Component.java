@@ -133,8 +133,6 @@ public abstract class Component {
 	public void setHeight(float h) { setSize(getWidth(), h); }
 	
 	public float getWidth(){
-		/*if(!isValid())
-		validate();*/
 		return rectangle.getWidth();
 	}
 	

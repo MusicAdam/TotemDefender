@@ -6,8 +6,8 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.totemdefender.Player;
 import com.totemdefender.TotemDefender;
+import com.totemdefender.player.Player;
 
 
 

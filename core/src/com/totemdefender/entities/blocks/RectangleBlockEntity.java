@@ -1,6 +1,6 @@
 package com.totemdefender.entities.blocks;
 
-import com.totemdefender.Player;
+import com.totemdefender.player.Player;
 
 public class RectangleBlockEntity extends BlockEntity {
 
