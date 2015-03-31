@@ -1,6 +1,6 @@
 package com.totemdefender.entities;
 
-import com.totemdefender.Player;
+import com.totemdefender.player.Player;
 import com.totemdefender.TotemDefender;
 
 public class CannonWeapon extends WeaponEntity {
