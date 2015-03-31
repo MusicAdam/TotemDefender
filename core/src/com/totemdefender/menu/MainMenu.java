@@ -21,7 +21,6 @@ public class MainMenu extends NavigableContainer{
 	private Button start;
 	private Button leaderboard;
 	private Button quit;
-	private Button instruction;
 	private MainMenuState state;
 	
 	public MainMenu(MainMenuState state){
@@ -53,6 +52,7 @@ public class MainMenu extends NavigableContainer{
 					  new Vector2(areaWidth, centerScreenHeight - buttonSize.y/2), null){
 			@Override
 			public boolean onClick(){
+				state.leaderButtonPressed(true);
 				return true;
 			}
 		};
