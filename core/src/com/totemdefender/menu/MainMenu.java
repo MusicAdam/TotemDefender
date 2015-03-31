@@ -35,7 +35,7 @@ public class MainMenu extends NavigableContainer{
 		float centerScreenHeight = TotemDefender.V_HEIGHT/2;
 		
 		start = new Button(this, "Start Game", buttonSize, 
-				new Vector2(areaWidth, centerScreenHeight + (buttonSize.y * 20.5f/35f)), null){
+				new Vector2(areaWidth, centerScreenHeight + (buttonSize.y * 21.5f/35f)), null){
 			@Override
 			public boolean onClick(){
 				state.startButtonPressed(true);
@@ -63,7 +63,7 @@ public class MainMenu extends NavigableContainer{
 		leaderboard.create(game);
 		
 		quit = new Button(this, "Quit", buttonSize, 
-				 new Vector2(areaWidth, centerScreenHeight - (buttonSize.y * (55.5f/35f))), null){
+				 new Vector2(areaWidth, centerScreenHeight - (buttonSize.y * (56.5f/35f))), null){
 			@Override
 			public boolean onClick(){
 				System.exit(0);
