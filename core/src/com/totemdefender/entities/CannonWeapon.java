@@ -14,7 +14,7 @@ public class CannonWeapon extends WeaponEntity {
 
 	
 	public void spawn(TotemDefender game){
-		Texture weaponTexture = game.getAssetManager().get("cannon.png", Texture.class);
+		Texture weaponTexture = game.getAssetManager().get("catapult.png", Texture.class);
 		setSprite(new Sprite(weaponTexture));
 		
 		float aspectRatio = getSprite().getWidth()/getSprite().getHeight(); //Get aspect ratio to maintain for scaling
