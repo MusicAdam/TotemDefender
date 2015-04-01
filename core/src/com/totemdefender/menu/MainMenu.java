@@ -2,7 +2,6 @@ package com.totemdefender.menu;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -67,7 +66,7 @@ public class MainMenu extends NavigableContainer{
 				 new Vector2(areaWidth, centerScreenHeight - (buttonSize.y * (56.5f/35f))), null){
 			@Override
 			public boolean onClick(){
-				Gdx.app.exit();
+				System.exit(0);
 				return true;
 			}
 		};
