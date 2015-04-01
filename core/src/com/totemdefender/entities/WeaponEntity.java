@@ -31,8 +31,8 @@ public class WeaponEntity extends Entity {
 	private boolean started = false; //True the first time player presses spacebar on his turn
 	private boolean completed = false; //True when the player releases spacebar or meter falls back to 0
 	private Vector2 fireDirection;
-	protected Vector2 barrelPos, origin;
-	protected int flip;
+	private Vector2 barrelPos;
+	private int flip;
 	private ProjectileEntity projectile;
 	
 	public WeaponEntity(Player owner){
@@ -113,19 +113,47 @@ public class WeaponEntity extends Entity {
 	
 	@Override
 	public void spawn(TotemDefender game) {
-		if(getSprite() == null || origin == null || barrelPos == null) return;
+		
+		String weaponSprite="cannon.png";
+		
+			if(owner.getWeaponType()==2){
+				weaponSprite="cannon.png";
+				
+			}
+			
+			
+if(owner.getWeaponType()==3){
+				weaponSprite="cannon.png";
+				
+			}
+System.out.println("Player " + owner.getID() + " Picked weapon " + owner.getWeaponType()); //for testing purposes
+
+		Texture weaponTexture = game.getAssetManager().get(weaponSprite, Texture.class);
+		setSprite(new Sprite(weaponTexture));
+		
+		float aspectRatio = getSprite().getWidth()/getSprite().getHeight(); //Get aspect ratio to maintain for scaling
+		float scale = 1/20f; //Relative to screen;
+		
+		getSprite().setSize(getSprite().getWidth() * scale * aspectRatio,
+							getSprite().getHeight() * scale * aspectRatio);
 		
 		float hw = getSprite().getWidth()/2;
+		float hh = getSprite().getHeight()/2;
 		float xPos = (-TotemDefender.V_WIDTH/2) * TotemDefender.STACK_LOCATION + 200;
 		float yPos = -TotemDefender.V_HEIGHT/2 + TotemDefender.GROUND_HEIGHT;
 		
 		if(owner.getID() == 2){
 			xPos = -xPos; //Put it on the right side if its player 2
+			getSprite().flip(true, false);
+			getSprite().setOrigin(98, 14); //This is based on the logical rotation point on the cannon sprite
+		}else{
+			getSprite().setOrigin(30, 14); //This is based on the logical rotation point on the cannon sprite
 		}
-
-		getSprite().setOrigin(origin.x, origin.y); //This is based on the logical rotation point on the cannon sprite
+		
 		getSprite().setPosition(xPos - hw, yPos);
 		
+
+		barrelPos = new Vector2(getSprite().getOriginX() + 95 * flip, getSprite().getOriginY() + 20);
 		fireDirection = new Vector2(.5f, 0);
 		fireDirection.nor();
 		if(owner.getID() == 2){
@@ -135,6 +163,52 @@ public class WeaponEntity extends Entity {
 		isSpawned = true;
 	}
 	
+	
+	
+public void spawn(TotemDefender game,String weaponSprite,int originX,int originY,int barrelPosX,int barrelPosY) {
+		
+		
+		
+			
+			
+			
+
+System.out.println("Player " + owner.getID() + " Picked weapon " + owner.getWeaponType()); //for testing purposes
+
+		Texture weaponTexture = game.getAssetManager().get(weaponSprite, Texture.class);
+		setSprite(new Sprite(weaponTexture));
+		
+		float aspectRatio = getSprite().getWidth()/getSprite().getHeight(); //Get aspect ratio to maintain for scaling
+		float scale = 1/20f; //Relative to screen;
+		
+		getSprite().setSize(getSprite().getWidth() * scale * aspectRatio,
+							getSprite().getHeight() * scale * aspectRatio);
+		
+		float hw = getSprite().getWidth()/2;
+		float hh = getSprite().getHeight()/2;
+		float xPos = (-TotemDefender.V_WIDTH/2) * TotemDefender.STACK_LOCATION + 200;
+		float yPos = -TotemDefender.V_HEIGHT/2 + TotemDefender.GROUND_HEIGHT;
+		
+		if(owner.getID() == 2){
+			xPos = -xPos; //Put it on the right side if its player 2
+			getSprite().flip(true, false);
+			
+		}
+			getSprite().setOrigin(originX, originY); //This is based on the logical rotation point on the cannon sprite
+		
+		
+		getSprite().setPosition(xPos - hw, yPos);
+		
+
+		barrelPos = new Vector2(getSprite().getOriginX() + barrelPosX * flip, getSprite().getOriginY() + barrelPosY);
+		fireDirection = new Vector2(.5f, 0);
+		fireDirection.nor();
+		if(owner.getID() == 2){
+			fireDirection.x *= -1;
+		}
+		
+		isSpawned = true;
+	}
 	
 	public void fireProjectile(TotemDefender game){
 		float vel = projectileVelocity * charge;
