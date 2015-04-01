@@ -17,7 +17,7 @@ public void spawn(TotemDefender game){
 		int originY=14;
 		
 		if(owner.getID()==1){
-			originX=38;
+			originX=98;
 		}
 		else
 			originX=30;
