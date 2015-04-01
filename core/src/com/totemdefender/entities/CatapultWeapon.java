@@ -9,9 +9,8 @@ public class CatapultWeapon extends WeaponEntity {
 		super(owner);
 	}
 	
-<<<<<<< HEAD
-	public void spawn(TotemDefender game){
-=======
+
+	
 public void spawn(TotemDefender game){
 		
 	weaponSprite="catapult.png";	
@@ -30,7 +29,7 @@ public void spawn(TotemDefender game){
 		super.spawn(game);
 		System.out.println("Catapult Weapon was Spawned");
 		
->>>>>>> 99f6cbaacd3d378b81e25a32d83f98c06a0f6578
+
 	}
 
 }

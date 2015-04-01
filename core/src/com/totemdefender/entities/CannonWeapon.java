@@ -12,11 +12,7 @@ public class CannonWeapon extends WeaponEntity {
 
 	
 	public void spawn(TotemDefender game){
-<<<<<<< HEAD
-		Texture weaponTexture = game.getAssetManager().get("cannon.png", Texture.class);
-		setSprite(new Sprite(weaponTexture));
-=======
->>>>>>> 99f6cbaacd3d378b81e25a32d83f98c06a0f6578
+
 		
 		weaponSprite="cannon.png";	
 		
