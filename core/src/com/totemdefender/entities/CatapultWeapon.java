@@ -13,16 +13,20 @@ public class CatapultWeapon extends WeaponEntity {
 	
 public void spawn(TotemDefender game){
 		
-		int originX;
-		int originY=14;
+	weaponSprite="catapult.png";	
+	
+		origin.y=14;
 		
 		if(owner.getID()==1){
-			originX=98;
+			origin.x=98;
 		}
 		else
-			originX=30;
+			origin.x=30;
 		
-		super.spawn(game,"catapult.png",originX,originY,15,20);
+		barrelPosX=15;
+		barrelPosY=20;
+		
+		super.spawn(game);
 		System.out.println("Catapult Weapon was Spawned");
 		
 	}
