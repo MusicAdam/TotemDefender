@@ -22,11 +22,13 @@ public class ProjectileEntity extends Entity{
 	private Vector2 barrelPos;
 	private boolean shouldDelete, contactedBlock;
 	private long startTime;
+	private float radius;
 	
 	public ProjectileEntity(Player owner, Vector2 barrelPos) {
 		super(owner);
 		
 		this.barrelPos = barrelPos;
+		radius = RADIUS;
 	}
 
 	@Override
@@ -40,7 +42,7 @@ public class ProjectileEntity extends Entity{
 		setBody(game.getWorld().createBody(def));
 		
 		CircleShape shape = new CircleShape();
-		shape.setRadius(RADIUS * TotemDefender.WORLD_TO_BOX);
+		shape.setRadius(radius * TotemDefender.WORLD_TO_BOX);
 		
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = shape;
@@ -93,6 +95,10 @@ public class ProjectileEntity extends Entity{
 	public void setShouldDelete(boolean b) {
 		this.shouldDelete = b;
 		
+	}
+	
+	public void setRadius(float r){
+		radius = r;
 	}
 
 }

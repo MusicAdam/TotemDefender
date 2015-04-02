@@ -40,29 +40,29 @@ public class Level {
 		ground.spawn(game);
 		game.addEntity(ground, TotemDefender.GROUND_DEPTH);
 		
-		if(game.getPlayer1().getWeaponType()==1)
-		player1Weapon = new CannonWeapon(game.getPlayer1());
+		if(game.getPlayer1().getWeaponType()==WeaponEntity.WeaponType.Cannon)
+			player1Weapon = new CannonWeapon(game.getPlayer1());
 		
-		if(game.getPlayer1().getWeaponType()==2)
+		if(game.getPlayer1().getWeaponType()==WeaponEntity.WeaponType.Catapult)
 			player1Weapon = new CatapultWeapon(game.getPlayer1());
 		
-		if(game.getPlayer1().getWeaponType()==3)
+		if(game.getPlayer1().getWeaponType()==WeaponEntity.WeaponType.Ballista)
 			player1Weapon = new BalistaWeapon(game.getPlayer1());
 		
-		player1Weapon.setName("Weapon 1");
+		player1Weapon.setName(game.getPlayer1().getWeaponType().toString());
 		player1Weapon.spawn(game);
 		game.addEntity(player1Weapon, TotemDefender.WEAPON_DEPTH);
 		
-		if(game.getPlayer2().getWeaponType()==1)
-		player2Weapon = new CannonWeapon(game.getPlayer2());
+		if(game.getPlayer2().getWeaponType()==WeaponEntity.WeaponType.Cannon)
+			player2Weapon = new CannonWeapon(game.getPlayer2());
 		
-		if(game.getPlayer2().getWeaponType()==2)
+		if(game.getPlayer2().getWeaponType()==WeaponEntity.WeaponType.Catapult)
 			player2Weapon = new CatapultWeapon(game.getPlayer2());
 		
-		if(game.getPlayer2().getWeaponType()==3)
+		if(game.getPlayer2().getWeaponType()==WeaponEntity.WeaponType.Ballista)
 			player2Weapon = new BalistaWeapon(game.getPlayer2());
 		
-		player2Weapon.setName("Weapon 2");
+		player2Weapon.setName(game.getPlayer1().getWeaponType().toString());
 		player2Weapon.spawn(game);
 		game.addEntity(player2Weapon, TotemDefender.WEAPON_DEPTH);
 		

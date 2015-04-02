@@ -18,22 +18,24 @@ import com.totemdefender.player.Player;
 import com.totemdefender.states.BattleState;
 
 public class WeaponEntity extends Entity {	
-	
+	public enum WeaponType {
+		Cannon, Catapult, Ballista
+	}
 
 	public static final float CHARGE_RATE = 1/1000f;     //Speed at which the charge meter increases
 	public static final float ROTATION = 1f;  //Degrees the weapon will rotate
 	public static final float VELOCITY = 1600f;
 	
-	private final float projectileVelocity;
-	private float currentRate = CHARGE_RATE; //Current charge rate as it will change as charge changes.
-	private float charge = 0; //0 <= charge <= 1
-	private boolean hasFilled = false; //True when the charge meter fills
-	private boolean started = false; //True the first time player presses spacebar on his turn
-	private boolean completed = false; //True when the player releases spacebar or meter falls back to 0
-	private Vector2 fireDirection;
+	protected float projectileVelocity;
+	protected float currentRate = CHARGE_RATE; //Current charge rate as it will change as charge changes.
+	protected float charge = 0; //0 <= charge <= 1
+	protected boolean hasFilled = false; //True when the charge meter fills
+	protected boolean started = false; //True the first time player presses spacebar on his turn
+	protected boolean completed = false; //True when the player releases spacebar or meter falls back to 0
+	protected Vector2 fireDirection;
 	protected Vector2 barrelPos, origin;
 	protected int flip;
-	private ProjectileEntity projectile;
+	protected ProjectileEntity projectile;
 	
 	public WeaponEntity(Player owner){
 		super(owner);
@@ -70,6 +72,10 @@ public class WeaponEntity extends Entity {
 			return; //Dont update while there still exists a projectile.
 		}
 		
+		doCharge(game);
+	}
+	
+	protected void doCharge(TotemDefender game){
 		if(completed)
 			return; //Don't bother with the update if completed.
 		
@@ -125,20 +131,19 @@ public class WeaponEntity extends Entity {
 
 		getSprite().setOrigin(origin.x, origin.y); //This is based on the logical rotation point on the cannon sprite
 		getSprite().setPosition(xPos - hw, yPos);
-		
-		fireDirection = new Vector2(.5f, 0);
-		fireDirection.nor();
-		if(owner.getID() == 2){
-			fireDirection.x *= -1;
-		}
-		
+				
 		isSpawned = true;
 	}
 	
 	
 	public void fireProjectile(TotemDefender game){
+		fireProjectile(game, ProjectileEntity.RADIUS);
+	}
+	
+	public void fireProjectile(TotemDefender game, float radius){
 		float vel = projectileVelocity * charge;
 		projectile = new ProjectileEntity(owner, getPosition().add(barrelPos));
+		projectile.setRadius(radius);
 		projectile.spawn(game);
 		game.addEntity(projectile, TotemDefender.PROJECTILE_DEPTH);
 		

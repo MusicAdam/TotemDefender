@@ -334,7 +334,8 @@ public class TotemDefender extends ApplicationAdapter {
 		
 		//Game Textures
 		assetManager.load("cannon.png", Texture.class, textureParam);
-		assetManager.load("catapult.png", Texture.class, textureParam);
+		assetManager.load("catapult_arm.png", Texture.class, textureParam);
+		assetManager.load("catapult_body.png", Texture.class, textureParam);
 		assetManager.load("projectiles/cannon_projectile.png", Texture.class, textureParam);		
 		assetManager.load("wooden_pedestal.png", Texture.class, textureParam);
 		assetManager.load("blocks/block_square_wood_1.png", Texture.class, textureParam);

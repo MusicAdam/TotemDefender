@@ -30,7 +30,11 @@ public class CannonWeapon extends WeaponEntity {
 		}
 
 		barrelPos = new Vector2(origin.x + 95 * flip, origin.y + 20);
-		
+		fireDirection = new Vector2(.5f, 0);
+		fireDirection.nor();
+		if(owner.getID() == 2){
+			fireDirection.x *= -1;
+		}
 		super.spawn(game);
 	}
 	

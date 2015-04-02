@@ -2,6 +2,7 @@ package com.totemdefender.menu;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
+import com.totemdefender.entities.WeaponEntity;
 import com.totemdefender.player.Player;
 import com.totemdefender.TotemDefender;
 
@@ -30,9 +31,6 @@ public class PreGameMenu extends NavigableContainer {
 			instruct.setBackgroundTexture(game, "keyboard.png");
 			instruct.setBackgroundHighlightTexture(game, "keyboard.png");
 			instruct.create(game);
-			
-			System.out.print("size x: " + instruct.getSize().x + " size y: " + instruct.getSize().y + "\n"); 
-			System.out.print("pos x: " + instruct.getPosition().x + " pos y: " + instruct.getPosition().y + "\n"); 
 		}
 		
 		userName = new TextEntry(this, owner);
@@ -43,11 +41,10 @@ public class PreGameMenu extends NavigableContainer {
 		userName.setTextOffset(buttonSize.x/2 - userName.getTextBounds().width/2, buttonSize.y/2 - userName.getTextBounds().height/2 + 5);
 		userName.create(game);
 
-		weapon1 = new Button(this, "Weapon 1", buttonSize, new Vector2(side, TotemDefender.V_HEIGHT - (buttonSize.y)*2 - padding), Color.RED){
+		weapon1 = new Button(this, "Cannon", buttonSize, new Vector2(side, TotemDefender.V_HEIGHT - (buttonSize.y)*2 - padding), Color.RED){
 			@Override
 			public boolean onClick(){
-				
-				owner.setWeaponType(1);
+				owner.setWeaponType(WeaponEntity.WeaponType.Cannon);
 				return true;
 			}
 		};
@@ -55,11 +52,11 @@ public class PreGameMenu extends NavigableContainer {
 		weapon1.setTextOffset(buttonSize.x/2 - weapon1.getTextBounds().width/2, buttonSize.y/2 - weapon1.getTextBounds().height/2 + 5);
 		weapon1.create(game);
 	
-		weapon2 = new Button(this, "Weapon 2", buttonSize, new Vector2(side, TotemDefender.V_HEIGHT - (buttonSize.y)*3 - padding), Color.BLUE){
+		weapon2 = new Button(this, "Catapult", buttonSize, new Vector2(side, TotemDefender.V_HEIGHT - (buttonSize.y)*3 - padding), Color.BLUE){
 			@Override
 			public boolean onClick(){
 				
-				owner.setWeaponType(2);
+				owner.setWeaponType(WeaponEntity.WeaponType.Catapult);
 				return true;
 			}
 		};
@@ -67,11 +64,11 @@ public class PreGameMenu extends NavigableContainer {
 		weapon2.setTextOffset(buttonSize.x/2 - weapon2.getTextBounds().width/2, buttonSize.y/2 - weapon2.getTextBounds().height/2 + 5);
 		weapon2.create(game);
 		
-		weapon3 = new Button(this, "Weapon 3", buttonSize, new Vector2(side, TotemDefender.V_HEIGHT - (buttonSize.y)*4 - padding), Color.ORANGE){
+		weapon3 = new Button(this, "Ballista", buttonSize, new Vector2(side, TotemDefender.V_HEIGHT - (buttonSize.y)*4 - padding), Color.ORANGE){
 			@Override
 			public boolean onClick(){
 				
-				owner.setWeaponType(3);
+				owner.setWeaponType(WeaponEntity.WeaponType.Ballista);
 				return true;
 			}
 		};
