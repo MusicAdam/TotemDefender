@@ -43,34 +43,43 @@ public class CatapultWeapon extends WeaponEntity {
 	
 	@Override
 	public void spawn(TotemDefender game){
-		armTexture = game.getAssetManager().get("catapult_arm.png", Texture.class);
-		Texture weaponTexture = game.getAssetManager().get("catapult_body.png", Texture.class);
-		setSprite(new Sprite(weaponTexture));
 		
-		float aspectRatio = getSprite().getWidth()/getSprite().getHeight(); //Get aspect ratio to maintain for scaling
-		float scale = 1/20f; //Relative to screen;
+		weaponSprite="catapult_body.png";
 		
-		getSprite().setSize(getSprite().getWidth() * scale * aspectRatio,
-							getSprite().getHeight() * scale * aspectRatio);
+		if(owner.getID() == 2){
+			origin = new Vector2(37, 35);
+		}else{
+			origin = new Vector2(96, 35);
+			
+		}
+		
+		barrelPosX=-65;
+		barrelPosY=5;
+		barrelPos = new Vector2(origin.x - 65 * flip, origin.y + 5);
+		
+		
+		super.spawn(game);
+		
+		//arm stuff
+		
+armTexture = game.getAssetManager().get("catapult_arm.png", Texture.class);
+		
+
 		armWidth = getSprite().getWidth() * .57f;
 		armHeight = getSprite().getHeight() * .29f;
 		
-		if(owner.getID() == 2){
-			origin = new Vector2(37, 35); //This is based on the logical rotation point on the cannon sprite
-			getSprite().flip(true, false);
-			armPosition = origin.cpy();
-		}else{
-			origin = new Vector2(96, 35);
-			armPosition = origin.cpy().sub(new Vector2(armWidth, 0));
-		}
 		
-		barrelPos = new Vector2(origin.x - 65 * flip, origin.y + 5);
 		fireDirection = new Vector2(-.1f, 1);
 		fireDirection.nor();
+		
 		if(owner.getID() == 2){
-			fireDirection.x *= -1;
+			armPosition = origin.cpy();
+			fireDirection.x*=-1;
 		}
-		super.spawn(game);
+		
+		else
+			armPosition = origin.cpy().sub(new Vector2(armWidth, 0));
+		
 	}
 	
 	@Override
