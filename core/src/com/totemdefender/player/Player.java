@@ -1,5 +1,6 @@
 package com.totemdefender.player;
 
+import com.totemdefender.entities.WeaponEntity;
 import com.totemdefender.input.InputHandler;
 import com.totemdefender.menu.ScoreLine;
 
@@ -11,10 +12,7 @@ public class Player {
 	private int id; //1 or 2
 	private String name; //User entered nickname
 	private int budget=1000; //The amount of money the player has to spend on blocks
-
-	//private int score=0;
-	private int weaponType=1;
-
+	private WeaponEntity.WeaponType weaponType = WeaponEntity.WeaponType.Cannon;
 	private PlayerScore score;
 	private int scoreMultiplier = 1; //Resets after a miss, maintianed through turns
 
@@ -82,11 +80,11 @@ public class Player {
 	}
 
 
-	public int getWeaponType() {
+	public WeaponEntity.WeaponType getWeaponType() {
 		return weaponType;
 	}
 
-	public void setWeaponType(int weaponType) {
+	public void setWeaponType(WeaponEntity.WeaponType weaponType) {
 		this.weaponType = weaponType;
 	}
 	

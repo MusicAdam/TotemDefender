@@ -166,13 +166,13 @@ public class BattleState implements State {
 
 	@Override
 	public void update(TotemDefender game) {
-		if(p1UpKeyDown && game.getPlayer1() == getPlayerTurn())
+		if(p1UpKeyDown)
 			level.getPlayer1Weapon().rotateUp();
-		if(p1DownKeyDown && game.getPlayer1() == getPlayerTurn())
+		if(p1DownKeyDown)
 			level.getPlayer1Weapon().rotateDown();
-		if(p2UpKeyDown && game.getPlayer2() == getPlayerTurn())
+		if(p2UpKeyDown)
 			level.getPlayer2Weapon().rotateUp();
-		if(p2DownKeyDown && game.getPlayer2() == getPlayerTurn())
+		if(p2DownKeyDown)
 			level.getPlayer2Weapon().rotateDown();
 		
 		if(turn.getID() == 1){

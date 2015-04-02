@@ -40,7 +40,7 @@ public class BackgroundEntity extends Entity{
 		backgroundTexture = game.getAssetManager().get("background/bg.png", Texture.class);
 		sunTexture = game.getAssetManager().get("background/sun.png", Texture.class);
 		castleTexture = game.getAssetManager().get("background/temple.png", Texture.class);
-		castleDrawWidth = TotemDefender.V_WIDTH/5;
+		castleDrawWidth = castleTexture.getWidth()/2;//TotemDefender.V_WIDTH/5;
 		castleDrawHeight = castleDrawWidth / castleAspectRatio;
 		
 		isSpawned = true;
@@ -70,18 +70,20 @@ public class BackgroundEntity extends Entity{
 		batch.draw(backgroundTexture, -TotemDefender.V_WIDTH/2, -TotemDefender.V_HEIGHT/2, TotemDefender.V_WIDTH, TotemDefender.V_HEIGHT);
 		batch.end();
 		
+		batch.begin();
+		batch.draw(sunTexture, TotemDefender.V_WIDTH/2 - 400, TotemDefender.V_HEIGHT/2 - 400, 300, 300); 
+		for(Cloud c : clouds){
+			batch.draw(c.cloud, c.x, c.y, c.width, c.height);
+		}
+		batch.setColor(1, 1, 1, .9f);
+		batch.draw(castleTexture, -castleDrawWidth/2, -TotemDefender.V_HEIGHT/2 + TotemDefender.GROUND_HEIGHT, castleDrawWidth, castleDrawHeight); 
+		batch.setColor(1, 1, 1, 1);
+		batch.end();
+		
 		shapeRenderer.begin(ShapeType.Filled);
 		shapeRenderer.setColor(color);
 		shapeRenderer.rect(-TotemDefender.V_WIDTH/2, -TotemDefender.V_HEIGHT/2, TotemDefender.V_WIDTH, TotemDefender.GROUND_HEIGHT);
 		shapeRenderer.end();
-		
-		batch.begin();
-		batch.draw(sunTexture, TotemDefender.V_WIDTH/2 - 400, TotemDefender.V_HEIGHT/2 - 400, 100, 100); 
-		batch.draw(castleTexture, -castleDrawWidth/2, -TotemDefender.V_HEIGHT/2 + TotemDefender.GROUND_HEIGHT-10, castleDrawWidth, castleDrawHeight); 
-		for(Cloud c : clouds){
-			batch.draw(c.cloud, c.x, c.y, c.width, c.height);
-		}
-		batch.end();
 	}
 	
 	private void spawnCloud(TotemDefender game){
