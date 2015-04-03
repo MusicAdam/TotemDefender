@@ -18,8 +18,7 @@ public class BalistaWeapon extends WeaponEntity {
 	public BalistaWeapon(Player owner) {
 		super(owner);
 		// TODO Auto-generated constructor stub
-		
-		//projectileVelocity/=2;
+	
 	}
 	
 	

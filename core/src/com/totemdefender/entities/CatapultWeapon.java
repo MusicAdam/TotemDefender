@@ -55,7 +55,6 @@ public class CatapultWeapon extends WeaponEntity {
 		
 		barrelPosX=-65;
 		barrelPosY=5;
-		barrelPos = new Vector2(origin.x - 65 * flip, origin.y + 5);
 		
 		
 		super.spawn(game);
