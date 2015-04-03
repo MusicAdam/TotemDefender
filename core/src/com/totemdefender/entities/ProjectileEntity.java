@@ -20,7 +20,7 @@ public class ProjectileEntity extends Entity{
 	public static final long LIFESPAN = 3000; //Lifespan in ms until projectile is marked for deletion
 	public static final float RADIUS = 7.5f;
 	private Vector2 barrelPos;
-	private boolean shouldDelete, contactedBlock;
+	private boolean shouldDelete, contactedBlock=false;
 	private long startTime;
 	private float radius;
 	
@@ -99,6 +99,10 @@ public class ProjectileEntity extends Entity{
 	
 	public void setRadius(float r){
 		radius = r;
+	}
+	
+	public boolean getContactedBlock(){
+		return contactedBlock;
 	}
 
 }
