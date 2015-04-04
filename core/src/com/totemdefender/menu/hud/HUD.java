@@ -36,9 +36,8 @@ public class HUD extends Container{
 		weapon1ChargeMeter.create(game);
 		weapon2ChargeMeter = new ChargeMeter(this, level.getPlayer2Weapon());
 		weapon2ChargeMeter.create(game);
-		
-		 player1Score =new Label(this);
-		 player2Score =new Label(this);
+		player1Score =new Label(this);
+		player2Score =new Label(this);
 
 	}	
 	

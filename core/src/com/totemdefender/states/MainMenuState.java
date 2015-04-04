@@ -18,6 +18,7 @@ public class MainMenuState implements State {
 
 	@Override
 	public void onEnter(TotemDefender game) {
+		game.setWinner(null);
 		game.setPlayer1(new Player(1));
 		game.setPlayer2(new Player(2));
 		
