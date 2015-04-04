@@ -16,14 +16,11 @@ public class CannonWeapon extends WeaponEntity {
 public void spawn(TotemDefender game){
 		
 		weaponSprite="cannon.png";	
-		
-			
-			
 			if(owner.getID()==1){
-				origin=new Vector2(33,30);
+				origin=new Vector2(30,14);
 			}
 			else
-				origin=new Vector2(98,30);
+				origin=new Vector2(98,14);
 			
 			barrelPosX=95;
 			barrelPosY=20;
