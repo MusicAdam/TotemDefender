@@ -23,6 +23,7 @@ public class ChargeMeter extends Component{
 	
 	@Override
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer) {
+		if(weapon != null && !weapon.isSpawned()) return;
 		float spriteHeight = weapon.getSprite().getBoundingRectangle().height;
 		float width = weapon.getSprite().getWidth();
 		float flip = (weapon.getOwner().getID() == 1) ? 1 : -1;

@@ -1,5 +1,6 @@
 package com.totemdefender.states;
 
+import com.totemdefender.Level;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.menu.MainMenu;
 import com.totemdefender.player.Player;
@@ -21,6 +22,12 @@ public class MainMenuState implements State {
 		game.setWinner(null);
 		game.setPlayer1(new Player(1));
 		game.setPlayer2(new Player(2));
+		
+		if(game.getLevel() == null){
+			game.setLevel(new Level(game));
+		}else{
+			game.getLevel().createPlayerWeapons();
+		}
 		
 		menu = new MainMenu(this);
 		menu.create(game);
