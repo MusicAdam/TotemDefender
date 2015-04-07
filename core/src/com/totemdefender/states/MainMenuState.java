@@ -23,8 +23,11 @@ public class MainMenuState implements State {
 		game.setPlayer1(new Player(1));
 		game.setPlayer2(new Player(2));
 		
-		if(game.getLevel() == null)
+		if(game.getLevel() == null){
 			game.setLevel(new Level(game));
+		}else{
+			game.getLevel().createPlayerWeapons();
+		}
 		
 		menu = new MainMenu(this);
 		menu.create(game);
