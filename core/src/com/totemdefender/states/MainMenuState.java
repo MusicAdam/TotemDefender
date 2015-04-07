@@ -31,11 +31,16 @@ public class MainMenuState implements State {
 		
 		menu = new MainMenu(this);
 		menu.create(game);
+		
+		game.setMusic("sounds/Menu Music/MainMenu.mp3");
+		game.getMusic().play();
+		game.getMusic().setLooping(true);
 	}
 
 	@Override
 	public void onExit(TotemDefender game) {
 		menu.destroy(game);
+		game.getMusic().stop();
 		
 		if(startButtonPressed){
 			game.getStateManager().attachState(new PreGameState());

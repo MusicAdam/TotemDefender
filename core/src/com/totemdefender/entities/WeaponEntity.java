@@ -115,7 +115,7 @@ public class WeaponEntity extends Entity {
 					completed = true;
 				
 				if(completed)
-					fireProjectile(game);
+					{game.setSound("sounds/Cannon/Cannon.mp3");game.getSound().play();fireProjectile(game);}
 			}
 		}
 	}

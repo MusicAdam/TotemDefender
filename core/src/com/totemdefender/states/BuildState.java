@@ -50,6 +50,10 @@ public class BuildState implements State {
 		
 		p2BuildMenu.getGrid().setPosition(0, TotemDefender.PEDESTAL_HEIGHT/2 + p2PedPos.y);
 		p2BuildMenu.validate();
+		
+		game.setMusic("sounds/Menu Music/Build phase.mp3");
+		game.getMusic().play();
+		game.getMusic().setLooping(true);
 	}
 	@Override
 	public void onExit(TotemDefender game) {
@@ -57,6 +61,8 @@ public class BuildState implements State {
 		p2BuildMenu.destroy(game);
 		game.setDoneBuilding(true);
 		game.getStateManager().attachState(new BattleState(level));
+		
+		game.getMusic().stop();
 		
 	}
 	@Override
