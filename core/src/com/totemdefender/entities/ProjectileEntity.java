@@ -50,7 +50,7 @@ public class ProjectileEntity extends Entity{
 		fixtureDef.friction = 0.6f;
 		fixtureDef.restitution = 0.4f;
 		fixtureDef.filter.categoryBits = (getOwner().getID() == 1) ? Entity.PLAYER1_PROJECTILE : Entity.PLAYER2_PROJECTILE;
-		fixtureDef.filter.maskBits = Entity.GROUND | Entity.BLOCK;
+		fixtureDef.filter.maskBits = Entity.GROUND | Entity.BLOCK | Entity.PEDESTAL;
 
 		// Create our fixture and attach it to the body
 		final ProjectileEntity thisRef = this;
