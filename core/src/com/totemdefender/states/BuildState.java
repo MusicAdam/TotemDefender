@@ -25,9 +25,8 @@ public class BuildState implements State {
 		return true;
 	}
 	@Override
-	public void onEnter(final TotemDefender game) {		
-		level = new Level(game);
-		game.setLevel(level);
+	public void onEnter(final TotemDefender game) {	
+		level = game.getLevel();
 		float menuPadding = 10; //Distance from the size of the screen to the menu
 		
 		p1BuildMenu=new BuildMenu(game, level, game.getPlayer1());

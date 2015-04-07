@@ -39,8 +39,7 @@ public class PostGameState implements State {
 	@Override
 	public void onExit(TotemDefender game) {
 		postGameMenu.destroy(game);
-		game.getLevel().destroy(game);
-		game.setLevel(null);
+		game.getLevel().clearPlayerEntities();
 		game.getStateManager().attachState(new MainMenuState());
 	}
 

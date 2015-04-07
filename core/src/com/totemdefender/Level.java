@@ -205,4 +205,28 @@ public class Level {
 	public HUD getHUD(){
 		return hud;
 	}
+
+	public void clearPlayerEntities() {
+		for(BlockEntity block : placedBlocks){
+			TotemDefender.Get().destroyEntity(block);
+		}
+		
+		placedBlocks.clear();
+		TotemDefender.Get().destroyEntity(player1Totem);
+		TotemDefender.Get().destroyEntity(player2Totem);
+		player1Totem = null;
+		player2Totem = null;
+		
+
+		TotemDefender.Get().destroyEntity(player1Weapon);
+		TotemDefender.Get().destroyEntity(player2Weapon);
+		TotemDefender.Get().getPlayer(1).setWeaponType(WeaponEntity.WeaponType.Cannon);
+		setPlayer1Weapon(new CannonWeapon(TotemDefender.Get().getPlayer(1)));
+		TotemDefender.Get().getPlayer(2).setWeaponType(WeaponEntity.WeaponType.Cannon);
+		setPlayer2Weapon(new CannonWeapon(TotemDefender.Get().getPlayer(2)));
+		
+		hud.destroy(TotemDefender.Get());
+		hud = new HUD(TotemDefender.Get(), this);
+		hud.create(TotemDefender.Get());
+	}
 }
