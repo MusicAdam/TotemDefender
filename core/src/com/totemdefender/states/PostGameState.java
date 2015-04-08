@@ -48,16 +48,13 @@ public class PostGameState implements State {
 	@Override
 	public void onExit(TotemDefender game) {
 		postGameMenu.destroy(game);
-<<<<<<< HEAD
 		FileHandle file = Gdx.files.local("td_ranking.txt");        
 		winnerScore = (game.getWinner().getName() + "<>" +  game.getWinner().getScore().getTotalScore() + "<>" + date + "\n");
 		file.writeString(winnerScore, true);
 		game.getLevel().destroy(game);
 		game.setLevel(null);
 		game.setWinner(null);
-=======
 		game.getLevel().clearPlayerEntities();
->>>>>>> 00a6a9fdf45a304a4bfc4e824bab97ced01aa57b
 		game.getStateManager().attachState(new MainMenuState());
 	}
 
