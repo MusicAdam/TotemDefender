@@ -386,7 +386,7 @@ public class TotemDefender extends ApplicationAdapter {
 		assetManager.load("background/temple.png", Texture.class, textureParam);	
 		assetManager.load("background/sun.png", Texture.class, textureParam);	
 		assetManager.load("background/cloud_1.png", Texture.class, textureParam);
-		assetManager.load("background/cloud_2.png", Texture.class, textureParam);				
+		assetManager.load("background/cloud_2.png", Texture.class, textureParam);
 	}
 	
 	/** addEntity registers a spawned entity with the game so it will be rendered and updated.

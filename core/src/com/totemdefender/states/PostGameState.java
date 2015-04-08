@@ -1,5 +1,10 @@
 package com.totemdefender.states;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.menu.Label;
@@ -11,6 +16,10 @@ public class PostGameState implements State {
 	HUD hud;
 	PostGameMenu postGameMenu;
 	private boolean shouldExit = false;
+	String winnerScore = "";
+	Calendar cal = Calendar.getInstance();
+    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
+    String date = dateFormat.format(cal.getTime());
 	
 	public PostGameState(HUD hud){
 		this.hud = hud;
@@ -39,8 +48,12 @@ public class PostGameState implements State {
 	@Override
 	public void onExit(TotemDefender game) {
 		postGameMenu.destroy(game);
+		FileHandle file = Gdx.files.local("td_ranking.txt");        
+		winnerScore = (game.getWinner().getName() + "<>" +  game.getWinner().getScore().getTotalScore() + "<>" + date + "\n");
+		file.writeString(winnerScore, true);
 		game.getLevel().destroy(game);
 		game.setLevel(null);
+		game.setWinner(null);
 		game.getStateManager().attachState(new MainMenuState());
 	}
 

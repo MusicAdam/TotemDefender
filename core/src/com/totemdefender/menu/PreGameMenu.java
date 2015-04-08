@@ -55,7 +55,6 @@ public class PreGameMenu extends NavigableContainer {
 		weapon2 = new Button(this, "Catapult", buttonSize, new Vector2(side, TotemDefender.V_HEIGHT - (buttonSize.y)*3 - padding), Color.BLUE){
 			@Override
 			public boolean onClick(){
-				
 				owner.setWeaponType(WeaponEntity.WeaponType.Catapult);
 				return true;
 			}
@@ -67,7 +66,6 @@ public class PreGameMenu extends NavigableContainer {
 		weapon3 = new Button(this, "Ballista", buttonSize, new Vector2(side, TotemDefender.V_HEIGHT - (buttonSize.y)*4 - padding), Color.ORANGE){
 			@Override
 			public boolean onClick(){
-				
 				owner.setWeaponType(WeaponEntity.WeaponType.Ballista);
 				return true;
 			}
