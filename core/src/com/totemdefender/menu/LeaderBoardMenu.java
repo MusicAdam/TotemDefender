@@ -32,7 +32,6 @@ public class LeaderBoardMenu extends NavigableContainer {
 		file.writeString("", false);
 
 		for(int i=0; i<textBox.length; i++) {
-			System.out.println(textBox[i]);
 			file.writeString(textBox[i] + "\n", true);
 			text = textBox[i].replace("<>", " - ");
 			scoreList += i+1 + ". " + text + "\n";
