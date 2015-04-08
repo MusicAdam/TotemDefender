@@ -44,6 +44,7 @@ public class PreGameMenu extends NavigableContainer {
 		weapon1 = new Button(this, "Cannon", buttonSize, new Vector2(side, TotemDefender.V_HEIGHT - (buttonSize.y)*2 - padding), Color.RED){
 			@Override
 			public boolean onClick(){
+				if(weaponSelected) return false;
 				if(owner.getID() == 1){
 					changePlayer1Weapon(WeaponEntity.WeaponType.Cannon);
 				}else{
@@ -58,7 +59,8 @@ public class PreGameMenu extends NavigableContainer {
 	
 		weapon2 = new Button(this, "Catapult", buttonSize, new Vector2(side, TotemDefender.V_HEIGHT - (buttonSize.y)*3 - padding), Color.BLUE){
 			@Override
-			public boolean onClick(){				
+			public boolean onClick(){	
+				if(weaponSelected) return false;			
 				if(owner.getID() == 1){
 					changePlayer1Weapon(WeaponEntity.WeaponType.Catapult);
 				}else{
@@ -74,6 +76,7 @@ public class PreGameMenu extends NavigableContainer {
 		weapon3 = new Button(this, "Ballista", buttonSize, new Vector2(side, TotemDefender.V_HEIGHT - (buttonSize.y)*4 - padding), Color.ORANGE){
 			@Override
 			public boolean onClick(){
+				if(weaponSelected) return false;
 				if(owner.getID() == 1){
 					changePlayer1Weapon(WeaponEntity.WeaponType.Ballista);
 				}else{
