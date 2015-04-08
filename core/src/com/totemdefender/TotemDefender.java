@@ -29,6 +29,8 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -116,6 +118,8 @@ public class TotemDefender extends ApplicationAdapter {
 	private Level level;
 	private Component keyboardFocus;
 	private AnimationController animationController;
+	private Music music;
+	private Sound sound;
 	
 	/** Control Variables */
 	private boolean isDoneBuilding;
@@ -612,4 +616,22 @@ public class TotemDefender extends ApplicationAdapter {
 	public Component getKeyboardFocus(){ return keyboardFocus; }
 	
 	public AnimationController getAnimationController(){ return animationController; }
+	
+	public Music getMusic(){
+		
+		return music;
+	}
+	
+	public void setMusic(String filePath){
+		music=Gdx.audio.newMusic(Gdx.files.internal(filePath));
+	}
+	
+	public Sound getSound(){
+		return sound;
+	}
+	
+	public void setSound(String filePath){
+		sound=Gdx.audio.newSound(Gdx.files.internal(filePath));
+	}
+	
 }

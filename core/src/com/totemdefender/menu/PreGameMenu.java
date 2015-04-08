@@ -44,7 +44,11 @@ public class PreGameMenu extends NavigableContainer {
 		weapon1 = new Button(this, "Cannon", buttonSize, new Vector2(side, TotemDefender.V_HEIGHT - (buttonSize.y)*2 - padding), Color.RED){
 			@Override
 			public boolean onClick(){
-				owner.setWeaponType(WeaponEntity.WeaponType.Cannon);
+				if(owner.getID() == 1){
+					changePlayer1Weapon(WeaponEntity.WeaponType.Cannon);
+				}else{
+					changePlayer2Weapon(WeaponEntity.WeaponType.Cannon);					
+				}
 				return true;
 			}
 		};
@@ -54,8 +58,17 @@ public class PreGameMenu extends NavigableContainer {
 	
 		weapon2 = new Button(this, "Catapult", buttonSize, new Vector2(side, TotemDefender.V_HEIGHT - (buttonSize.y)*3 - padding), Color.BLUE){
 			@Override
+<<<<<<< HEAD
 			public boolean onClick(){
 				owner.setWeaponType(WeaponEntity.WeaponType.Catapult);
+=======
+			public boolean onClick(){				
+				if(owner.getID() == 1){
+					changePlayer1Weapon(WeaponEntity.WeaponType.Catapult);
+				}else{
+					changePlayer2Weapon(WeaponEntity.WeaponType.Catapult);					
+				}
+>>>>>>> 00a6a9fdf45a304a4bfc4e824bab97ced01aa57b
 				return true;
 			}
 		};
@@ -66,7 +79,15 @@ public class PreGameMenu extends NavigableContainer {
 		weapon3 = new Button(this, "Ballista", buttonSize, new Vector2(side, TotemDefender.V_HEIGHT - (buttonSize.y)*4 - padding), Color.ORANGE){
 			@Override
 			public boolean onClick(){
+<<<<<<< HEAD
 				owner.setWeaponType(WeaponEntity.WeaponType.Ballista);
+=======
+				if(owner.getID() == 1){
+					changePlayer1Weapon(WeaponEntity.WeaponType.Ballista);
+				}else{
+					changePlayer2Weapon(WeaponEntity.WeaponType.Ballista);					
+				}
+>>>>>>> 00a6a9fdf45a304a4bfc4e824bab97ced01aa57b
 				return true;
 			}
 		};
@@ -102,5 +123,13 @@ public class PreGameMenu extends NavigableContainer {
 
 	public void setUserName(TextEntry userName) {
 		this.userName = userName;
+	}
+	
+	public void changePlayer1Weapon(WeaponEntity.WeaponType type){		
+		TotemDefender.Get().getLevel().changePlayer1Weapon(type);
+	}
+	
+	public void changePlayer2Weapon(WeaponEntity.WeaponType type){		
+		TotemDefender.Get().getLevel().changePlayer2Weapon(type);
 	}
 }

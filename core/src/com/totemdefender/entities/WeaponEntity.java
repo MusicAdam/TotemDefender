@@ -37,6 +37,9 @@ public class WeaponEntity extends Entity {
 	protected int flip;
 	protected ProjectileEntity projectile;
 	
+	protected String weaponSprite="cannon.png";
+	protected float barrelPosX=95,barrelPosY=20;
+	
 	public WeaponEntity(Player owner){
 		super(owner);
 		
@@ -112,26 +115,47 @@ public class WeaponEntity extends Entity {
 					completed = true;
 				
 				if(completed)
-					fireProjectile(game);
+					{game.setSound("sounds/Cannon/Cannon.mp3");game.getSound().play();fireProjectile(game);}
 			}
 		}
 	}
 	
 	@Override
 	public void spawn(TotemDefender game) {
-		if(getSprite() == null || origin == null || barrelPos == null) return;
+		if( origin == null) return;
+		
+		Texture weaponTexture = game.getAssetManager().get(weaponSprite, Texture.class);
+		setSprite(new Sprite(weaponTexture));
+		
+		float aspectRatio = getSprite().getWidth()/getSprite().getHeight(); //Get aspect ratio to maintain for scaling
+		float scale = 1/20f; //Relative to screen;
+		
+		getSprite().setSize(getSprite().getWidth() * scale * aspectRatio,
+							getSprite().getHeight() * scale * aspectRatio);
 		
 		float hw = getSprite().getWidth()/2;
+		float hh = getSprite().getHeight()/2;
 		float xPos = (-TotemDefender.V_WIDTH/2) * TotemDefender.STACK_LOCATION + 200;
 		float yPos = -TotemDefender.V_HEIGHT/2 + TotemDefender.GROUND_HEIGHT;
 		
 		if(owner.getID() == 2){
 			xPos = -xPos; //Put it on the right side if its player 2
+			getSprite().flip(true, false);
+			
 		}
-
-		getSprite().setOrigin(origin.x, origin.y); //This is based on the logical rotation point on the cannon sprite
+			getSprite().setOrigin(origin.x, origin.y); //This is based on the logical rotation point on the cannon sprite
+		
+		
 		getSprite().setPosition(xPos - hw, yPos);
-				
+		
+
+		barrelPos = new Vector2(getSprite().getOriginX() + barrelPosX * flip, getSprite().getOriginY() + barrelPosY);
+		fireDirection = new Vector2(.5f, 0);
+		fireDirection.nor();
+		if(owner.getID() == 2){
+			fireDirection.x *= -1;
+		}
+		
 		isSpawned = true;
 	}
 	

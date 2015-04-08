@@ -1,5 +1,6 @@
 package com.totemdefender.player;
 
+import com.totemdefender.entities.Entity;
 import com.totemdefender.entities.WeaponEntity;
 import com.totemdefender.input.InputHandler;
 import com.totemdefender.menu.ScoreLine;

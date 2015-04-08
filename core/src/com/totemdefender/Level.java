@@ -10,6 +10,7 @@ import com.totemdefender.entities.GroundEntity;
 import com.totemdefender.entities.PedestalEntity;
 import com.totemdefender.entities.TotemEntity;
 import com.totemdefender.entities.WeaponEntity;
+import com.totemdefender.entities.WeaponEntity.WeaponType;
 import com.totemdefender.entities.blocks.BlockEntity;
 import com.totemdefender.menu.hud.HUD;
 import com.totemdefender.player.Player;
@@ -28,7 +29,10 @@ public class Level {
 	private TotemEntity		player2Totem;
 	private ArrayList<BlockEntity> placedBlocks = new ArrayList<BlockEntity>();
 	
-	public Level(TotemDefender game){		
+	public Level(TotemDefender game){	
+		hud = new HUD(game, this);
+		hud.create(game);
+		
 		/** Create the world **/
 		background = new BackgroundEntity();
 		background.setName("Background");
@@ -40,31 +44,7 @@ public class Level {
 		ground.spawn(game);
 		game.addEntity(ground, TotemDefender.GROUND_DEPTH);
 		
-		if(game.getPlayer1().getWeaponType()==WeaponEntity.WeaponType.Cannon)
-			player1Weapon = new CannonWeapon(game.getPlayer1());
-		
-		if(game.getPlayer1().getWeaponType()==WeaponEntity.WeaponType.Catapult)
-			player1Weapon = new CatapultWeapon(game.getPlayer1());
-		
-		if(game.getPlayer1().getWeaponType()==WeaponEntity.WeaponType.Ballista)
-			player1Weapon = new BalistaWeapon(game.getPlayer1());
-		
-		player1Weapon.setName(game.getPlayer1().getWeaponType().toString());
-		player1Weapon.spawn(game);
-		game.addEntity(player1Weapon, TotemDefender.WEAPON_DEPTH);
-		
-		if(game.getPlayer2().getWeaponType()==WeaponEntity.WeaponType.Cannon)
-			player2Weapon = new CannonWeapon(game.getPlayer2());
-		
-		if(game.getPlayer2().getWeaponType()==WeaponEntity.WeaponType.Catapult)
-			player2Weapon = new CatapultWeapon(game.getPlayer2());
-		
-		if(game.getPlayer2().getWeaponType()==WeaponEntity.WeaponType.Ballista)
-			player2Weapon = new BalistaWeapon(game.getPlayer2());
-		
-		player2Weapon.setName(game.getPlayer1().getWeaponType().toString());
-		player2Weapon.spawn(game);
-		game.addEntity(player2Weapon, TotemDefender.WEAPON_DEPTH);
+		createPlayerWeapons();
 		
 		player1Pedestal = new PedestalEntity(game.getPlayer1());
 		player1Pedestal.setName("Player 1 Pedestal");
@@ -75,9 +55,6 @@ public class Level {
 		player2Pedestal.setName("Player 2 Pedestal");
 		player2Pedestal.spawn(game);
 		game.addEntity(player2Pedestal, TotemDefender.PEDESTAL_DEPTH);
-		
-		hud = new HUD(game, this);
-		hud.create(game);
 	}
 	
 	public void destroy(TotemDefender game){
@@ -111,6 +88,7 @@ public class Level {
 
 	public void setPlayer1Weapon(WeaponEntity player1Weapon) {
 		this.player1Weapon = player1Weapon;
+		hud.setPlayer1Weapon(player1Weapon);
 	}
 
 	public WeaponEntity getPlayer2Weapon() {
@@ -119,6 +97,7 @@ public class Level {
 
 	public void setPlayer2Weapon(WeaponEntity player2Weapon) {
 		this.player2Weapon = player2Weapon;
+		hud.setPlayer2Weapon(player2Weapon);
 	}
 	
 	public void addPlacedBlock(BlockEntity ent){
@@ -204,5 +183,89 @@ public class Level {
 	
 	public HUD getHUD(){
 		return hud;
+	}
+
+	public void clearPlayerEntities() {
+		TotemDefender game = TotemDefender.Get();
+		
+		for(BlockEntity block : placedBlocks){
+			game.destroyEntity(block);
+		}
+		
+		placedBlocks.clear();
+		game.destroyEntity(player1Totem);
+		game.destroyEntity(player2Totem);
+		player1Totem = null;
+		player2Totem = null;
+		
+
+		game.destroyEntity(player1Weapon);
+		game.destroyEntity(player2Weapon);
+		player1Weapon = null;
+		player2Weapon = null;
+		
+		hud.destroy(game);
+		hud = new HUD(game, this);
+		hud.create(game);
+	}
+	
+	public void createPlayerWeapons(){
+		TotemDefender game = TotemDefender.Get();
+		if(game.getPlayer1().getWeaponType()==WeaponEntity.WeaponType.Cannon)
+			setPlayer1Weapon(new CannonWeapon(game.getPlayer1()));
+		
+		if(game.getPlayer1().getWeaponType()==WeaponEntity.WeaponType.Catapult)
+			setPlayer1Weapon(new CatapultWeapon(game.getPlayer1()));
+		
+		if(game.getPlayer1().getWeaponType()==WeaponEntity.WeaponType.Ballista)
+			setPlayer1Weapon(new BalistaWeapon(game.getPlayer1()));
+		
+		player1Weapon.setName(game.getPlayer1().getWeaponType().toString());
+		player1Weapon.spawn(game);
+		game.addEntity(player1Weapon, TotemDefender.WEAPON_DEPTH);
+		
+		if(game.getPlayer2().getWeaponType()==WeaponEntity.WeaponType.Cannon)
+			setPlayer2Weapon(player2Weapon = new CannonWeapon(game.getPlayer2()));
+		
+		if(game.getPlayer2().getWeaponType()==WeaponEntity.WeaponType.Catapult)
+			setPlayer2Weapon(player2Weapon = new CatapultWeapon(game.getPlayer2()));
+		
+		if(game.getPlayer2().getWeaponType()==WeaponEntity.WeaponType.Ballista)
+			setPlayer2Weapon(new BalistaWeapon(game.getPlayer2()));
+		player2Weapon.setName(game.getPlayer1().getWeaponType().toString());
+		player2Weapon.spawn(game);
+		game.addEntity(player2Weapon, TotemDefender.WEAPON_DEPTH);
+	}
+
+	public void changePlayer1Weapon(WeaponType type) {
+		TotemDefender game = TotemDefender.Get();
+		game.destroyEntity(player1Weapon);
+		game.getPlayer1().setWeaponType(type);
+		if(game.getPlayer1().getWeaponType()==WeaponEntity.WeaponType.Cannon)
+			setPlayer1Weapon(new CannonWeapon(game.getPlayer1()));		
+		if(game.getPlayer1().getWeaponType()==WeaponEntity.WeaponType.Catapult)
+			setPlayer1Weapon(new CatapultWeapon(game.getPlayer1()));		
+		if(game.getPlayer1().getWeaponType()==WeaponEntity.WeaponType.Ballista)
+			setPlayer1Weapon(new BalistaWeapon(game.getPlayer1()));
+		
+		player1Weapon.setName(game.getPlayer1().getWeaponType().toString());
+		player1Weapon.spawn(game);
+		game.addEntity(player1Weapon, TotemDefender.WEAPON_DEPTH);
+	}
+	
+	public void changePlayer2Weapon(WeaponType type) {
+		TotemDefender game = TotemDefender.Get();
+		game.destroyEntity(player2Weapon);
+		game.getPlayer2().setWeaponType(type);
+		if(game.getPlayer2().getWeaponType()==WeaponEntity.WeaponType.Cannon)
+			setPlayer1Weapon(new CannonWeapon(game.getPlayer2()));		
+		if(game.getPlayer2().getWeaponType()==WeaponEntity.WeaponType.Catapult)
+			setPlayer2Weapon(new CatapultWeapon(game.getPlayer2()));		
+		if(game.getPlayer2().getWeaponType()==WeaponEntity.WeaponType.Ballista)
+			setPlayer1Weapon(new BalistaWeapon(game.getPlayer2()));
+		
+		player2Weapon.setName(game.getPlayer2().getWeaponType().toString());
+		player2Weapon.spawn(game);
+		game.addEntity(player2Weapon, TotemDefender.WEAPON_DEPTH);
 	}
 }

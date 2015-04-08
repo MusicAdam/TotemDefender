@@ -6,36 +6,25 @@ import com.badlogic.gdx.math.Vector2;
 import com.totemdefender.player.Player;
 import com.totemdefender.TotemDefender;
 
-public class CannonWeapon extends WeaponEntity {
-
+public class CannonWeapon extends WeaponEntity {	
 	public CannonWeapon(Player owner) {
 		super(owner);
 	}
 
 	
 	public void spawn(TotemDefender game){
-		Texture weaponTexture = game.getAssetManager().get("cannon.png", Texture.class);
-		setSprite(new Sprite(weaponTexture));
-		
-		float aspectRatio = getSprite().getWidth()/getSprite().getHeight(); //Get aspect ratio to maintain for scaling
-		float scale = 1/20f; //Relative to screen;
-		
-		getSprite().setSize(getSprite().getWidth() * scale * aspectRatio,
-							getSprite().getHeight() * scale * aspectRatio);
-		if(owner.getID() == 2){
-			origin = new Vector2(98, 14); //This is based on the logical rotation point on the cannon sprite
-			getSprite().flip(true, false);
-		}else{
-			origin = new Vector2(30, 14);
+		weaponSprite="cannon.png";	
+		if(owner.getID()==1){
+			origin=new Vector2(30,14);
 		}
-
-		barrelPos = new Vector2(origin.x + 95 * flip, origin.y + 20);
-		fireDirection = new Vector2(.5f, 0);
-		fireDirection.nor();
-		if(owner.getID() == 2){
-			fireDirection.x *= -1;
-		}
+		else
+			origin=new Vector2(98,14);
+		
+		barrelPosX=95;
+		barrelPosY=20;
+		
 		super.spawn(game);
+		System.out.println("Cannon Weapon was Spawned");
+		
 	}
-	
 }

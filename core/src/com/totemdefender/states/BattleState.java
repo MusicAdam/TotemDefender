@@ -14,7 +14,11 @@ import com.totemdefender.input.KeyboardEvent;
 import com.totemdefender.menu.ScoreLine.ScoreType;
 import com.totemdefender.menu.hud.HUD;
 import com.totemdefender.player.Player;
-
+import com.badlogic.gdx.Audio;
+import com.badlogic.gdx.assets.loaders.FileHandleResolver;
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.files.FileHandle;
 
 public class BattleState implements State {
 	private KeyboardEvent spaceDownListener;
@@ -132,6 +136,10 @@ public class BattleState implements State {
 		});
 		
 		game.getLevel().getHUD().setDrawScores(true);
+	
+		game.setMusic("sounds/Menu Music/battle phase.mp3");
+		game.getMusic().play();
+		game.getMusic().setLooping(true);
 	}
 
 	@Override
@@ -147,6 +155,7 @@ public class BattleState implements State {
 		game.getGameInputHandler().removeListener(pl2UpKeyUpListener);
 		game.getGameInputHandler().removeListener(pl2DownKeyDownListener);
 		game.getGameInputHandler().removeListener(pl2DownKeyUpListener);
+		game.getMusic().stop();
 	}
 
 	@Override

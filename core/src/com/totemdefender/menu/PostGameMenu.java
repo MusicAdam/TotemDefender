@@ -51,11 +51,12 @@ public class PostGameMenu extends Container{
 	}
 	
 	@Override
-	public void create(TotemDefender game){
+	public void create(final TotemDefender game){
 		continueButton = new Button(this){
 			@Override
 			public boolean onClick(){
 				postGameState.setShouldExit(true);
+				game.setWinner(null);
 				return true;
 			}
 		};
@@ -117,6 +118,7 @@ public class PostGameMenu extends Container{
 		}
 		p2ScoreLines.add(sumLine);
 		p2ScoreLines.add(new ScoreLine(game.getPlayer2().getTotalScore(), ScoreLine.ScoreType.Total));
+		
 		
 		super.create(game);
 	}

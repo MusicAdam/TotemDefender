@@ -20,7 +20,7 @@ public class ProjectileEntity extends Entity{
 	public static final long LIFESPAN = 3000; //Lifespan in ms until projectile is marked for deletion
 	public static final float RADIUS = 7.5f;
 	private Vector2 barrelPos;
-	private boolean shouldDelete, contactedBlock;
+	private boolean shouldDelete, contactedBlock=false;
 	private long startTime;
 	private float radius;
 	
@@ -32,7 +32,7 @@ public class ProjectileEntity extends Entity{
 	}
 
 	@Override
-	public void spawn(TotemDefender game) {
+	public void spawn(final TotemDefender game) {
 		Texture texture = game.getAssetManager().get("projectiles/cannon_projectile.png", Texture.class);
 		setSprite(new Sprite(texture));
 		
@@ -50,7 +50,7 @@ public class ProjectileEntity extends Entity{
 		fixtureDef.friction = 0.6f;
 		fixtureDef.restitution = 0.4f;
 		fixtureDef.filter.categoryBits = (getOwner().getID() == 1) ? Entity.PLAYER1_PROJECTILE : Entity.PLAYER2_PROJECTILE;
-		fixtureDef.filter.maskBits = Entity.GROUND | Entity.BLOCK;
+		fixtureDef.filter.maskBits = Entity.GROUND | Entity.BLOCK | Entity.PEDESTAL;
 
 		// Create our fixture and attach it to the body
 		final ProjectileEntity thisRef = this;
@@ -58,6 +58,9 @@ public class ProjectileEntity extends Entity{
 			@Override
 			public void beginContact(Fixture other, Contact contact) {
 				if(other.getBody().getUserData() instanceof GroundEntity){
+					game.setSound("sounds/Cannon/ballhitsground.mp3");
+					game.getSound().play();
+					
 					if(!thisRef.contactedBlock){
 						thisRef.owner.addScore(ScoreLine.ScoreType.Miss, Player.MISS_SCORE);
 						thisRef.owner.resetScoreMultiplier();
@@ -99,6 +102,10 @@ public class ProjectileEntity extends Entity{
 	
 	public void setRadius(float r){
 		radius = r;
+	}
+	
+	public boolean getContactedBlock(){
+		return contactedBlock;
 	}
 
 }
