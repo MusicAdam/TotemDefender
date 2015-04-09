@@ -258,11 +258,11 @@ public class Level {
 		game.destroyEntity(player2Weapon);
 		game.getPlayer2().setWeaponType(type);
 		if(game.getPlayer2().getWeaponType()==WeaponEntity.WeaponType.Cannon)
-			setPlayer1Weapon(new CannonWeapon(game.getPlayer2()));		
+			setPlayer2Weapon(new CannonWeapon(game.getPlayer2()));		
 		if(game.getPlayer2().getWeaponType()==WeaponEntity.WeaponType.Catapult)
 			setPlayer2Weapon(new CatapultWeapon(game.getPlayer2()));		
 		if(game.getPlayer2().getWeaponType()==WeaponEntity.WeaponType.Ballista)
-			setPlayer1Weapon(new BalistaWeapon(game.getPlayer2()));
+			setPlayer2Weapon(new BalistaWeapon(game.getPlayer2()));
 		
 		player2Weapon.setName(game.getPlayer2().getWeaponType().toString());
 		player2Weapon.spawn(game);

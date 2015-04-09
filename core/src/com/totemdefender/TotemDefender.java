@@ -195,6 +195,20 @@ public class TotemDefender extends ApplicationAdapter {
 		
 		
 		/** QUEUES **/
+		
+		//Process deletions
+		while(!entityDeleteQueue.isEmpty()){
+			Entity ent = entityDeleteQueue.poll();
+			if(ent.getBody() != null)
+				world.destroyBody(ent.getBody());
+			entities.remove(ent);
+		}
+		
+		while(!menuDeleteQueue.isEmpty()){
+			Container cmp = menuDeleteQueue.poll();
+			menus.remove(cmp);
+		}
+		
 		//Process additions
 		while(!entityAddQueue.isEmpty()){
 			DepthWrapper<Entity> ent = entityAddQueue.poll();
@@ -215,19 +229,6 @@ public class TotemDefender extends ApplicationAdapter {
 		while(!menuDepthQueue.isEmpty()){
 			DepthWrapper<Container> cmp = menuDepthQueue.poll();
 			menus.move(cmp.object, cmp.depth);
-		}
-		
-		//Process deletions
-		while(!entityDeleteQueue.isEmpty()){
-			Entity ent = entityDeleteQueue.poll();
-			if(ent.getBody() != null)
-				world.destroyBody(ent.getBody());
-			entities.remove(ent);
-		}
-		
-		while(!menuDeleteQueue.isEmpty()){
-			Container cmp = menuDeleteQueue.poll();
-			menus.remove(cmp);
 		}
 		
 		//Maintain updates at the STEP rate
