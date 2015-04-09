@@ -56,7 +56,6 @@ public class PostGameMenu extends Container{
 			@Override
 			public boolean onClick(){
 				postGameState.setShouldExit(true);
-				game.setWinner(null);
 				return true;
 			}
 		};
