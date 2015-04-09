@@ -40,7 +40,6 @@ public class MainMenuState implements State {
 	@Override
 	public void onExit(TotemDefender game) {
 		menu.destroy(game);
-		game.getMusic().stop();
 		
 		if(startButtonPressed){
 			game.getStateManager().attachState(new PreGameState());

@@ -48,6 +48,7 @@ public class PostGameState implements State {
 
 	@Override
 	public void onExit(TotemDefender game) {
+		game.getMusic().stop();
 		postGameMenu.destroy(game);
 		FileHandle file = Gdx.files.local("td_ranking.txt");        
 		winnerScore = (game.getWinner().getName() + "<>" +  game.getWinner().getScore().getTotalScore() + "<>" + date + "\n");
