@@ -26,7 +26,7 @@ public class LeaderBoardMenu extends NavigableContainer {
 	@Override
 	public void create(TotemDefender game){
 		Vector2 buttonSize = new Vector2((TotemDefender.V_WIDTH/3), (TotemDefender.V_WIDTH/4)/4.65517f); //4.6.. is the apsect ratio of the button texture
-		Vector2 LabelSize = new Vector2(TotemDefender.V_WIDTH, TotemDefender.V_HEIGHT - buttonSize.y);
+		Vector2 LabelSize = new Vector2(TotemDefender.V_WIDTH/3, TotemDefender.V_HEIGHT/2.5f);
 
 		ScoreBubbleSort(textBox);
 		file.writeString("", false);
@@ -40,11 +40,12 @@ public class LeaderBoardMenu extends NavigableContainer {
 		}
 		
 		leaderboard = new Label(this);
-		leaderboard.setPosition(new Vector2(0,buttonSize.y));
-		leaderboard.setTextOffset(new Vector2((TotemDefender.V_WIDTH/2.0f) - buttonSize.x/2, TotemDefender.V_HEIGHT/2));
+		leaderboard.setPosition(new Vector2(TotemDefender.V_WIDTH/3,TotemDefender.V_HEIGHT/4));
+		leaderboard.setTextOffset(leaderboard.getTextBounds().width * 2.5f, leaderboard.getTextBounds().height*30f);
 		leaderboard.setFont("hud_large.ttf");
 		leaderboard.setText(scoreList);
 		leaderboard.setSize(LabelSize);
+		leaderboard.setColor(0f, 0f, 0f, 0.5f);
 		
 		returner = new Button(this, "Main Menu", buttonSize, new Vector2((TotemDefender.V_WIDTH/2.0f) - buttonSize.x/2, 0), null){
 			@Override

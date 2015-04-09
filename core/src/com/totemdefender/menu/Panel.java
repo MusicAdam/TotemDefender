@@ -79,7 +79,11 @@ public class Panel extends Component{
 	public void setColor(Color color) {
 		this.color = color;
 	}
-
+	
+	public void setColor(float r, float g, float b, float a){
+		this.color = new Color(r,g,b,a);
+	}
+	
 	public Sprite getSprite() {
 		return sprite;
 	}
