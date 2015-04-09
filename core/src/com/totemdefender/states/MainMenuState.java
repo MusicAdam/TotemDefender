@@ -34,6 +34,7 @@ public class MainMenuState implements State {
 		menu.create(game);
 		if(game.getMusic() == null || !game.getMusic().isPlaying()){
 			game.setMusic("sounds/Menu Music/MainMenu.mp3");
+			game.getMusic().setVolume(.5f);
 			game.getMusic().play();
 			game.getMusic().setLooping(true);
 		}

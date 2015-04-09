@@ -385,7 +385,6 @@ public class TotemDefender extends ApplicationAdapter {
 		assetManager.load("hud_large.ttf", BitmapFont.class, hud_large);
 		assetManager.load("hud_huge.ttf", BitmapFont.class, hud_huge);
 		assetManager.load("keyboard.png", Texture.class, textureParam);
-
 		//Backgorund
 		assetManager.load("background/bg.png", Texture.class, textureParam);
 		assetManager.load("background/castle.png", Texture.class, textureParam);	
@@ -393,6 +392,15 @@ public class TotemDefender extends ApplicationAdapter {
 		assetManager.load("background/sun.png", Texture.class, textureParam);	
 		assetManager.load("background/cloud_1.png", Texture.class, textureParam);
 		assetManager.load("background/cloud_2.png", Texture.class, textureParam);
+		//Sounds
+		assetManager.load("sounds/Menu Music/battle phase.mp3", Music.class);
+		assetManager.load("sounds/Menu Music/Build phase.mp3", Music.class);
+		assetManager.load("sounds/Menu Music/MainMenu.mp3", Music.class);
+		assetManager.load("sounds/Cannon/Cannon.mp3", Sound.class);
+		assetManager.load("sounds/Cannon/ballhitsground.mp3", Sound.class);
+		assetManager.load("sounds/Cannon/Cannon.mp3", Sound.class);
+		assetManager.load("sounds/catapult/catapult_charge.mp3", Sound.class);
+		assetManager.load("sounds/catapult/catapult_release.mp3", Sound.class);
 	}
 	
 	/** addEntity registers a spawned entity with the game so it will be rendered and updated.
@@ -626,7 +634,7 @@ public class TotemDefender extends ApplicationAdapter {
 	}
 	
 	public void setMusic(String filePath){
-		music=Gdx.audio.newMusic(Gdx.files.internal(filePath));
+		music=getAssetManager().get(filePath, Music.class);
 	}
 	
 	public Sound getSound(){
@@ -634,7 +642,7 @@ public class TotemDefender extends ApplicationAdapter {
 	}
 	
 	public void setSound(String filePath){
-		sound=Gdx.audio.newSound(Gdx.files.internal(filePath));
+		sound=getAssetManager().get(filePath, Sound.class);
 	}
 	
 }
