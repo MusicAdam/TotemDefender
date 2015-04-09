@@ -404,6 +404,7 @@ public class TotemDefender extends ApplicationAdapter {
 	/** addEntity registers a spawned entity at a specified depth with the game so it will be rendered and updated.
 	 * @return true if the entity is spawned and was added, false otherwise	 */
 	public boolean addEntity(Entity ent, int depth){
+		if(ent == null) return false;
 		if(!ent.isSpawned()) return false;
 		
 		DepthWrapper<Entity> wrapper = new DepthWrapper<Entity>();
@@ -416,6 +417,7 @@ public class TotemDefender extends ApplicationAdapter {
 	/** destroyEntity removes a spawned entity from the entities list and also removes it from the box2d world if it has a body 
 	 * @return true on success, false on failure*/
 	public boolean destroyEntity(Entity ent){
+		if(ent == null) return false;
 		if(!entityDeleteQueue.contains(ent))
 			return entityDeleteQueue.add(ent);
 		return false;
@@ -620,7 +622,6 @@ public class TotemDefender extends ApplicationAdapter {
 	public AnimationController getAnimationController(){ return animationController; }
 	
 	public Music getMusic(){
-		
 		return music;
 	}
 	

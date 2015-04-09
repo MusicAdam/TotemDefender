@@ -52,7 +52,6 @@ public class PostGameState implements State {
 		postGameMenu.destroy(game);
 		FileHandle file = Gdx.files.local("td_ranking.txt");        
 		winnerScore = (game.getWinner().getName() + "<>" + game.getWinner().getScore().getTotalScore() + "<>" + date + "\n");
-		winnerScore = ("sdasd" + "<>" +  "9000" + "<>" + date + "\n");
 		file.writeString(winnerScore, true);
 		game.setWinner(null);
 		game.getLevel().clearPlayerEntities();

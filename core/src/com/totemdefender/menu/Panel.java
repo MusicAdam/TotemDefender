@@ -40,6 +40,7 @@ public class Panel extends Component{
 		if(!shouldRender()) return;
 
 		if(color != null){
+			TotemDefender.EnableBlend();
 			shapeRenderer.begin(ShapeType.Filled);
 			if(!isHighlighted()){
 				shapeRenderer.setColor(color);				
@@ -48,6 +49,7 @@ public class Panel extends Component{
 			}
 			shapeRenderer.rect(getPosition().x, getPosition().y, getSize().x, getSize().y);
 			shapeRenderer.end();
+			TotemDefender.DisableBlend();
 		}
 		
 		if(sprite != null){
