@@ -29,6 +29,7 @@ public class PreGameState implements State {
 
 	@Override
 	public void onExit(TotemDefender game) {
+		game.getMusic().stop();
 		game.getPlayer1().setName(p1PreMenu.getUserName().getText());
 		game.getPlayer2().setName(p2PreMenu.getUserName().getText());
 		p1PreMenu.destroy(game);

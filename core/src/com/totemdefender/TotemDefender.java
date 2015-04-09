@@ -338,6 +338,7 @@ public class TotemDefender extends ApplicationAdapter {
 		assetManager.setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(resolver));
 		
 		//Game Textures
+		assetManager.load("title.png", Texture.class, textureParam);
 		assetManager.load("cannon.png", Texture.class, textureParam);
 		assetManager.load("catapult_arm.png", Texture.class, textureParam);
 		assetManager.load("catapult_body.png", Texture.class, textureParam);
