@@ -104,8 +104,9 @@ public void spawn(TotemDefender game){
 			if(owner.getID()==1){
 				origin=new Vector2(150,100);
 			}
-			else
-				origin=new Vector2(358,230);
+			else{
+				origin=new Vector2(150,100);	
+			}
 			
 			barrelPosX=0;
 			barrelPosY=20;
@@ -116,7 +117,15 @@ public void spawn(TotemDefender game){
 			System.out.println("size: " + this.getSprite().getHeight() + "..." + this.getSprite().getWidth());
 			this.getSprite().setSize(300f, 150f);
 			System.out.println(this.getSprite().getX()+ "..." + this.getSprite().getY());
+			if(owner.getID()==1){
 			this.getSprite().setPosition(-450, -390);
+			
+			}
+			
+			else{
+				this.getSprite().setPosition(200, -390);
+				fireDirection.rotate(-50);
+			}
 		/*	barrelPos2=barrelPos.cpy();
 			barrelPos2.x-=10*flip;
 			barrelPos2.y-=10;
