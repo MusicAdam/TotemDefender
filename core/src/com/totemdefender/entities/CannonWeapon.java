@@ -25,6 +25,7 @@ public class CannonWeapon extends WeaponEntity {
 		
 		super.spawn(game);
 		System.out.println("Cannon Weapon was Spawned");
+		System.out.println(this.getSprite().getWidth());
 		
 	}
 }
