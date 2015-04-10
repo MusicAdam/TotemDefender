@@ -17,6 +17,7 @@ public class PostGameMenu extends Container{
 	public static Color loserColor = Color.valueOf("AF2B25");
 	public static Color fontColor = new Color(.9f, .9f, .9f, 1);
 	
+	
 	Button continueButton;
 	Label winnerLabel;
 	Color leftColor;
@@ -55,7 +56,6 @@ public class PostGameMenu extends Container{
 			@Override
 			public boolean onClick(){
 				postGameState.setShouldExit(true);
-				game.setWinner(null);
 				return true;
 			}
 		};
@@ -140,7 +140,7 @@ public class PostGameMenu extends Container{
 		
 		for(int i = 0; i <= 1; i++){
 			if(getPlayerScoreLines(i + 1).isEmpty() && currentScoreLine[i] == null) continue;
-			
+
 			if(currentScoreLine[i] == null){
 				currentScoreLine[i] = getPlayerScoreLines(i + 1).poll();
 				currentScoreLine[i].setParent(this); 

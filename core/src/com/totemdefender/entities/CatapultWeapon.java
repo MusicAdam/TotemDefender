@@ -20,6 +20,7 @@ public class CatapultWeapon extends WeaponEntity {
 	private float originalRotation;
 	private boolean doSwing = false;
 	private float radius; 
+	private boolean releaseSoundStarted = false;
 
 	public CatapultWeapon(Player owner) {
 		super(owner);
@@ -59,9 +60,8 @@ public class CatapultWeapon extends WeaponEntity {
 		
 		super.spawn(game);
 		
-		//arm stuff
-		
-armTexture = game.getAssetManager().get("catapult_arm.png", Texture.class);
+		//arm stuff		
+		armTexture = game.getAssetManager().get("catapult_arm.png", Texture.class);
 		
 
 		armWidth = getSprite().getWidth() * .57f;
@@ -121,6 +121,11 @@ armTexture = game.getAssetManager().get("catapult_arm.png", Texture.class);
 						started = true;
 						rotationLocked = true;
 						originalRotation = rotation;
+						if(game.getSound()!=null)
+							game.getSound().stop();
+						game.setSound("sounds/catapult/catapult_charge.mp3");
+						game.getSound().play();
+						
 					}
 					
 					//Make the charge speed up as the charge increases
@@ -154,9 +159,17 @@ armTexture = game.getAssetManager().get("catapult_arm.png", Texture.class);
 					completed = true;
 				
 				if(doSwing){
+					if(!releaseSoundStarted){
+						game.getSound().stop();
+						game.setSound("sounds/catapult/catapult_release.mp3");
+						game.getSound().play();
+						releaseSoundStarted = true;
+					}
+					
 					if(rotation == originalRotation){
 						doSwing = false;
 						completed = true;
+						releaseSoundStarted = false;
 					}else{
 						rotation += (originalRotation-rotation)/Math.abs(originalRotation-rotation)*10;
 						if(rotation < originalRotation){

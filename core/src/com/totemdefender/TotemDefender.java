@@ -195,6 +195,20 @@ public class TotemDefender extends ApplicationAdapter {
 		
 		
 		/** QUEUES **/
+		
+		//Process deletions
+		while(!entityDeleteQueue.isEmpty()){
+			Entity ent = entityDeleteQueue.poll();
+			if(ent.getBody() != null)
+				world.destroyBody(ent.getBody());
+			entities.remove(ent);
+		}
+		
+		while(!menuDeleteQueue.isEmpty()){
+			Container cmp = menuDeleteQueue.poll();
+			menus.remove(cmp);
+		}
+		
 		//Process additions
 		while(!entityAddQueue.isEmpty()){
 			DepthWrapper<Entity> ent = entityAddQueue.poll();
@@ -215,19 +229,6 @@ public class TotemDefender extends ApplicationAdapter {
 		while(!menuDepthQueue.isEmpty()){
 			DepthWrapper<Container> cmp = menuDepthQueue.poll();
 			menus.move(cmp.object, cmp.depth);
-		}
-		
-		//Process deletions
-		while(!entityDeleteQueue.isEmpty()){
-			Entity ent = entityDeleteQueue.poll();
-			if(ent.getBody() != null)
-				world.destroyBody(ent.getBody());
-			entities.remove(ent);
-		}
-		
-		while(!menuDeleteQueue.isEmpty()){
-			Container cmp = menuDeleteQueue.poll();
-			menus.remove(cmp);
 		}
 		
 		//Maintain updates at the STEP rate
@@ -337,6 +338,7 @@ public class TotemDefender extends ApplicationAdapter {
 		assetManager.setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(resolver));
 		
 		//Game Textures
+		assetManager.load("title.png", Texture.class, textureParam);
 		assetManager.load("cannon.png", Texture.class, textureParam);
 		assetManager.load("catapult_arm.png", Texture.class, textureParam);
 		assetManager.load("catapult_body.png", Texture.class, textureParam);
@@ -386,14 +388,22 @@ public class TotemDefender extends ApplicationAdapter {
 		assetManager.load("hud_large.ttf", BitmapFont.class, hud_large);
 		assetManager.load("hud_huge.ttf", BitmapFont.class, hud_huge);
 		assetManager.load("keyboard.png", Texture.class, textureParam);
-
 		//Backgorund
 		assetManager.load("background/bg.png", Texture.class, textureParam);
 		assetManager.load("background/castle.png", Texture.class, textureParam);	
 		assetManager.load("background/temple.png", Texture.class, textureParam);	
 		assetManager.load("background/sun.png", Texture.class, textureParam);	
 		assetManager.load("background/cloud_1.png", Texture.class, textureParam);
-		assetManager.load("background/cloud_2.png", Texture.class, textureParam);				
+		assetManager.load("background/cloud_2.png", Texture.class, textureParam);
+		//Sounds
+		assetManager.load("sounds/Menu Music/battle phase.mp3", Music.class);
+		assetManager.load("sounds/Menu Music/Build phase.mp3", Music.class);
+		assetManager.load("sounds/Menu Music/MainMenu.mp3", Music.class);
+		assetManager.load("sounds/Cannon/Cannon.mp3", Sound.class);
+		assetManager.load("sounds/Cannon/ballhitsground.mp3", Sound.class);
+		assetManager.load("sounds/Cannon/Cannon.mp3", Sound.class);
+		assetManager.load("sounds/catapult/catapult_charge.mp3", Sound.class);
+		assetManager.load("sounds/catapult/catapult_release.mp3", Sound.class);
 	}
 	
 	/** addEntity registers a spawned entity with the game so it will be rendered and updated.
@@ -405,6 +415,7 @@ public class TotemDefender extends ApplicationAdapter {
 	/** addEntity registers a spawned entity at a specified depth with the game so it will be rendered and updated.
 	 * @return true if the entity is spawned and was added, false otherwise	 */
 	public boolean addEntity(Entity ent, int depth){
+		if(ent == null) return false;
 		if(!ent.isSpawned()) return false;
 		
 		DepthWrapper<Entity> wrapper = new DepthWrapper<Entity>();
@@ -417,6 +428,7 @@ public class TotemDefender extends ApplicationAdapter {
 	/** destroyEntity removes a spawned entity from the entities list and also removes it from the box2d world if it has a body 
 	 * @return true on success, false on failure*/
 	public boolean destroyEntity(Entity ent){
+		if(ent == null) return false;
 		if(!entityDeleteQueue.contains(ent))
 			return entityDeleteQueue.add(ent);
 		return false;
@@ -621,12 +633,11 @@ public class TotemDefender extends ApplicationAdapter {
 	public AnimationController getAnimationController(){ return animationController; }
 	
 	public Music getMusic(){
-		
 		return music;
 	}
 	
 	public void setMusic(String filePath){
-		music=Gdx.audio.newMusic(Gdx.files.internal(filePath));
+		music=getAssetManager().get(filePath, Music.class);
 	}
 	
 	public Sound getSound(){
@@ -634,7 +645,7 @@ public class TotemDefender extends ApplicationAdapter {
 	}
 	
 	public void setSound(String filePath){
-		sound=Gdx.audio.newSound(Gdx.files.internal(filePath));
+		sound=getAssetManager().get(filePath, Sound.class);
 	}
 	
 }

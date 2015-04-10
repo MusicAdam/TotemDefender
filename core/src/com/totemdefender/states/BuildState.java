@@ -52,6 +52,7 @@ public class BuildState implements State {
 		p2BuildMenu.validate();
 		
 		game.setMusic("sounds/Menu Music/Build phase.mp3");
+		game.getMusic().setVolume(.5f);
 		game.getMusic().play();
 		game.getMusic().setLooping(true);
 	}

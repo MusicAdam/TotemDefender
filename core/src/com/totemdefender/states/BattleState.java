@@ -136,8 +136,9 @@ public class BattleState implements State {
 		});
 		
 		game.getLevel().getHUD().setDrawScores(true);
-	
+		
 		game.setMusic("sounds/Menu Music/battle phase.mp3");
+		game.getMusic().setVolume(.5f);
 		game.getMusic().play();
 		game.getMusic().setLooping(true);
 	}
@@ -155,7 +156,6 @@ public class BattleState implements State {
 		game.getGameInputHandler().removeListener(pl2UpKeyUpListener);
 		game.getGameInputHandler().removeListener(pl2DownKeyDownListener);
 		game.getGameInputHandler().removeListener(pl2DownKeyUpListener);
-		game.getMusic().stop();
 	}
 
 	@Override

@@ -1,17 +1,22 @@
 package com.totemdefender.menu;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.files.FileHandleStream;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.totemdefender.TotemDefender;
 import com.totemdefender.menu.NavigableContainer.ConnectionType;
 import com.totemdefender.states.LeaderBoardState;
-import com.totemdefender.states.MainMenuState;
 
 public class LeaderBoardMenu extends NavigableContainer {
 	private Button returner;
 	private	Label leaderboard;
 	private LeaderBoardState state;
-	
-	//private MainMenuState state;
+	private String scoreList = "LEADER BOARD\n";
+	private FileHandle file = Gdx.files.local("td_ranking.txt");
+	private String text = file.readString();
+	private String[] textBox = text.split("\n");
 	
 	public LeaderBoardMenu(LeaderBoardState state){
 		super(null, ConnectionType.Vertical);
@@ -20,14 +25,27 @@ public class LeaderBoardMenu extends NavigableContainer {
 	
 	@Override
 	public void create(TotemDefender game){
-		Vector2 buttonSize = new Vector2((TotemDefender.V_WIDTH/3),(TotemDefender.V_WIDTH/4)/4.65517f); //4.6.. is the apsect ratio of the button texture
-		Vector2 LabelSize = new Vector2(TotemDefender.V_WIDTH - buttonSize.x,TotemDefender.V_HEIGHT);
+		Vector2 buttonSize = new Vector2((TotemDefender.V_WIDTH/3), (TotemDefender.V_WIDTH/4)/4.65517f); //4.6.. is the apsect ratio of the button texture
+		Vector2 LabelSize = new Vector2(TotemDefender.V_WIDTH/3, TotemDefender.V_HEIGHT/2.5f);
+
+		ScoreBubbleSort(textBox);
+		file.writeString("", false);
+
+		for(int i=0; i<textBox.length; i++) {
+			file.writeString(textBox[i] + "\n", true);
+			text = textBox[i].replace("<>", " - ");
+			scoreList += i+1 + ". " + text + "\n";
+			
+			if(i == 5) { break; }
+		}
 		
 		leaderboard = new Label(this);
-		leaderboard.setPosition(new Vector2(0,buttonSize.y));
-		leaderboard.setFont("hud_huge.ttf");
-		leaderboard.setText("leaderboard");
+		leaderboard.setPosition(new Vector2(TotemDefender.V_WIDTH/3,TotemDefender.V_HEIGHT/4));
+		leaderboard.setTextOffset(leaderboard.getTextBounds().width * 2.5f, leaderboard.getTextBounds().height*30f);
+		leaderboard.setFont("hud_large.ttf");
+		leaderboard.setText(scoreList);
 		leaderboard.setSize(LabelSize);
+		leaderboard.setColor(0f, 0f, 0f, 0.5f);
 		
 		returner = new Button(this, "Main Menu", buttonSize, new Vector2((TotemDefender.V_WIDTH/2.0f) - buttonSize.x/2, 0), null){
 			@Override
@@ -35,6 +53,7 @@ public class LeaderBoardMenu extends NavigableContainer {
 				state.returnButtonPressed(true);
 				return true;
 			}
+			
 		};
 		returner.setFont("hud_large.ttf");
 		returner.setTextOffset(buttonSize.x/2 - returner.getTextBounds().width/2, buttonSize.y/2 - returner.getTextBounds().height/2 + 5); 
@@ -46,5 +65,44 @@ public class LeaderBoardMenu extends NavigableContainer {
 		this.addComponent(returner);
 		this.attachKeyboardListeners(game.getPlayer2());
 		super.create(game);
+	}
+	
+	public void ScoreBubbleSort(String[] array) {
+	    boolean swapped = true;
+	    int j = 0;
+	    String tmp;
+	    String[] splitBox = null;
+	    int rightScore;
+	    int leftScore;
+	    
+	    while (swapped) {
+	        swapped = false;
+	        j++;
+	        for (int i = 0; i < array.length - j; i++) {
+	        	if(array[i].contains("<>")) {
+	        		splitBox = array[i].split("<>"); 
+	        		System.out.println(splitBox[1]);
+		        	rightScore = Integer.parseInt(splitBox[1]);
+	        	}
+		        else {
+		        	rightScore = 0;
+		        }
+		        
+	        	if(array[i+1].contains("<>")) {
+	        		splitBox = array[i+1].split("<>");
+		        	leftScore = Integer.parseInt(splitBox[1]);
+	        	}
+	        	else {
+			        leftScore = 0;
+			    }
+	
+	            if (rightScore < leftScore) {
+	                tmp = array[i];
+	                array[i] = array[i + 1];
+	                array[i + 1] = tmp;
+	                swapped = true;
+	            }
+	        }
+	    }
 	}
 }

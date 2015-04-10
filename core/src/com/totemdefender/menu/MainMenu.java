@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -22,6 +23,8 @@ public class MainMenu extends NavigableContainer{
 	private Button start;
 	private Button leaderboard;
 	private Button quit;
+	private Texture title;
+	private float titleW, titleH;
 	private MainMenuState state;
 	
 	public MainMenu(MainMenuState state){
@@ -31,6 +34,11 @@ public class MainMenu extends NavigableContainer{
 	
 	@Override
 	public void create(TotemDefender game){
+		title = game.getAssetManager().get("title.png", Texture.class);
+		float aspect = title.getWidth()/title.getHeight();
+		titleW = TotemDefender.V_WIDTH/2;
+		titleH = titleW/aspect;
+		
 		Vector2 buttonSize = new Vector2((TotemDefender.V_WIDTH/4),(TotemDefender.V_WIDTH/4)/4.65517f); //4.6.. is the apsect ratio of the button texture
 		float areaWidth = TotemDefender.V_WIDTH/2 - buttonSize.x/2; //width position of where the button are position
 		float centerScreenHeight = TotemDefender.V_HEIGHT/2;
@@ -82,5 +90,14 @@ public class MainMenu extends NavigableContainer{
 		
 		attachKeyboardListeners(game.getPlayer2());
 		super.create(game);
+	}
+	
+	@Override
+	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer){
+		super.render(batch, shapeRenderer);
+		
+		batch.begin();
+		batch.draw(title, TotemDefender.V_WIDTH/2 - titleW/2, start.getPosition().y + start.getHeight() + 30, titleW, titleH);
+		batch.end();
 	}
 }

@@ -26,21 +26,23 @@ public class MainMenuState implements State {
 		if(game.getLevel() == null){
 			game.setLevel(new Level(game));
 		}else{
+			game.getLevel().clearPlayerEntities();
 			game.getLevel().createPlayerWeapons();
 		}
 		
 		menu = new MainMenu(this);
 		menu.create(game);
-		
-		game.setMusic("sounds/Menu Music/MainMenu.mp3");
-		game.getMusic().play();
-		game.getMusic().setLooping(true);
+		if(game.getMusic() == null || !game.getMusic().isPlaying()){
+			game.setMusic("sounds/Menu Music/MainMenu.mp3");
+			game.getMusic().setVolume(.5f);
+			game.getMusic().play();
+			game.getMusic().setLooping(true);
+		}
 	}
 
 	@Override
 	public void onExit(TotemDefender game) {
 		menu.destroy(game);
-		game.getMusic().stop();
 		
 		if(startButtonPressed){
 			game.getStateManager().attachState(new PreGameState());

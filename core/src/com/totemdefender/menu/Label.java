@@ -74,4 +74,5 @@ public class Label extends Panel{
 	public Vector2 getTextOffset(){ return textOffset; }
 	
 	public TextBounds getTextBounds(){ return bounds; }
+
 }

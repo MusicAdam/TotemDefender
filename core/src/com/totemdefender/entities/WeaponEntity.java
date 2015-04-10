@@ -122,7 +122,7 @@ public class WeaponEntity extends Entity {
 	
 	@Override
 	public void spawn(TotemDefender game) {
-		if( origin == null) return;
+		if( origin == null) throw new NullPointerException("Cannot spawn WeaponEntity, origin is not set");
 		
 		Texture weaponTexture = game.getAssetManager().get(weaponSprite, Texture.class);
 		setSprite(new Sprite(weaponTexture));
@@ -191,6 +191,7 @@ public class WeaponEntity extends Entity {
 	}
 	
 	public void rotateUp(){
+		if(!isSpawned()) return;
 		float pX = getSprite().getOriginX();
 		float pY = getSprite().getOriginY();
 		barrelPos.sub(pX, pY);
@@ -201,6 +202,7 @@ public class WeaponEntity extends Entity {
 	}
 	
 	public void rotateDown(){
+		if(!isSpawned()) return;
 		float pX = getSprite().getOriginX();
 		float pY = getSprite().getOriginY();
 		barrelPos.sub(pX, pY);

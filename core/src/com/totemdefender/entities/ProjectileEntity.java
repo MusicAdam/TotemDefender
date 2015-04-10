@@ -57,10 +57,10 @@ public class ProjectileEntity extends Entity{
 		getBody().createFixture(fixtureDef).setUserData(new CollisionListener(){
 			@Override
 			public void beginContact(Fixture other, Contact contact) {
-				if(other.getBody().getUserData() instanceof GroundEntity){
-					game.setSound("sounds/Cannon/ballhitsground.mp3");
-					game.getSound().play();
-					
+				game.setSound("sounds/Cannon/ballhitsground.mp3");
+				game.getSound().play();
+				
+				if(other.getBody().getUserData() instanceof GroundEntity){					
 					if(!thisRef.contactedBlock){
 						thisRef.owner.addScore(ScoreLine.ScoreType.Miss, Player.MISS_SCORE);
 						thisRef.owner.resetScoreMultiplier();
