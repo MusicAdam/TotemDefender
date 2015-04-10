@@ -114,9 +114,7 @@ public void spawn(TotemDefender game){
 			super.spawn(game);
 			
 			fireDirection.rotate(25);
-			System.out.println("size: " + this.getSprite().getHeight() + "..." + this.getSprite().getWidth());
 			this.getSprite().setSize(300f, 150f);
-			System.out.println(this.getSprite().getX()+ "..." + this.getSprite().getY());
 			if(owner.getID()==1){
 			this.getSprite().setPosition(-450, -390);
 			
@@ -153,15 +151,17 @@ public void spawn(TotemDefender game){
 					
 					if(owner.getID() == 2){
 						bandPosition = origin.cpy();
+						//bandPosition = origin.cpy().add(-110,-30);
 						
 					}
 					
 					else
 						bandPosition = origin.cpy().sub(new Vector2(bandWidth, 0));
+						//bandPosition = origin.cpy().sub(new Vector2(bandWidth, 0)).add(110,-30);
 					
 					
 					
-					System.out.println("Ballista was spawned");
+					
 					
 				}
 			

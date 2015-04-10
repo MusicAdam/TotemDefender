@@ -73,7 +73,7 @@ public class PreGameMenu extends NavigableContainer {
 		weapon2.setTextOffset(buttonSize.x/2 - weapon2.getTextBounds().width/2, buttonSize.y/2 - weapon2.getTextBounds().height/2 + 5);
 		weapon2.create(game);
 		
-		weapon3 = new Button(this, "Ballista", buttonSize, new Vector2(side, TotemDefender.V_HEIGHT - (buttonSize.y)*4 - padding), Color.ORANGE){
+		weapon3 = new Button(this, "Slingshot", buttonSize, new Vector2(side, TotemDefender.V_HEIGHT - (buttonSize.y)*4 - padding), Color.ORANGE){
 			@Override
 			public boolean onClick(){
 				if(weaponSelected) return false;
